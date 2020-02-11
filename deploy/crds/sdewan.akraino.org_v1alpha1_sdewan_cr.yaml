@@ -1,0 +1,10 @@
+apiVersion: sdewan.akraino.org/v1alpha1
+kind: Sdewan
+metadata:
+  name: example-sdewan
+spec:
+  # Add fields here
+  node: "ubuntu18"
+  networks:
+    - name: ovn-priv-net
+  mwan3Rule: example-mwan3rule
