@@ -1,0 +1,96 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.5
+  creationTimestamp: null
+  name: sdewans.batch.sdewan.akraino.org
+spec:
+  group: batch.sdewan.akraino.org
+  names:
+    kind: Sdewan
+    listKind: SdewanList
+    plural: sdewans
+    singular: sdewan
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Sdewan is the Schema for the sdewans API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: SdewanSpec defines the desired state of Sdewan
+          properties:
+            mwan3Conf:
+              type: string
+            networks:
+              items:
+                properties:
+                  defaultGateway:
+                    type: boolean
+                  interface:
+                    type: string
+                  isProvider:
+                    type: boolean
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              type: array
+            node:
+              description: Foo is an example field of Sdewan. Edit Sdewan_types.go
+                to remove/update
+              type: string
+          required:
+          - networks
+          - node
+          type: object
+        status:
+          description: SdewanStatus defines the observed state of Sdewan
+          properties:
+            mwan3Status:
+              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                of cluster Important: Run "make" to regenerate code after modifying
+                this file'
+              properties:
+                appliedTime:
+                  format: date-time
+                  nullable: true
+                  type: string
+                isApplied:
+                  type: boolean
+                name:
+                  type: string
+              required:
+              - isApplied
+              - name
+              type: object
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

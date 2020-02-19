@@ -1,0 +1,52 @@
+
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: mutating-webhook-configuration
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: webhook-service
+      namespace: system
+      path: /mutate-batch-sdewan-akraino-org-v1alpha1-mwan3conf
+  failurePolicy: Fail
+  name: mmwan3conf.kb.io
+  rules:
+  - apiGroups:
+    - batch.sdewan.akraino.org
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - mwan3confs
+
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: validating-webhook-configuration
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-batch-sdewan-akraino-org-v1alpha1-mwan3conf
+  failurePolicy: Fail
+  name: vmwan3conf.kb.io
+  rules:
+  - apiGroups:
+    - batch.sdewan.akraino.org
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - mwan3confs
