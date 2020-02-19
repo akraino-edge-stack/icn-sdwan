@@ -1,0 +1,88 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: sdewans.sdewan.akraino.org
+spec:
+  group: sdewan.akraino.org
+  names:
+    kind: Sdewan
+    listKind: SdewanList
+    plural: sdewans
+    singular: sdewan
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Sdewan is the Schema for the sdewans API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: SdewanSpec defines the desired state of Sdewan
+          properties:
+            mwan3Rule:
+              type: string
+            networks:
+              items:
+                description: SdewanSpec defines the desired state of Sdewan
+                properties:
+                  defaultGateway:
+                    type: boolean
+                  interface:
+                    type: string
+                  isProvider:
+                    type: boolean
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              type: array
+            node:
+              description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                Important: Run "operator-sdk generate k8s" to regenerate code after
+                modifying this file Add custom validation using kubebuilder tags:
+                https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+              type: string
+          required:
+          - networks
+          - node
+          type: object
+        status:
+          description: SdewanStatus defines the observed state of Sdewan
+          properties:
+            mwan3Status:
+              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                of cluster Important: Run "operator-sdk generate k8s" to regenerate
+                code after modifying this file Add custom validation using kubebuilder
+                tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+              properties:
+                appliedTime:
+                  type: string
+                isApplied:
+                  type: boolean
+                name:
+                  type: string
+              required:
+              - name
+              type: object
+          required:
+          - mwan3Status
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
