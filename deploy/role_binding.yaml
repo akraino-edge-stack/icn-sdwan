@@ -1,0 +1,11 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sdewan-operator
+subjects:
+- kind: ServiceAccount
+  name: sdewan-operator
+roleRef:
+  kind: Role
+  name: sdewan-operator
+  apiGroup: rbac.authorization.k8s.io
