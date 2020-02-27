@@ -12,7 +12,7 @@ develop the firewall and the ipsec functions. Mwan3Conf is validated by k8s
 api admission webhook.
 
 For each created Sdewan instance, the controller creates a pod, a configmap
-and a service for the instance. The pod runs openswrt which provides network
+and a service for the instance. The pod runs openwrt which provides network
 services, i.e. sdwan, firewall, ipsec etc.
 
 The configmap stores the network interface information and the entrypoint.sh.
@@ -50,6 +50,14 @@ we need to make configuration in `config/default/manager_image_patch.yaml`
 The simple installation steps:
 1. kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml
 2. kubectl apply -f sdewan-deploy.yaml
+
+## Create Sdewan CNF docker image
+1. update build/set_proxy file with required proxy for docker build
+2. execute below commands to generate Sdewan CNF docker image which tagged with 'openwrt-1806-mwan3'
+```
+cd build
+sudo bash build_image.sh
+```
 
 ## References
 
