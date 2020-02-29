@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18d5ba03_ae3205a3",
+        "filename": "openwrt/firewall.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-02-29T14:55:58Z",
+      "side": 1,
+      "message": "nit: Can we reuse the err variable here?\n```\nerr \u003d json.Unmarshal([]byte(response), \u0026sdewanFirewallRule)\n```",
+      "range": {
+        "startLine": 215,
+        "startChar": 4,
+        "endLine": 215,
+        "endChar": 11
+      },
+      "revId": "445544224c8f3f0dbabbdd3aa3227d824b68778e",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
