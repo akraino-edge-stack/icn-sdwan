@@ -1,0 +1,7 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: FirewallConf
+metadata:
+  name: firewallconf-sample
+spec:
+  # Add fields here
+  foo: bar

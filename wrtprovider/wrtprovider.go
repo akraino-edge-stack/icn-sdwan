@@ -116,7 +116,7 @@ func Mwan3ReplaceRules(rules []openwrt.SdewanRule, existOnes []openwrt.SdewanRul
 // apply policy and rules
 func Mwan3Apply(mwan3Conf *sdewanv1alpha1.Mwan3Conf, sdewan *sdewanv1alpha1.Sdewan) error {
 	reqLogger := log.WithValues("Mwan3Provider", mwan3Conf.Name, "Sdewan", sdewan.Name)
-	openwrtClient := openwrt.NewOpenwrtClient(sdewan.Name + "." + sdewan.Namespace, "root", "")
+	openwrtClient := openwrt.NewOpenwrtClient(sdewan.Name+"."+sdewan.Namespace, "root", "")
 	mwan3 := openwrt.Mwan3Client{OpenwrtClient: openwrtClient}
 	service := openwrt.ServiceClient{OpenwrtClient: openwrtClient}
 	netMap := NetworkInterfaceMap(sdewan)

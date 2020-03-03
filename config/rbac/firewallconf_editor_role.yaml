@@ -1,0 +1,26 @@
+# permissions to do edit firewallconfs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: firewallconf-editor-role
+rules:
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - firewallconfs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - firewallconfs/status
+  verbs:
+  - get
+  - patch
+  - update
