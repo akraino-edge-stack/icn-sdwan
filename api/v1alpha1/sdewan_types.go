@@ -45,9 +45,21 @@ type SdewanSpec struct {
 	Networks []Network `json:"networks"`
 	// +optional
 	Mwan3Conf string `json:"mwan3Conf"`
+	//+optional
+	IpsecSite string `json:"IPSecSite"`
 }
 
 type Mwan3Status struct {
+	Name string `json:"name"`
+
+	IsApplied bool `json:"isApplied"`
+
+	// +optional
+	// +nullable
+	AppliedTime *metav1.Time `json:"appliedTime"`
+}
+
+type IPSecStatus struct {
 	Name string `json:"name"`
 
 	IsApplied bool `json:"isApplied"`
@@ -63,6 +75,7 @@ type SdewanStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	// +optional
 	Mwan3Status Mwan3Status `json:"mwan3Status"`
+	IpsecStatus IPSecStatus `json:"IPSecStatus"`
 }
 
 // +kubebuilder:object:root=true

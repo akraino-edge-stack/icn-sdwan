@@ -36,6 +36,8 @@ spec:
         spec:
           description: SdewanSpec defines the desired state of Sdewan
           properties:
+            IPSecSite:
+              type: string
             mwan3Conf:
               type: string
             networks:
@@ -64,6 +66,20 @@ spec:
         status:
           description: SdewanStatus defines the observed state of Sdewan
           properties:
+            IPSecStatus:
+              properties:
+                appliedTime:
+                  format: date-time
+                  nullable: true
+                  type: string
+                isApplied:
+                  type: boolean
+                name:
+                  type: string
+              required:
+              - isApplied
+              - name
+              type: object
             mwan3Status:
               description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
                 of cluster Important: Run "make" to regenerate code after modifying
@@ -81,6 +97,8 @@ spec:
               - isApplied
               - name
               type: object
+          required:
+          - IPSecStatus
           type: object
       type: object
   version: v1alpha1

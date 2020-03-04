@@ -185,7 +185,7 @@ func (r *SdewanReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 			}
 			log.Info("sdewan config applied")
 		} else {
-			log.Info("mwan3 conf not chnaged, so not re-apply", "sdewan", instance.Name)
+			log.Info("mwan3 conf not changed, so not re-apply", "sdewan", instance.Name)
 		}
 	} else {
 		log.Info("Don't apply conf as the pod is not ready", "sdewan", instance.Name)
@@ -240,6 +240,10 @@ cat > /etc/config/mwan3 <<EOF
 config globals 'globals'
     option mmx_mask '0x3F00'
     option local_source 'lan'
+EOF
+cat > /etc/config/ipsec <<EOF
+config 'ipsec'
+    option 'debug' '1'
 EOF
 for net in $(jq -c ".[]" /tmp/sdewan/networks.json)
 do
