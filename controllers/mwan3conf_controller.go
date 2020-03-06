@@ -17,6 +17,7 @@ package controllers
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -68,6 +69,7 @@ func (r *Mwan3ConfReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 			// Updating sdewan to set status isapplied = false
 			// this will trigger sdewan controller to apply the new conf
 			sdewan.Status.Mwan3Status = batchv1alpha1.Mwan3Status{Name: instance.Name, IsApplied: false}
+			sdewan.Status.Msg = "triggered by mwan3Conf update at " + time.Now().String()
 			err := r.Status().Update(ctx, &sdewan)
 			if err != nil {
 				log.Error(err, "Failed to update the sdewan instance status", "sdewan", sdewan.Name)
