@@ -63,6 +63,7 @@ type SdewanStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	// +optional
 	Mwan3Status Mwan3Status `json:"mwan3Status"`
+	Msg         string      `json:"msg"`
 }
 
 // +kubebuilder:object:root=true
