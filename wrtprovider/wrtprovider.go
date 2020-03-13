@@ -177,3 +177,261 @@ func Mwan3Apply(mwan3Conf *sdewanv1alpha1.Mwan3Conf, sdewan *sdewanv1alpha1.Sdew
 	}
 	return nil
 }
+
+
+
+// Firewall functions
+
+func FirewallReplaceZones(zones []openwrt.SdewanFirewallZone, existOnes []openwrt.SdewanFirewallZone, client *openwrt.FirewallClient) error {
+	// create/update new zones
+	for _, zone := range zones {
+		found := false
+		for _, z := range existOnes {
+			if z.Name == zone.Name {
+				if !reflect.DeepEqual(zone, z) {
+					_, err := client.UpdateZone(zone)
+					if err != nil {
+						return err
+					}
+				}
+				found = true
+				break
+			}
+		}
+		if found == false {
+			_, err := client.CreateZone(zone)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// remove old zones
+	for _, z := range existOnes {
+		found := false
+		for _, zone := range zones {
+			if z.Name == zone.Name {
+				found = true
+				break
+			}
+		}
+		if found == false {
+			err := client.DeleteZone(z.Name)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func FirewallReplaceRules(rules []openwrt.SdewanFirewallRule, existOnes []openwrt.SdewanFirewallRule, client *openwrt.FirewallClient) error {
+	// create/update new rules
+	for _, rule := range rules {
+		found := false
+		for _, r := range existOnes {
+			if r.Name == rule.Name {
+				if !reflect.DeepEqual(rule, r) {
+					_, err := client.UpdateRule(rule)
+					if err != nil {
+						return err
+					}
+				}
+				found = true
+				break
+			}
+		}
+		if found == false {
+			_, err := client.CreateRule(rule)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// remove old rules
+	for _, r := range existOnes {
+		found := false
+		for _, rule := range rules {
+			if r.Name == rule.Name {
+				found = true
+				break
+			}
+		}
+		if found == false {
+			err := client.DeleteRule(r.Name)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+
+func FirewallReplaceRedirects(redirects []openwrt.SdewanFirewallRedirect, existOnes []openwrt.SdewanFirewallRedirect, client *openwrt.FirewallClient) error {
+        // create/update new rules
+        for _, redirect := range redirects {
+                found := false
+                for _, r := range existOnes {
+                        if r.Name == redirect.Name {
+                                if !reflect.DeepEqual(redirect, r) {
+                                        _, err := client.UpdateRedirect(redirect)
+                                        if err != nil {
+                                                return err
+                                        }
+                                }
+                                found = true
+                                break
+                        }
+                }
+                if found == false {
+                        _, err := client.CreateRedirect(redirect)
+                        if err != nil {
+                                return err
+                        }
+                }
+        }
+
+        // remove old redirects
+        for _, r := range existOnes {
+                found := false
+                for _, redirect := range redirects {
+                        if r.Name == redirect.Name {
+                                found = true
+                                break
+                        }
+                }
+                if found == false {
+                        err := client.DeleteRedirect(r.Name)
+                        if err != nil {
+                                return err
+                        }
+                }
+        }
+
+        return nil
+}
+
+
+func FirewallReplaceForwardings(forwardings []openwrt.SdewanFirewallForwarding, existOnes []openwrt.SdewanFirewallForwarding, client *openwrt.FirewallClient) error {
+        // create/update new rules
+        for _, forwarding := range forwardings {
+                found := false
+                for _, f := range existOnes {
+                        if f.Name == forwarding.Name {
+                                if !reflect.DeepEqual(forwarding, f) {
+                                        _, err := client.UpdateForwarding(forwarding)
+                                        if err != nil {
+                                                return err
+                                        }
+                                }
+                                found = true
+                                break
+                        }
+                }
+                if found == false {
+                        _, err := client.CreateForwarding(forwarding)
+                        if err != nil {
+                                return err
+                        }
+                }
+        }
+
+        // remove old forwardings
+        for _, f := range existOnes {
+                found := false
+                for _, forwarding := range forwardings {
+                        if f.Name == forwarding.Name {
+                                found = true
+                                break
+                        }
+                }
+                if found == false {
+                        err := client.DeleteRedirect(f.Name)
+                        if err != nil {
+                                return err
+                        }
+                }
+        }
+
+        return nil
+}
+
+
+// apply policy and rules
+func FirewallApply(firewallConf *sdewanv1alpha1.FirewallConf, sdewan *sdewanv1alpha1.Sdewan) error {
+	reqLogger := log.WithValues("FirewallProvider", firewallConf.Name, "Sdewan", sdewan.Name)
+	openwrtClient := openwrt.NewOpenwrtClient(sdewan.Name + "." + sdewan.Namespace, "root", "")
+	firewall := openwrt.FirewallClient{OpenwrtClient: openwrtClient}
+	service := openwrt.ServiceClient{OpenwrtClient: openwrtClient}
+	// Replace zones
+	var zones []openwrt.SdewanFirewallZone
+	for _, zone := range firewallConf.Spec.Zones {
+		zones = append(zones, openwrt.SdewanFirewallZone(zone))
+	}
+	existZones, err := firewall.GetZones()
+	if err != nil {
+		reqLogger.Error(err, "Failed to fetch existing zones")
+		return err
+	}
+	err = FirewallReplaceZones(zones, existZones.Zones, &firewall)
+	if err != nil {
+		reqLogger.Error(err, "Failed to apply zones")
+		return err
+	}
+	// Replace rules
+	var rules []openwrt.SdewanFirewallRule
+	for _, rule := range firewallConf.Spec.Rules {
+		rules = append(rules, openwrt.SdewanFirewallRule(rule))
+	}
+	existRules, err := firewall.GetRules()
+	if err != nil {
+		reqLogger.Error(err, "Failed to fetch existing rules")
+		return err
+	}
+	err = FirewallReplaceRules(rules, existRules.Rules, &firewall)
+	if err != nil {
+		reqLogger.Error(err, "Failed to apply rules")
+		return err
+	}
+	// Replace redirects
+	var redirects []openwrt.SdewanFirewallRedirect
+	for _, redirect := range firewallConf.Spec.Redirects {
+		redirects = append(redirects, openwrt.SdewanFirewallRedirect(redirect))
+	}
+	existRedirects, err := firewall.GetRedirects()
+	if err != nil {
+		reqLogger.Error(err, "Failed to fetch existing redirects")
+		return err
+	}
+	err = FirewallReplaceRedirects(redirects, existRedirects.Redirects, &firewall)
+	if err != nil {
+		reqLogger.Error(err, "Failed to apply redirects")
+		return err
+	}
+	// Replace forwarding
+	var forwardings []openwrt.SdewanFirewallForwarding
+	for _, forwarding := range firewallConf.Spec.Forwardings {
+		forwardings = append(forwardings, openwrt.SdewanFirewallForwarding(forwarding))
+	}
+	existForwardings, err := firewall.GetForwardings()
+	if err != nil {
+		reqLogger.Error(err, "Failed to fetch existing forwardings")
+		return err
+	}
+	err = FirewallReplaceForwardings(forwardings, existForwardings.Forwardings, &firewall)
+	if err != nil {
+		reqLogger.Error(err, "Failed to apply forwardings")
+		return err
+	}
+	// restart firewall service
+	_, err = service.ExecuteService("firewall", "restart")
+	if err != nil {
+		reqLogger.Error(err, "Failed to restart firewall service")
+		return err
+	}
+	return nil
+}
