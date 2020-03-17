@@ -94,14 +94,10 @@ zone_checker = {
 function index()
     ver = "v1"
     configuration = "firewall"
-    entry({"sdewan", configuration, ver, "zones"}, call("get_zones"))
-    entry({"sdewan", configuration, ver, "redirects"}, call("get_redirects"))
-    entry({"sdewan", configuration, ver, "rules"}, call("get_rules"))
-    entry({"sdewan", configuration, ver, "forwardings"}, call("get_forwardings"))
-    entry({"sdewan", configuration, ver, "zone"}, call("handle_request")).leaf = true
-    entry({"sdewan", configuration, ver, "redirect"}, call("handle_request")).leaf = true
-    entry({"sdewan", configuration, ver, "rule"}, call("handle_request")).leaf = true
-    entry({"sdewan", configuration, ver, "forwarding"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "zones"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "redirects"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "rules"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "forwardings"}, call("handle_request")).leaf = true
 end
 
 function is_network_interface_available(interface)
@@ -215,11 +211,6 @@ function is_zone_available(name)
     return true, name
 end
 
--- get /zones
-function get_zones()
-    utils.handle_get_objects("zones", uci_conf, "zone", zone_validator)
-end
-
 -- delete a zone
 function delete_zone(name, check_used)
     -- check whether zone is defined
@@ -259,27 +250,9 @@ end
 function update_zone(zone)
     local name = zone.name
     res, code, msg = delete_zone(name, false)
-    if res == true then
+    if res == true or code == 404 then
         return utils.create_object(_M, firewall_processor, "zone", zone)
     end
 
     return false, code, msg
-end
-
--- Redirect APIs
--- get /redirects
-function get_redirects()
-    utils.handle_get_objects("redirects", uci_conf, "redirect", redirect_validator)
-end
-
--- Rule APIs
--- get /rules
-function get_rules()
-    utils.handle_get_objects("rules", uci_conf, "rule", rule_validator)
-end
-
--- Forwarding APIs
--- get /forwardings
-function get_forwardings()
-    utils.handle_get_objects("forwardings", uci_conf, "forwarding", forwarding_validator)
 end

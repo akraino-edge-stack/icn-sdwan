@@ -26,6 +26,10 @@ function start_with(s, prefix)
     return (string.find(s, "^" .. prefix) ~= nil)
 end
 
+function end_with(s, postfix)
+    return (string.find(s, postfix .. "$") ~= nil)
+end
+
 -- check ip
 function is_match(s, reg)
     local ret = string.match(s, reg)
@@ -195,6 +199,9 @@ function get_uci_section(configuration, validator, object_type, name)
             return nil
         end
     else
+        if object_data[".type"] ~= object_type then
+            return nil
+        end
         -- name is defined as section name
         local obj = {}
         obj["name"] = name
@@ -245,7 +252,7 @@ function set_data(configuration, data_validator, src, target)
                 else
                     if v["validator"] ~= nil and type(v["validator"]) == "table" then
                         if value.section ~= nil then
-                            target[name] = get_uci_section(configuration, value.section, value.name)
+                            target[name] = get_uci_section(configuration, v["validator"], value.section, value.name)
                         else
                             target[name] = get_uci_section(configuration, v["validator"], get_validator_type(v["validator"]), value)
                         end
@@ -259,30 +266,11 @@ function set_data(configuration, data_validator, src, target)
 end
 
 -- get
-function get_objects(type_names, configuration, type_name, validator)
-    local res = {}
-    res[type_names] = {}
-
-    local index = 1
-    uci:foreach(configuration, type_name,
-        function (section)
-            local obj = {}
-            obj["name"] = section[".name"]
-            set_data(configuration, validator, section, obj)
-            res[type_names][index] = obj
-            index = index + 1
-        end
-    )
-
-    return res
-end
-
-function handle_get_objects(type_names, configuration, type_name, validator)
-    if not (validate_req_method("GET")) then
-        return
+function get_object_type(value)
+    if end_with(value, "s") then
+        return string.sub(value, 1, string.len(value)-1)
     end
-
-    response_object(get_objects(type_names, configuration, type_name, validator))
+    return value
 end
 
 function get_object(module_table, processors, object_type, name)
@@ -291,26 +279,80 @@ function get_object(module_table, processors, object_type, name)
        and module_table[processors[object_type]["get"]] ~= nil then
             return module_table[processors[object_type]["get"]](name)
     else
-        return get_uci_section(processors["configuration"], processors[object_type].validator, object_type, name)
+        local object_conf_type = get_validator_type(processors[object_type].validator)
+        if object_conf_type == nil then
+            object_conf_type = object_type
+        end
+        return get_uci_section(processors["configuration"], processors[object_type].validator, object_conf_type, name)
+    end
+end
+
+function get_objects(module_table, processors, object_types, object_type)
+    if processors ~= nil and processors[object_type] ~= nil
+       and processors[object_type]["gets"] ~= nil
+       and module_table[processors[object_type]["gets"]] ~= nil then
+            return module_table[processors[object_type]["gets"]]()
+    else
+        local res = {}
+        res[object_types] = {}
+
+        local index = 1
+        local object_conf_type = get_validator_type(processors[object_type].validator)
+        if object_conf_type == nil then
+            object_conf_type = object_type
+        end
+        uci:foreach(processors["configuration"], object_conf_type,
+            function (section)
+                local obj = {}
+                obj["name"] = section[".name"]
+                set_data(processors["configuration"], processors[object_type].validator, section, obj)
+                res[object_types][index] = obj
+                index = index + 1
+            end
+        )
+
+        return res
     end
 end
 
 function handle_get(module_table, processors)
-    local uri_list = get_URI_list(7)
+    local uri_list = get_URI_list()
     if uri_list == nil then
         return
     end
 
-    local object_type = uri_list[#uri_list-1]
-    local name = uri_list[#uri_list]
-    local obj = get_object(module_table, processors, object_type, name)
+    if #uri_list == 6 then
+        -- get objects
+        local object_types = uri_list[#uri_list]
+        local object_type = get_object_type(object_types)
+        if processors["get_type"] ~= nil and type(processors["get_type"]) == "function" then
+            object_type = processors["get_type"](object_types)
+        end
+        local objs = get_objects(module_table, processors, object_types, object_type)
+        if objs == nil then
+            response_error(404, "Cannot find " .. object_type)
+            return
+        end
+        response_object(objs)
+    elseif #uri_list == 7 then
+        -- get object
+        local object_types = uri_list[#uri_list-1]
+        local object_type = get_object_type(object_types)
+        if processors["get_type"] ~= nil and type(processors["get_type"]) == "function" then
+            object_type = processors["get_type"](object_types)
+        end
+        local name = uri_list[#uri_list]
+        local obj = get_object(module_table, processors, object_type, name)
 
-    if obj == nil then
-        response_error(404, "Cannot find " .. object_type .. "[" .. name .. "]" )
+        if obj == nil then
+            response_error(404, "Cannot find " .. object_type .. "[" .. name .. "]" )
+            return
+        end
+        response_object(obj)
+    else
+        response_error(400, "Bad request URI")
         return
     end
-
-    response_object(obj)
 end
 
 -- put
@@ -322,7 +364,7 @@ function update_object(module_table, processors, object_type, obj)
     else
         local name = obj.name
         res, code, msg = delete_object(module_table, processors, object_type, name)
-        if res == true then
+        if res == true or code == 404 then
             return create_object(module_table, processors, object_type, obj)
         end
 
@@ -336,7 +378,12 @@ function handle_put(module_table, processors)
         return
     end
 
-    local object_type = uri_list[#uri_list-1]
+    local object_types = uri_list[#uri_list-1]
+    local object_type = get_object_type(object_types)
+    if processors["get_type"] ~= nil and type(processors["get_type"]) == "function" then
+        object_type = processors["get_type"](object_types)
+    end
+
     local name = uri_list[#uri_list]
     -- check content and get object
     local obj = get_and_validate_body_object(processors[object_type].validator)
@@ -474,7 +521,12 @@ function handle_post(module_table, processors)
         return
     end
 
-    local object_type = uri_list[#uri_list]
+    local object_types = uri_list[#uri_list]
+    local object_type = get_object_type(object_types)
+    if processors["get_type"] ~= nil and type(processors["get_type"]) == "function" then
+        object_type = processors["get_type"](object_types)
+    end
+
     -- check content and get policy object
     local obj = get_and_validate_body_object(processors[object_type].validator)
     if obj == nil then
@@ -516,14 +568,16 @@ function delete_uci_section(configuration, validator, obj, object_type)
     -- delete depedency uci section
     for i,v in pairs(validator) do
         if(type(v) == "table") then
-            if v["item_validator"] ~= nil and type(v["item_validator"]) == "table" then
-                for j=1, #obj[v["name"]] do
-                    local sub_obj = obj[v["name"]][j]
-                    delete_uci_section(configuration, v["item_validator"], obj[v["name"]][j], v["name"])
-                end
-            else
-                if v["validator"] ~= nil and type(v["validator"]) == "table" then
-                    delete_uci_section(configuration, v["validator"], obj[v["name"]], v["name"])
+            if obj[v["name"]] ~= nil then
+                if v["item_validator"] ~= nil and type(v["item_validator"]) == "table" then
+                    for j=1, #obj[v["name"]] do
+                        local sub_obj = obj[v["name"]][j]
+                        delete_uci_section(configuration, v["item_validator"], obj[v["name"]][j], v["name"])
+                    end
+                else
+                    if v["validator"] ~= nil and type(v["validator"]) == "table" then
+                        delete_uci_section(configuration, v["validator"], obj[v["name"]], v["name"])
+                    end
                 end
             end
         end
@@ -573,7 +627,11 @@ function handle_delete(module_table, processors)
         return
     end
 
-    local object_type = uri_list[#uri_list-1]
+    local object_types = uri_list[#uri_list-1]
+    local object_type = get_object_type(object_types)
+    if processors["get_type"] ~= nil and type(processors["get_type"]) == "function" then
+        object_type = processors["get_type"](object_types)
+    end
     local name = uri_list[#uri_list]
 
     res, code, msg = delete_object(module_table, processors, object_type, name)
@@ -692,7 +750,7 @@ end
 function get_URI_list(required_lenth)
     local uri = luci.http.getenv("REQUEST_URI")
     local uri_list = split_and_trim(uri, "/")
-    if not (#uri_list == required_lenth) then
+    if (required_lenth ~= nil) and (not (#uri_list == required_lenth)) then
         response_error(400, "Bad request URI")
         return nil
     end

@@ -34,17 +34,16 @@ rule_validator = {
 }
 
 mwan3_processor = {
-    policy={get="get_policy", update="update_policy", create="create_policy", delete="delete_policy", validator=policy_validator},
+    get_type=function(value) if value == "policies" then return "policy" elseif value == "rules" then return "rule" else return "" end end,
+    policy={gets="get_policies",get="get_policy", update="update_policy", create="create_policy", delete="delete_policy", validator=policy_validator},
     rule={validator=rule_validator},
     configuration="mwan3"
 }
 
 function index()
     ver = "v1"
-    entry({"sdewan", "mwan3", ver, "policies"}, call("get_policies"))
-    entry({"sdewan", "mwan3", ver, "rules"}, call("get_rules"))
-    entry({"sdewan", "mwan3", ver, "policy"}, call("handle_request")).leaf = true
-    entry({"sdewan", "mwan3", ver, "rule"}, call("handle_request")).leaf = true
+    entry({"sdewan", "mwan3", ver, "policies"}, call("handle_request")).leaf = true
+    entry({"sdewan", "mwan3", ver, "rules"}, call("handle_request")).leaf = true
 end
 
 -- Request Handler
@@ -82,6 +81,9 @@ end
 function get_policy(name)
     local members = uci:get_all("mwan3", name)
     if members == nil then
+        return nil
+    end
+    if members[".type"] ~= "policy" then
         return nil
     end
     members = members["use_member"]
@@ -124,7 +126,7 @@ function get_policies()
         end
     )
 
-    utils.response_object(res)
+    return res
 end
 
 -- create a policy
@@ -223,15 +225,9 @@ end
 function update_policy(policy)
     local name = policy.name
     res, code, msg = delete_policy(name, false)
-    if res == true then
+    if res == true or code == 404 then
         return create_policy(policy)
     end
 
     return false, code, msg
-end
-
--- Rule APIs
--- get /rules
-function get_rules()
-    utils.handle_get_objects("rules", "mwan3", "rule", rule_validator)
 end

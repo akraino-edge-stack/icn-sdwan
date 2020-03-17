@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"runtime"
 	"strings"
 )
 
@@ -24,6 +25,11 @@ type openwrtClient struct {
 	token    string
 }
 
+func CloseClient(o *openwrtClient) {
+	o.logout()
+	runtime.SetFinalizer(o, nil)
+}
+
 func NewOpenwrtClient(ip string, user string, password string) *openwrtClient {
 	client := &openwrtClient{
 		ip:       ip,
@@ -32,6 +38,7 @@ func NewOpenwrtClient(ip string, user string, password string) *openwrtClient {
 		token:    "",
 	}
 
+	runtime.SetFinalizer(client, CloseClient)
 	return client
 }
 
@@ -84,6 +91,17 @@ func (o *openwrtClient) login() error {
 				break
 			}
 		}
+	}
+
+	return nil
+}
+
+// logout to openwrt http server
+func (o *openwrtClient) logout() error {
+	if o.token != "" {
+		_, err:= o.Get("admin/logout")
+		o.token = ""
+		return err
 	}
 
 	return nil

@@ -104,7 +104,7 @@ func (m *Mwan3Client) GetPolicies() (*SdewanPolicies, error) {
 
 // get policy
 func (m *Mwan3Client) GetPolicy(policy_name string) (*SdewanPolicy, error) {
-	response, err := m.OpenwrtClient.Get(mwan3BaseURL + "policy/" + policy_name)
+	response, err := m.OpenwrtClient.Get(mwan3BaseURL + "policies/" + policy_name)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (m *Mwan3Client) GetPolicy(policy_name string) (*SdewanPolicy, error) {
 // create policy
 func (m *Mwan3Client) CreatePolicy(policy SdewanPolicy) (*SdewanPolicy, error) {
 	policy_obj, _ := json.Marshal(policy)
-	response, err := m.OpenwrtClient.Post(mwan3BaseURL+"policy", string(policy_obj))
+	response, err := m.OpenwrtClient.Post(mwan3BaseURL+"policies", string(policy_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +137,7 @@ func (m *Mwan3Client) CreatePolicy(policy SdewanPolicy) (*SdewanPolicy, error) {
 
 // delete policy
 func (m *Mwan3Client) DeletePolicy(policy_name string) error {
-	_, err := m.OpenwrtClient.Delete(mwan3BaseURL + "policy/" + policy_name)
+	_, err := m.OpenwrtClient.Delete(mwan3BaseURL + "policies/" + policy_name)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func (m *Mwan3Client) DeletePolicy(policy_name string) error {
 func (m *Mwan3Client) UpdatePolicy(policy SdewanPolicy) (*SdewanPolicy, error) {
 	policy_obj, _ := json.Marshal(policy)
 	policy_name := policy.Name
-	response, err := m.OpenwrtClient.Put(mwan3BaseURL+"policy/"+policy_name, string(policy_obj))
+	response, err := m.OpenwrtClient.Put(mwan3BaseURL+"policies/"+policy_name, string(policy_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +182,7 @@ func (m *Mwan3Client) GetRules() (*SdewanRules, error) {
 
 // get rule
 func (m *Mwan3Client) GetRule(rule string) (*SdewanRule, error) {
-	response, err := m.OpenwrtClient.Get(mwan3BaseURL + "rule/" + rule)
+	response, err := m.OpenwrtClient.Get(mwan3BaseURL + "rules/" + rule)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +199,7 @@ func (m *Mwan3Client) GetRule(rule string) (*SdewanRule, error) {
 // create rule
 func (m *Mwan3Client) CreateRule(rule SdewanRule) (*SdewanRule, error) {
 	rule_obj, _ := json.Marshal(rule)
-	response, err := m.OpenwrtClient.Post(mwan3BaseURL+"rule", string(rule_obj))
+	response, err := m.OpenwrtClient.Post(mwan3BaseURL+"rules", string(rule_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func (m *Mwan3Client) CreateRule(rule SdewanRule) (*SdewanRule, error) {
 
 // delete rule
 func (m *Mwan3Client) DeleteRule(rule_name string) error {
-	_, err := m.OpenwrtClient.Delete(mwan3BaseURL + "rule/" + rule_name)
+	_, err := m.OpenwrtClient.Delete(mwan3BaseURL + "rules/" + rule_name)
 	if err != nil {
 		return err
 	}
@@ -227,7 +227,7 @@ func (m *Mwan3Client) DeleteRule(rule_name string) error {
 func (m *Mwan3Client) UpdateRule(rule SdewanRule) (*SdewanRule, error) {
 	rule_obj, _ := json.Marshal(rule)
 	rule_name := rule.Name
-	response, err := m.OpenwrtClient.Put(mwan3BaseURL+"rule/"+rule_name, string(rule_obj))
+	response, err := m.OpenwrtClient.Put(mwan3BaseURL+"rules/"+rule_name, string(rule_obj))
 	if err != nil {
 		return nil, err
 	}

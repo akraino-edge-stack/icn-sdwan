@@ -74,10 +74,8 @@ proposal_checker = {
 function index()
     ver = "v1"
     configuration = "ipsec"
-    entry({"sdewan", configuration, ver, "proposals"}, call("get_proposals"))
-    entry({"sdewan", configuration, ver, "sites"}, call("get_sites"))
-    entry({"sdewan", configuration, ver, "proposal"}, call("handle_request")).leaf = true
-    entry({"sdewan", configuration, ver, "site"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "proposals"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "sites"}, call("handle_request")).leaf = true
 end
 
 -- Request Handler
@@ -169,12 +167,6 @@ function save_connection(value)
     return true, ret_value
 end
 
--- Site APIs
--- get /sites
-function get_sites()
-    utils.handle_get_objects("sites", uci_conf, "remote", site_validator)
-end
-
 -- Proposal APIs
 -- check if proposal is used by connection, site
 function is_proposal_used(name)
@@ -186,10 +178,12 @@ function is_proposal_used(name)
         uci:foreach(uci_conf, section_name,
             function(section)
                 for j=1, #checker do
-                    for k=1, #section[checker[j]] do
-                        if name == section[checker[j]][k] then
-                            is_used = true
-                            return false
+                    if section[checker[j]] ~= nil then
+                        for k=1, #section[checker[j]] do
+                            if name == section[checker[j]][k] then
+                                is_used = true
+                                return false
+                            end
                         end
                     end
                 end
@@ -211,11 +205,6 @@ function is_proposal_available(name)
     end
 
     return true, name
-end
-
--- get /proposals
-function get_proposals()
-    utils.handle_get_objects("proposals", uci_conf, "proposal", proposal_validator)
 end
 
 -- delete a proposal
@@ -257,7 +246,7 @@ end
 function update_proposal(proposal)
     local name = proposal.name
     res, code, msg = delete_proposal(name, false)
-    if res == true then
+    if res == true or code == 404 then
         return utils.create_object(_M, ipsec_processor, "proposal", proposal)
     end
 
