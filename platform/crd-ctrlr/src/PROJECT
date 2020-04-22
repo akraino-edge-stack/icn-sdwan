@@ -1,0 +1,7 @@
+domain: sdewan.akraino.org
+repo: sdewan.akraino.org/sdewan
+resources:
+- group: batch
+  kind: Mwan3Policy
+  version: v1alpha1
+version: "2"
