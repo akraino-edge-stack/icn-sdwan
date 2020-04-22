@@ -1,0 +1,15 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: Mwan3Policy
+metadata:
+  name: balance1
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec: 
+  members:
+    - network: ovn-net1
+      weight: 4
+      metric: 2
+    - network: ovn-net2
+      weight: 3
+      metric: 3
