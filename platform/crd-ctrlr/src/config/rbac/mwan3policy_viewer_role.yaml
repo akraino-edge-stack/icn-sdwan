@@ -1,0 +1,20 @@
+# permissions to do viewer mwan3policies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mwan3policy-viewer-role
+rules:
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - mwan3policies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - mwan3policies/status
+  verbs:
+  - get
