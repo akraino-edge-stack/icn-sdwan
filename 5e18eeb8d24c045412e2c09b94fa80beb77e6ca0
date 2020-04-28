@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2313e99e_d17ca473",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-04-28T22:37:12Z",
+      "side": 1,
+      "message": "We like to package the Controller and all the CRD definition as a single yaml.\n\nPlease containerized the Controller and deploy them as the deployment. Please see refer the BPA operator in ICN to see the example related to containersation.\n\nsdewan-controller.yaml\n\n---\ncrd yaml\n---\ncontroller deployment yaml\n---",
+      "revId": "5e18eeb8d24c045412e2c09b94fa80beb77e6ca0",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c903bae_f2eaac09",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-04-28T22:37:12Z",
+      "side": 1,
+      "message": "I didn\u0027t get full picture here. We like to sync up on this particular section. \nHow to make sure, we have common make instruction for SDEWAN from ICN itself.",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 5
+      },
+      "revId": "5e18eeb8d24c045412e2c09b94fa80beb77e6ca0",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e92a2d5d_b6f402e3",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-04-28T22:37:12Z",
+      "side": 1,
+      "message": "We have to containerized overall solution. Let\u0027s us work on it.",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 3
+      },
+      "revId": "5e18eeb8d24c045412e2c09b94fa80beb77e6ca0",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
