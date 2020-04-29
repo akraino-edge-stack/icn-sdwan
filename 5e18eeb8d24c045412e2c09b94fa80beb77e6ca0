@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1b954f94_5b931e76",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-04-29T00:18:51Z",
+      "side": 1,
+      "message": "I think I need to update the readme file. I have put so much things in the page, implementation architecture, develop steps, dev env setup steps, and how to build openwrt image.\n\nFor the update, I would keep 3 parts: implementation architecture, dev env setup and deployment step.",
+      "parentUuid": "2313e99e_d17ca473",
+      "revId": "5e18eeb8d24c045412e2c09b94fa80beb77e6ca0",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8c903bae_f2eaac09",
         "filename": "platform/crd-ctrlr/README.md",
         "patchSetId": 1
