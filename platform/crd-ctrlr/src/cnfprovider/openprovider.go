@@ -57,11 +57,17 @@ func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, 
 		changed := false
 
 		if err != nil {
-			_, err := handler.CreateObject(clientInfo, new_instance)
-			if err != nil {
+			err2, ok := err.(*openwrt.OpenwrtError)
+			if ok && err2.Code == 404 {
+				_, err3 := handler.CreateObject(clientInfo, new_instance)
+				if err3 != nil {
+					return false, err3
+				}
+				changed = true
+			} else {
+				reqLogger.Error(err, "Failed to get object")
 				return false, err
 			}
-			changed = true
 		} else if handler.IsEqual(runtime_instance, new_instance) {
 			reqLogger.Info("Equal to the runtime instance, so no update")
 		} else {
@@ -94,9 +100,19 @@ func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, insta
 	cnfChanged := false
 	for _, pod := range podList.Items {
 		clientInfo := &openwrt.OpenwrtClientInfo{Ip: pod.Status.PodIP, User: "root", Password: ""}
-		runtime_instance, _ := handler.GetObject(clientInfo, handler.GetName(instance))
-		if runtime_instance == nil {
+		runtime_instance, err := handler.GetObject(clientInfo, handler.GetName(instance))
+		if err != nil {
+			err2, ok := err.(*openwrt.OpenwrtError)
+			if ok && err2.Code == 404 {
+				reqLogger.Info("Runtime instance doesn't exist, so don't have to delete")
+				continue
+			} else {
+				reqLogger.Error(err, "Failed to get object")
+				return false, err
+			}
+		} else if runtime_instance == nil {
 			reqLogger.Info("Runtime instance doesn't exist, so don't have to delete")
+			continue
 		} else {
 			err = handler.DeleteObject(clientInfo, handler.GetName(instance))
 			if err != nil {

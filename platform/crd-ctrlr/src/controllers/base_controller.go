@@ -169,11 +169,11 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 		}
 		finalizers := getFinalizers(instance)
 		if !containsString(finalizers, finalizerName) {
-			log.Info("Adding finalizer for " + handler.GetType())
 			appendFinalizer(instance, finalizerName)
 			if err := r.Update(ctx, instance); err != nil {
 				return ctrl.Result{}, err
 			}
+			log.Info("Added finalizer for " + handler.GetType())
 		}
 		if changed {
 			setStatus(instance, batchv1alpha1.SdewanStatus{State: batchv1alpha1.InSync})

@@ -40,6 +40,20 @@ Sample deployment of CNF:
   # or you can merge these two commands: kubectl exec `kubectl get pod |grep cnf1 |head -n1 | awk '{print $1}'` -- cat /etc/config/mwan3
   ```
 
+Set sdewan bucket type permissions for user:
+1. Add app-intent permission on mwan3policies resource for kubernetes-admin user
+  ```
+  kubectl apply -f examples/clusterrole-allow-intent.yaml
+  kubectl apply -f examples/clusterrolebinding-allow-sa-intent.yaml
+  ```
+2. Create mwan3policy object with bucket type label
+  ```
+  # create a service account for test purpose. The created service account has name of 'test' and config file is located at ~/test.conf
+  ./examples/create_serviceaccount.sh
+  # first uncomment sdewan-bucket-type label in src/config/samples/batch_v1alpha1_mwan3policy.yaml, then run:
+  kubectl --kubeconfig ~/test.conf apply -f src/config/samples/batch_v1alpha1_mwan3policy.yaml
+  ```
+
 
 ## Developer Guide
 
@@ -54,10 +68,10 @@ To create new CRD and controller
 kubebuilder create api --group batch --version  v1alpha1  --kind  Mwan3Policy
 ```
 
-To run local controller without webhook(For test/debug purpose)
+To run local controller(For test/debug purpose)
 ```
 make install
-make run ENABLE_WEBHOOKS=false
+make run
 ```
 
 To build controller docker image
@@ -88,12 +102,12 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
 - The CNF sample deployment yaml file under sample directory (together with configmap and ovn network yaml files)
 - A runable framework with Mwan3Policy CRD and controller implemented. It means we can run the controller and add/update/delete mwan3policy rules.
 - We have extracted the common logics of controllers, and implemeted the second crd/controller with it
+- The label based permission system implemented by webhook
 
 ### What we don't have yet
 
 - Add a watch for deployment, so that the controller can get the CNF ready status change. [predicate feature](https://godoc.org/sigs.k8s.io/controller-runtime/pkg/predicate#example-Funcs) should be used to filter no-status event.
 - Implemente the remain CRDs/controllers. As all the controller logics are almost the same, some workload will be the extracting of the similar logic and make them functions.
-- Add raw webhook to implemente the label based permission system
 - Add validation webhook to validate CR
 
 ### NOTEs
