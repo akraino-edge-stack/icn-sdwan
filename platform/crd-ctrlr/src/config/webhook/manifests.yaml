@@ -1,0 +1,28 @@
+
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: validating-webhook-configuration
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-sdewan-bucket-permission
+  failurePolicy: Fail
+  name: validate-sdewan-bucket.akraino.org
+  rules:
+  - apiGroups:
+    - batch.sdewan.akraino.org
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - mwan3policies
+    - mwan3rules

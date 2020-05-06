@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: create-intent
+  annotations:
+    sdewan-bucket-type-permission: |-
+      { "mwan3rules": ["app-intent", "k8s-service"],
+        "mwan3policies": ["app-intent"] }
+rules:
+- apiGroups: ["batch.sdewan.akraino.org"]
+  resources:
+    - mwan3policies
+    - mwan3rules
+  verbs: ["get", "watch", "list", "delete", "create"]
