@@ -11,49 +11,61 @@ utils = require "luci.controller.rest_v1.utils"
 
 uci_conf = "ipsec"
 
+encrypto_alg={"3des", "cast128", "blowfish128", "blowfish", "blowfish192", "blowfish256", "null", "aes", "aes128", "aes192", "aes256", "aes128ctr", "aes192ctr", "aes256ctr", "aes128ccm8", "aes192ccm8", "aes256ccm8", "aes128ccm64", "aes192ccm64", "aes256ccm64", "aes128ccm12", "aes192ccm12", "aes256ccm12", "aes128ccm96", "aes192ccm96", "aes256ccm96", "aes128ccm16", "aes192ccm16", "aes256ccm16", "aes128ccm128", "aes192ccm128", "aes256ccm128", "aes128gcm8", "aes192gcm8", "aes256gcm8", "aes128gcm64", "aes192gcm64", "aes256gcm64", "aes128gcm12", "aes192gcm12", "aes256gcm12", "aes128gcm96", "aes192gcm96", "aes256gcm96", "aes128gcm16", "aes192gcm16", "aes256gcm16", "aes128gcm128", "aes192gcm128", "aes256gcm128", "camellia128", "camellia192", "camellia256", "camellia", "camellia128ctr", "camellia192ctr", "camellia256ctr", "camellia128ccm8", "camellia192ccm8", "camellia256ccm8", "camellia128ccm64", "camellia192ccm64", "camellia256ccm64", "camellia128ccm12", "camellia192ccm12", "camellia256ccm12", "camellia128ccm96", "camellia192ccm96", "camellia256ccm96", "camellia128ccm16", "camellia192ccm16", "camellia256ccm16", "camellia128ccm128", "camellia192ccm128", "camellia256ccm128", "chacha20poly1305"}
+
+hash_alg={"md5", "sha", "sha1", "aesxcbc", "sha256", "sha2_256", "sha384", "sha2_384", "sha512", "sha2_512", "sha256_96", "sha2_256_96"}
+
+dh_group={"modp768", "modp1024", "modp1536", "modp2048", "modp3072", "modp4096", "modp6144", "modp8192", "modp1024s160", "modp2048s224", "modp2048s256", "ecp192", "ecp224", "ecp256", "ecp384", "ecp521", "ecp224bp", "ecp256bp", "ecp384bp", "ecp512bp", "curve25519", "x25519", "curve448", "x448"}
+
 proposal_validator = {
     {name="name"},
-    {name="encryption_algorithm", validator=function(value) return true, value end, message="invalid encryption_algorithm"},
-    {name="hash_algorithm", validator=function(value) return true, value end, message="invalid hash_algorithm"},
-    {name="dh_group", validator=function(value) return true, value end, message="invalid dh_group"},
+    {name="encryption_algorithm", validator=function(value) return utils.in_array(value, encrypto_alg) end, message="invalid encryption_algorithm"},
+    {name="hash_algorithm", validator=function(value) return utils.in_array(value, hash_alg) end, message="invalid hash_algorithm"},
+    {name="dh_group", validator=function(value) return utils.in_array(value, dh_group) end, message="invalid dh_group"},
 }
 
 connection_validator = {
-    config_type=function(value) return value["type"] end,
-    {name="name"},
+config_type=function(value) return value["type"] end,
+    {name="name", required=true},
     {name="type", required=true, validator=function(value) return utils.in_array(value, {"tunnel", "transport"}) end, load_func=function(value) return value[".type"] end, save_func=function(value) return true, "" end, message="invalid type"},
-    {name="mode"},
+    {name="mode", required=true, validator=function(value) return utils.in_array(value, {"start", "add", "route"}) end, message="invalid connection mode"},
     {name="local_subnet"},
     {name="local_nat"},
     {name="local_sourceip"},
     {name="local_updown"},
-    {name="local_firewall"},
+    {name="local_firewall", validator=function(value) return utils.in_array(value, {"yes", "no"}) end},
     {name="remote_subnet"},
     {name="remote_sourceip"},
     {name="remote_updown"},
-    {name="remote_firewall"},
+    {name="remote_firewall", validator=function(value) return utils.in_array(value, {"yes", "no"}) end},
     {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal"},
+
 }
 
 site_validator = {
     config_type="remote",
-    {name="name"},
-    {name="gateway"},
+    object_validator=function(value) return check_auth_method(value) end,
+    {name="name", required=true},
+    {name="gateway", required=true},
+    {name="enabled", default="1"},
+    {name="authentication_method", required=true, validator=function(value) return utils.in_array(value, {"psk", "pubkey"}) end},
     {name="pre_shared_key"},
-    {name="authentication_method"},
     {name="local_identifier"},
     {name="remote_identifier"},
     {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal"},
-    {name="force_crypto_proposal"},
+    {name="force_crypto_proposal", validator=function(value) return utils.in_array(value, {"0", "1"}) end, message="invalid input for ForceCryptoProposal"},
     {name="local_public_cert",
         load_func=function(value) return load_cert(value["local_public_cert"]) end,
-        save_func=function(value) return save_cert(value["local_public_cert"], "/tmp/" .. value["name"] .. "_public.cert") end,
+        save_func=function(value) return save_cert(value["local_public_cert"], "/etc/ipsec.d/certs/" .. value["name"] .. "_public.pem") end,
         delete_func=function(value) return delete_cert(value["local_public_cert"]) end},
     {name="local_private_cert",
         load_func=function(value) return load_cert(value["local_private_cert"]) end,
-        save_func=function(value) return save_cert(value["local_private_cert"], "/tmp/" .. value["name"] .. "_private.cert") end,
+        save_func=function(value) return save_cert(value["local_private_cert"], "/etc/ipsec.d/private/" .. value["name"] .. "_private.pem") end,
         delete_func=function(value) return delete_cert(value["local_private_cert"]) end},
-    {name="shared_ca"},
+    {name="shared_ca",
+        load_func=function(value) return load_cert(value["shared_ca"]) end,
+        save_func=function(value) return save_cert(value["shared_ca"], "/etc/ipsec.d/cacerts/" .. value["name"] .. "_ca.pem") end,
+        delete_func=function(value) return delete_cert(value["shared_ca"]) end},
     {name="connections", item_validator=connection_validator, message="invalid connection",
         load_func=function(value) return load_connection(value) end,
         save_func=function(value) return save_connection(value) end,},
@@ -76,6 +88,31 @@ function index()
     configuration = "ipsec"
     entry({"sdewan", configuration, ver, "proposals"}, call("handle_request")).leaf = true
     entry({"sdewan", configuration, ver, "sites"}, call("handle_request")).leaf = true
+end
+
+-- Validate authentication method and secrets
+function check_auth_method(value)
+    local method = value["authentication_method"]
+    local psk = value["pre_shared_key"]
+    local pubkey = value["local_public_cert"]
+    local privatekey = value["local_private_cert"]
+    local sharedca = value["shared_ca"]
+    if method == "psk" then
+        if psk ~= nil then
+            return true, value
+        else
+            return false, "Secret does not exists for the authentication method: " .. method
+        end
+    elseif method == "pubkey" then
+        if pubkey ~= nil and privatekey ~= nil
+            and sharedca ~= nil then
+            return true, value
+        else
+            return false, "Secret does not exists for the authentication method: " .. method
+        end
+    else
+        return false, "Invalid authentication method"
+    end
 end
 
 -- Request Handler
