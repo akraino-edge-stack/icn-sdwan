@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ecb4cad6_d1eca865",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-06T06:13:01Z",
+      "side": 1,
+      "message": "Will fix in the next patch",
+      "parentUuid": "438720f0_b086414a",
+      "range": {
+        "startLine": 23,
+        "startChar": 2,
+        "endLine": 23,
+        "endChar": 98
+      },
+      "revId": "28909de56296249bdf36abdb026ecbf4e9d0e0c2",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "054e2ee4_d96ad1da",
         "filename": "platform/crd-ctrlr/README.md",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2020-05-06T06:04:19Z",
       "side": 1,
       "message": "$ kubectl get pod -o wide --all-namespaces |grep cnf1\ndefault                  cnf1-5bc8bfdd87-sscrg                        1/1     Running            0          6m22s   10.244.64.18     kubernetes   \u003cnone\u003e           \u003cnone\u003e\ndefault                  cnf1-5bc8bfdd87-tzb85                        1/1     Running            0          6m22s   10.244.64.19     kubernetes   \u003cnone\u003e           \u003cnone\u003e\nvagrant@multicloud:~/sdwan/platform/crd-ctrlr$ kubectl exec -it cnf1-5bc8bfdd87-sscrg -- cat /etc/config/mwan3\nconfig globals \u0027globals\u0027\n    option mmx_mask \u00270x3F00\u0027\n    option local_source \u0027lan\u0027\nconfig interface \u0027net1\u0027\n        option enabled \u00271\u0027\n        option family \u0027ipv4\u0027\n        option reliability \u00272\u0027\n        option count \u00271\u0027\n        option timeout \u00272\u0027\n        option failure_latency \u00271000\u0027\n        option recovery_latency \u0027500\u0027\n        option failure_loss \u002720\u0027\n        option recovery_loss \u00275\u0027\n        option interval \u00275\u0027\n        option down \u00273\u0027\n        option up \u00278\u0027\nconfig interface \u0027net2\u0027\n        option enabled \u00271\u0027\n        option family \u0027ipv4\u0027\n        option reliability \u00272\u0027\n        option count \u00271\u0027\n        option timeout \u00272\u0027\n        option failure_latency \u00271000\u0027\n        option recovery_latency \u0027500\u0027\n        option failure_loss \u002720\u0027\n        option recovery_loss \u00275\u0027\n        option interval \u00275\u0027\n        option down \u00273\u0027\n        option up \u00278\u0027\nvagrant@multicloud:~/sdwan/platform/crd-ctrlr$ kubectl exec -it cnf1-5bc8bfdd87-tzb85 -- cat /etc/config/mwan3\nconfig globals \u0027globals\u0027\n    option mmx_mask \u00270x3F00\u0027\n    option local_source \u0027lan\u0027\nconfig interface \u0027net1\u0027\n        option enabled \u00271\u0027\n        option family \u0027ipv4\u0027\n        option reliability \u00272\u0027\n        option count \u00271\u0027\n        option timeout \u00272\u0027\n        option failure_latency \u00271000\u0027\n        option recovery_latency \u0027500\u0027\n        option failure_loss \u002720\u0027\n        option recovery_loss \u00275\u0027\n        option interval \u00275\u0027\n        option down \u00273\u0027\n        option up \u00278\u0027\nconfig interface \u0027net2\u0027\n        option enabled \u00271\u0027\n        option family \u0027ipv4\u0027\n        option reliability \u00272\u0027\n        option count \u00271\u0027\n        option timeout \u00272\u0027\n        option failure_latency \u00271000\u0027\n        option recovery_latency \u0027500\u0027\n        option failure_loss \u002720\u0027\n        option recovery_loss \u00275\u0027\n        option interval \u00275\u0027\n        option down \u00273\u0027\n        option up \u00278\u0027\n\nI didn\u0027t see the config policy balance1",
+      "range": {
+        "startLine": 34,
+        "startChar": 3,
+        "endLine": 34,
+        "endChar": 141
+      },
+      "revId": "28909de56296249bdf36abdb026ecbf4e9d0e0c2",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84e61845_fca615cb",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-06T06:13:01Z",
+      "side": 1,
+      "message": "Could you please to see if any error log from sdewan-controller-manager pod?",
+      "parentUuid": "054e2ee4_d96ad1da",
       "range": {
         "startLine": 34,
         "startChar": 3,
