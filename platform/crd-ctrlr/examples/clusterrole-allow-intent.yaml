@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: allow-intent
+  annotations:
+    sdewan-bucket-type-permission: |-
+      { "mwan3rules": ["app-intent", "k8s-service"],
+        "mwan3policies": ["*"] }
+rules:
+- apiGroups: ["batch.sdewan.akraino.org"]
+  resources: ["mwan3policies", "mwan3rules"]
+  verbs: ["create", "get", "watch", "list", "delete"]

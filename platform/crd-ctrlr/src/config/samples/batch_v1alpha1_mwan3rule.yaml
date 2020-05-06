@@ -5,6 +5,7 @@ metadata:
   namespace: default
   labels:
     sdewanPurpose: cnf1
+    # sdewan-bucket-type: app-intent
 spec:
   # Add fields here
   dest_ip: "10.10.10.1"
