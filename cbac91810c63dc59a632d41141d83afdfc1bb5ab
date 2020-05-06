@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b61119a4_8ef86485",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "platform/crd-ctrlr/examples",
+      "range": {
+        "startLine": 20,
+        "startChar": 77,
+        "endLine": 20,
+        "endChar": 85
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c34a183_f4bef4ad",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "platform/crd-ctrlr/examples",
+      "range": {
+        "startLine": 20,
+        "startChar": 53,
+        "endLine": 20,
+        "endChar": 61
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c86f9a8_36bd82d9",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "platform/crd-ctrlr/examples",
+      "range": {
+        "startLine": 20,
+        "startChar": 19,
+        "endLine": 20,
+        "endChar": 27
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13b0459e_505b5a86",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "$ kubectl apply -f platform/crd-ctrlr/examples/cnf-deployment.yaml\nconfigmap/sdewan-sh created\nerror: unable to recognize \"platform/crd-ctrlr/examples/cnf-deployment.yaml\": no matches for kind \"Deployment\" in version \"extensions/v1beta1\"\n\n\nPlease have yaml for k8s v1.16.9.\n\nPlease have two yaml file for \u003e1.16 and \u003c1.16",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 47
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2684824e_df1ed731",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "platform/crd-ctrlr/src/config/samples",
+      "range": {
+        "startLine": 28,
+        "startChar": 19,
+        "endLine": 28,
+        "endChar": 37
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65704aba_d4440047",
+        "filename": "platform/crd-ctrlr/examples/cnf-deployment.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "-apiVersion: extensions/v1beta1\n+apiVersion: apps/v1\n\nJust created a folder v1.16 inside as platform/crd-ctrlr/examples/v1.16 and add the changes",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 30
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2ba103e_cdc96825",
+        "filename": "platform/crd-ctrlr/examples/cnf-deployment.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-06T01:15:20Z",
+      "side": 1,
+      "message": "It is a issue... Please remove it. Why we required it ?\n\nHostname of the Vagrant, containerized and Baremetal differ from machine to machine.",
+      "range": {
+        "startLine": 130,
+        "startChar": 6,
+        "endLine": 131,
+        "endChar": 40
+      },
+      "revId": "cbac91810c63dc59a632d41141d83afdfc1bb5ab",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
