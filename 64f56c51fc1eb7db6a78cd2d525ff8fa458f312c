@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8142cc67_ff6fba47",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-07T01:59:49Z",
+      "side": 1,
+      "message": "--validate\u003dtrue",
+      "range": {
+        "startLine": 17,
+        "startChar": 3,
+        "endLine": 17,
+        "endChar": 104
+      },
+      "revId": "64f56c51fc1eb7db6a78cd2d525ff8fa458f312c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0b78852f_146b780f",
+        "filename": "platform/crd-ctrlr/examples/sdewan-controller.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-07T01:59:49Z",
+      "side": 1,
+      "message": "imagePullPolicy: Always",
+      "range": {
+        "startLine": 271,
+        "startChar": 8,
+        "endLine": 271,
+        "endChar": 21
+      },
+      "revId": "64f56c51fc1eb7db6a78cd2d525ff8fa458f312c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
