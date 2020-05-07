@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0fd61c7b_135658b5",
+        "filename": "platform/cnf/src/rest_v1/ipsec_rest.lua",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-07T13:54:45Z",
+      "side": 1,
+      "message": "since this validator is used for both \"POST\" and \"PUT\" request, and field \"name\" is only required for \"POST\" (e.g. the \"name\" is provided in URL for \"PUT\" request). So the check for \"name\" is done in handle_post() in utils.lua instead of \"required\u003dtrue\"",
+      "range": {
+        "startLine": 48,
+        "startChar": 18,
+        "endLine": 48,
+        "endChar": 31
+      },
+      "revId": "8d68f985015748d50f30643261a74ae00f184ce9",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
