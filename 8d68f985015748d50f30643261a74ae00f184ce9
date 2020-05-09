@@ -22,6 +22,30 @@
       "revId": "8d68f985015748d50f30643261a74ae00f184ce9",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d6bf73d_fa3e2a66",
+        "filename": "platform/cnf/src/rest_v1/ipsec_rest.lua",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-09T07:56:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0fd61c7b_135658b5",
+      "range": {
+        "startLine": 48,
+        "startChar": 18,
+        "endLine": 48,
+        "endChar": 31
+      },
+      "revId": "8d68f985015748d50f30643261a74ae00f184ce9",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
