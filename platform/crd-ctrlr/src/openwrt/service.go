@@ -2,6 +2,7 @@ package openwrt
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 const (
@@ -47,6 +48,8 @@ func (s *ServiceClient) ExecuteService(service string, operation string) (bool, 
 
 	_, err := s.OpenwrtClient.Put(serviceBaseURL+"service/"+service, s.formatExecuteServiceBody(operation))
 	if err != nil {
+		fmt.Printf("file:service.go\nline 51\n value\n%v", err)
+		fmt.Printf("file:service.go\nline 52\n type\n%T", err)
 		return false, err
 	}
 

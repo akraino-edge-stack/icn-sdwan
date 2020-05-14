@@ -1,22 +1,16 @@
-
----
+# permissions for end users to view mwan3rules.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
-  name: manager-role
+  name: mwan3rule-viewer-role
 rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
   - mwan3rules
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - batch.sdewan.akraino.org
@@ -24,5 +18,3 @@ rules:
   - mwan3rules/status
   verbs:
   - get
-  - patch
-  - update

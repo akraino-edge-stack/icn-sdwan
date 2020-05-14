@@ -65,19 +65,111 @@ spec:
         status:
           description: status subsource used for Sdewan rule CRDs
           properties:
+            appliedGeneration:
+              format: int64
+              type: integer
             appliedTime:
               format: date-time
               type: string
-            appliedVersion:
-              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
-                of cluster Important: Run "make" to regenerate code after modifying
-                this file'
+            inSync:
+              type: boolean
+            message:
+              type: string
+          required:
+          - inSync
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: mwan3rules.batch.sdewan.akraino.org
+spec:
+  group: batch.sdewan.akraino.org
+  names:
+    kind: Mwan3Rule
+    listKind: Mwan3RuleList
+    plural: mwan3rules
+    singular: mwan3rule
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Mwan3Rule is the Schema for the mwan3rules API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          properties:
+            dest_ip:
+              type: string
+            dest_port:
+              type: string
+            family:
+              type: string
+            policy:
+              description: Members []Mwan3Rule `json:"members"`
+              type: string
+            proto:
+              type: string
+            src_ip:
+              type: string
+            src_port:
+              type: string
+            sticky:
+              type: string
+            timeout:
+              type: string
+          required:
+          - dest_ip
+          - dest_port
+          - family
+          - policy
+          - proto
+          - src_ip
+          - src_port
+          - sticky
+          - timeout
+          type: object
+        status:
+          description: status subsource used for Sdewan rule CRDs
+          properties:
+            appliedGeneration:
+              format: int64
+              type: integer
+            appliedTime:
+              format: date-time
               type: string
             inSync:
               type: boolean
+            message:
+              type: string
           required:
-          - appliedTime
-          - appliedVersion
           - inSync
           type: object
       type: object
@@ -135,7 +227,7 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
-  - mwan3policies
+  - mwan3rules
   verbs:
   - create
   - delete
@@ -147,19 +239,11 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
-  - mwan3policies/status
+  - mwan3rules/status
   verbs:
   - get
   - patch
   - update
-- apiGroups:
-  - extensions
-  resources:
-  - deployments
-  verbs:
-  - get
-  - list
-  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

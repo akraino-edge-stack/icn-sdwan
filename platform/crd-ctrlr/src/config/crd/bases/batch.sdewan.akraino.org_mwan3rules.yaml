@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.4
   creationTimestamp: null
-  name: mwan3policies.batch.sdewan.akraino.org
+  name: mwan3rules.batch.sdewan.akraino.org
 spec:
   group: batch.sdewan.akraino.org
   names:
-    kind: Mwan3Policy
-    listKind: Mwan3PolicyList
-    plural: mwan3policies
-    singular: mwan3policy
+    kind: Mwan3Rule
+    listKind: Mwan3RuleList
+    plural: mwan3rules
+    singular: mwan3rule
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: Mwan3Policy is the Schema for the mwan3policies API
+      description: Mwan3Rule is the Schema for the mwan3rules API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -35,27 +35,35 @@ spec:
           type: object
         spec:
           properties:
-            members:
-              items:
-                description: Mwan3PolicySpec defines the desired state of Mwan3Policy
-                properties:
-                  metric:
-                    type: integer
-                  network:
-                    description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of
-                      cluster Important: Run "make" to regenerate code after modifying
-                      this file'
-                    type: string
-                  weight:
-                    type: integer
-                required:
-                - metric
-                - network
-                - weight
-                type: object
-              type: array
+            dest_ip:
+              type: string
+            dest_port:
+              type: string
+            family:
+              type: string
+            policy:
+              description: Members []Mwan3Rule `json:"members"`
+              type: string
+            proto:
+              type: string
+            src_ip:
+              type: string
+            src_port:
+              type: string
+            sticky:
+              type: string
+            timeout:
+              type: string
           required:
-          - members
+          - dest_ip
+          - dest_port
+          - family
+          - policy
+          - proto
+          - src_ip
+          - src_port
+          - sticky
+          - timeout
           type: object
         status:
           description: status subsource used for Sdewan rule CRDs
