@@ -7,7 +7,12 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
+	"sync"
 )
+
+type IOpenWrtObject interface {
+	GetName() string
+}
 
 type OpenwrtError struct {
 	Code    int
@@ -18,33 +23,55 @@ func (e *OpenwrtError) Error() string {
 	return fmt.Sprintf("Error Code: %d, Error Message: %s", e.Code, e.Message)
 }
 
-type openwrtClient struct {
-	ip       string
-	user     string
-	password string
-	token    string
+type OpenwrtClientInfo struct {
+	Ip       string
+	User     string
+	Password string
 }
+
+type openwrtClient struct {
+	OpenwrtClientInfo
+	token string
+}
+
+type safeOpenwrtClient struct {
+	clients map[string]*openwrtClient
+	mux     sync.Mutex
+}
+
+var gclients = safeOpenwrtClient{clients: make(map[string]*openwrtClient)}
 
 func CloseClient(o *openwrtClient) {
 	o.logout()
 	runtime.SetFinalizer(o, nil)
 }
 
-func NewOpenwrtClient(ip string, user string, password string) *openwrtClient {
-	client := &openwrtClient{
-		ip:       ip,
-		user:     user,
-		password: password,
-		token:    "",
+func GetOpenwrtClient(clientInfo OpenwrtClientInfo) *openwrtClient {
+	return gclients.GetClient(clientInfo.Ip, clientInfo.User, clientInfo.Password)
+}
+
+// SafeOpenwrtClients
+func (s *safeOpenwrtClient) GetClient(ip string, user string, password string) *openwrtClient {
+	s.mux.Lock()
+	defer s.mux.Unlock()
+	key := ip + "-" + user + "-" + password
+	if s.clients[key] == nil {
+		s.clients[key] = &openwrtClient{
+			OpenwrtClientInfo: OpenwrtClientInfo{
+				Ip:       ip,
+				User:     user,
+				Password: password,
+			},
+			token: "",
+		}
 	}
 
-	runtime.SetFinalizer(client, CloseClient)
-	return client
+	return s.clients[key]
 }
 
 // openwrt base URL
 func (o *openwrtClient) getBaseURL() string {
-	return "http://" + o.ip + "/cgi-bin/luci/"
+	return "http://" + o.Ip + "/cgi-bin/luci/"
 }
 
 // login to openwrt http server
@@ -57,7 +84,7 @@ func (o *openwrtClient) login() error {
 	}
 
 	// login
-	login_info := "luci_username=" + o.user + "&luci_password=" + o.password
+	login_info := "luci_username=" + o.User + "&luci_password=" + o.Password
 	var req_body = []byte(login_info)
 	req, _ := http.NewRequest("POST", o.getBaseURL(), bytes.NewBuffer(req_body))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")

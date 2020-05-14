@@ -19,11 +19,23 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type SdewanState string
+
+const (
+	InSync   SdewanState = "In Sync"
+	Idle                 = "Idle"
+	Applying             = "Trying to apply"
+	Deleting             = "Being delete"
+	Unknown              = "Unknown status"
+)
+
 // status subsource used for Sdewan rule CRDs
 type SdewanStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	AppliedVersion string       `json:"appliedVersion"`
-	AppliedTime    *metav1.Time `json:"appliedTime"`
-	InSync         bool         `json:"inSync"`
+	// +optional
+	AppliedGeneration int64 `json:"appliedGeneration,omitempty"`
+	// +optional
+	AppliedTime *metav1.Time `json:"appliedTime,omitempty"`
+	State       SdewanState  `json:"state"`
+	// +optional
+	Message string `json:"message,omitempty"`
 }
