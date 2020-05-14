@@ -83,7 +83,7 @@ func (f *IpsecClient) GetProposals() (*SdewanIpsecProposals, error) {
 func (m *IpsecClient) GetProposal(proposal string) (*SdewanIpsecProposal, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(ipsecBaseURL + "proposal/" + proposal)
+	response, err = m.OpenwrtClient.Get(ipsecBaseURL + "proposals/" + proposal)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (m *IpsecClient) CreateProposal(proposal SdewanIpsecProposal) (*SdewanIpsec
 	var response string
 	var err error
 	proposal_obj, _ := json.Marshal(proposal)
-	response, err = m.OpenwrtClient.Post(ipsecBaseURL+"proposal", string(proposal_obj))
+	response, err = m.OpenwrtClient.Post(ipsecBaseURL+"proposals", string(proposal_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func (m *IpsecClient) CreateProposal(proposal SdewanIpsecProposal) (*SdewanIpsec
 
 // delete proposal
 func (m *IpsecClient) DeleteProposal(proposal_name string) error {
-	_, err := m.OpenwrtClient.Delete(ipsecBaseURL + "proposal/" + proposal_name)
+	_, err := m.OpenwrtClient.Delete(ipsecBaseURL + "proposals/" + proposal_name)
 	if err != nil {
 		return err
 	}
@@ -132,7 +132,7 @@ func (m *IpsecClient) UpdateProposal(proposal SdewanIpsecProposal) (*SdewanIpsec
 	var err error
 	proposal_obj, _ := json.Marshal(proposal)
 	proposal_name := proposal.Name
-	response, err = m.OpenwrtClient.Put(ipsecBaseURL+"proposal/"+proposal_name, string(proposal_obj))
+	response, err = m.OpenwrtClient.Put(ipsecBaseURL+"proposals/"+proposal_name, string(proposal_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func (f *IpsecClient) GetSites() (*SdewanIpsecSites, error) {
 func (m *IpsecClient) GetSite(site string) (*SdewanIpsecSite, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(ipsecBaseURL + "site/" + site)
+	response, err = m.OpenwrtClient.Get(ipsecBaseURL + "sites/" + site)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +188,7 @@ func (m *IpsecClient) CreateSite(site SdewanIpsecSite) (*SdewanIpsecSite, error)
 	var response string
 	var err error
 	site_obj, _ := json.Marshal(site)
-	response, err = m.OpenwrtClient.Post(ipsecBaseURL+"site", string(site_obj))
+	response, err = m.OpenwrtClient.Post(ipsecBaseURL+"sites", string(site_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +204,7 @@ func (m *IpsecClient) CreateSite(site SdewanIpsecSite) (*SdewanIpsecSite, error)
 
 // delete site
 func (m *IpsecClient) DeleteSite(site_name string) error {
-	_, err := m.OpenwrtClient.Delete(ipsecBaseURL + "site/" + site_name)
+	_, err := m.OpenwrtClient.Delete(ipsecBaseURL + "sites/" + site_name)
 	if err != nil {
 		return err
 	}
@@ -218,7 +218,7 @@ func (m *IpsecClient) UpdateSite(site SdewanIpsecSite) (*SdewanIpsecSite, error)
 	var err error
 	site_obj, _ := json.Marshal(site)
 	site_name := site.Name
-	response, err = m.OpenwrtClient.Put(ipsecBaseURL+"site/"+site_name, string(site_obj))
+	response, err = m.OpenwrtClient.Put(ipsecBaseURL+"sites/"+site_name, string(site_obj))
 	if err != nil {
 		return nil, err
 	}

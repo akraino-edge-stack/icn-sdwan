@@ -115,7 +115,7 @@ func (f *FirewallClient) GetZones() (*SdewanFirewallZones, error) {
 func (m *FirewallClient) GetZone(zone string) (*SdewanFirewallZone, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(firewallBaseURL + "zone/" + zone)
+	response, err = m.OpenwrtClient.Get(firewallBaseURL + "zones/" + zone)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (m *FirewallClient) CreateZone(zone SdewanFirewallZone) (*SdewanFirewallZon
 	var response string
 	var err error
 	zone_obj, _ := json.Marshal(zone)
-	response, err = m.OpenwrtClient.Post(firewallBaseURL+"zone", string(zone_obj))
+	response, err = m.OpenwrtClient.Post(firewallBaseURL+"zones", string(zone_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +150,7 @@ func (m *FirewallClient) CreateZone(zone SdewanFirewallZone) (*SdewanFirewallZon
 
 // delete zone
 func (m *FirewallClient) DeleteZone(zone_name string) error {
-	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "zone/" + zone_name)
+	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "zones/" + zone_name)
 	if err != nil {
 		return err
 	}
@@ -164,7 +164,7 @@ func (m *FirewallClient) UpdateZone(zone SdewanFirewallZone) (*SdewanFirewallZon
 	var err error
 	zone_obj, _ := json.Marshal(zone)
 	zone_name := zone.Name
-	response, err = m.OpenwrtClient.Put(firewallBaseURL+"zone/"+zone_name, string(zone_obj))
+	response, err = m.OpenwrtClient.Put(firewallBaseURL+"zones/"+zone_name, string(zone_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func (f *FirewallClient) GetRules() (*SdewanFirewallRules, error) {
 func (m *FirewallClient) GetRule(rule string) (*SdewanFirewallRule, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(firewallBaseURL + "rule/" + rule)
+	response, err = m.OpenwrtClient.Get(firewallBaseURL + "rules/" + rule)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func (m *FirewallClient) CreateRule(rule SdewanFirewallRule) (*SdewanFirewallRul
 	var response string
 	var err error
 	rule_obj, _ := json.Marshal(rule)
-	response, err = m.OpenwrtClient.Post(firewallBaseURL+"rule", string(rule_obj))
+	response, err = m.OpenwrtClient.Post(firewallBaseURL+"rules", string(rule_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -236,7 +236,7 @@ func (m *FirewallClient) CreateRule(rule SdewanFirewallRule) (*SdewanFirewallRul
 
 // delete rule
 func (m *FirewallClient) DeleteRule(rule_name string) error {
-	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "rule/" + rule_name)
+	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "rules/" + rule_name)
 	if err != nil {
 		return err
 	}
@@ -250,7 +250,7 @@ func (m *FirewallClient) UpdateRule(rule SdewanFirewallRule) (*SdewanFirewallRul
 	var err error
 	rule_obj, _ := json.Marshal(rule)
 	rule_name := rule.Name
-	response, err = m.OpenwrtClient.Put(firewallBaseURL+"rule/"+rule_name, string(rule_obj))
+	response, err = m.OpenwrtClient.Put(firewallBaseURL+"rules/"+rule_name, string(rule_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +287,7 @@ func (f *FirewallClient) GetForwardings() (*SdewanFirewallForwardings, error) {
 func (m *FirewallClient) GetForwarding(forwarding string) (*SdewanFirewallForwarding, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(firewallBaseURL + "forwarding/" + forwarding)
+	response, err = m.OpenwrtClient.Get(firewallBaseURL + "forwardings/" + forwarding)
 	if err != nil {
 		return nil, err
 	}
@@ -306,7 +306,7 @@ func (m *FirewallClient) CreateForwarding(forwarding SdewanFirewallForwarding) (
 	var response string
 	var err error
 	forwarding_obj, _ := json.Marshal(forwarding)
-	response, err = m.OpenwrtClient.Post(firewallBaseURL+"forwarding", string(forwarding_obj))
+	response, err = m.OpenwrtClient.Post(firewallBaseURL+"forwardings", string(forwarding_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -322,7 +322,7 @@ func (m *FirewallClient) CreateForwarding(forwarding SdewanFirewallForwarding) (
 
 // delete forwarding
 func (m *FirewallClient) DeleteForwarding(forwarding_name string) error {
-	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "forwarding/" + forwarding_name)
+	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "forwardings/" + forwarding_name)
 	if err != nil {
 		return err
 	}
@@ -336,7 +336,7 @@ func (m *FirewallClient) UpdateForwarding(forwarding SdewanFirewallForwarding) (
 	var err error
 	forwarding_obj, _ := json.Marshal(forwarding)
 	forwarding_name := forwarding.Name
-	response, err = m.OpenwrtClient.Put(firewallBaseURL+"forwarding/"+forwarding_name, string(forwarding_obj))
+	response, err = m.OpenwrtClient.Put(firewallBaseURL+"forwardings/"+forwarding_name, string(forwarding_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -373,7 +373,7 @@ func (f *FirewallClient) GetRedirects() (*SdewanFirewallRedirects, error) {
 func (m *FirewallClient) GetRedirect(redirect string) (*SdewanFirewallRedirect, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(firewallBaseURL + "redirect/" + redirect)
+	response, err = m.OpenwrtClient.Get(firewallBaseURL + "redirects/" + redirect)
 	if err != nil {
 		return nil, err
 	}
@@ -392,7 +392,7 @@ func (m *FirewallClient) CreateRedirect(redirect SdewanFirewallRedirect) (*Sdewa
 	var response string
 	var err error
 	redirect_obj, _ := json.Marshal(redirect)
-	response, err = m.OpenwrtClient.Post(firewallBaseURL+"redirect", string(redirect_obj))
+	response, err = m.OpenwrtClient.Post(firewallBaseURL+"redirects", string(redirect_obj))
 	if err != nil {
 		return nil, err
 	}
@@ -408,7 +408,7 @@ func (m *FirewallClient) CreateRedirect(redirect SdewanFirewallRedirect) (*Sdewa
 
 // delete redirect
 func (m *FirewallClient) DeleteRedirect(redirect_name string) error {
-	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "redirect/" + redirect_name)
+	_, err := m.OpenwrtClient.Delete(firewallBaseURL + "redirects/" + redirect_name)
 	if err != nil {
 		return err
 	}
@@ -422,7 +422,7 @@ func (m *FirewallClient) UpdateRedirect(redirect SdewanFirewallRedirect) (*Sdewa
 	var err error
 	redirect_obj, _ := json.Marshal(redirect)
 	redirect_name := redirect.Name
-	response, err = m.OpenwrtClient.Put(firewallBaseURL+"redirect/"+redirect_name, string(redirect_obj))
+	response, err = m.OpenwrtClient.Put(firewallBaseURL+"redirects/"+redirect_name, string(redirect_obj))
 	if err != nil {
 		return nil, err
 	}

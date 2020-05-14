@@ -51,6 +51,10 @@ type SdewanPolicies struct {
 	Policies []SdewanPolicy `json:"policies"`
 }
 
+func (o *SdewanPolicy) GetName() string {
+	return o.Name
+}
+
 // MWAN3 Rule
 type SdewanRule struct {
 	Name     string `json:"name"`
@@ -67,6 +71,10 @@ type SdewanRule struct {
 
 type SdewanRules struct {
 	Rules []SdewanRule `json:"rules"`
+}
+
+func (o *SdewanRule) GetName() string {
+	return o.Name
 }
 
 // get interface status
@@ -108,7 +116,6 @@ func (m *Mwan3Client) GetPolicy(policy_name string) (*SdewanPolicy, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var sdewanPolicy SdewanPolicy
 	err2 := json.Unmarshal([]byte(response), &sdewanPolicy)
 	if err2 != nil {

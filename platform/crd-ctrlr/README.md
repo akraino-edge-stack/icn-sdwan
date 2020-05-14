@@ -87,6 +87,7 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
 - CNF image built from HuiFeng's script. I have uploaded the image at `integratedcloudnative/openwrt:dev`
 - The CNF sample deployment yaml file under sample directory (together with configmap and ovn network yaml files)
 - A runable framework with Mwan3Policy CRD and controller implemented. It means we can run the controller and add/update/delete mwan3policy rules.
+- We have extracted the common logics of controllers, and implemeted the second crd/controller with it
 
 ### What we don't have yet
 
@@ -94,6 +95,10 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
 - Implemente the remain CRDs/controllers. As all the controller logics are almost the same, some workload will be the extracting of the similar logic and make them functions.
 - Add raw webhook to implemente the label based permission system
 - Add validation webhook to validate CR
+
+### NOTEs
+
+- We need controller-runtime version at least v0.6.0 to support `GenerationChangedPredicate` which is used to prevent CR status update trigering reconcile
 
 ## References
 

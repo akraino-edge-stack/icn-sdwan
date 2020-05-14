@@ -4,4 +4,7 @@ resources:
 - group: batch
   kind: Mwan3Policy
   version: v1alpha1
+- group: batch
+  kind: Mwan3Rule
+  version: v1alpha1
 version: "2"

@@ -1,0 +1,19 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: Mwan3Rule
+metadata:
+  name: sample
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec:
+  # Add fields here
+  dest_ip: "10.10.10.1"
+  dest_port: "1000"
+  family: ipv4
+  policy: balance1
+  proto: udp
+  src_ip: "10.10.10.10"
+  src_port: "22"
+  sticky: "1"
+  timeout: "200"
+
