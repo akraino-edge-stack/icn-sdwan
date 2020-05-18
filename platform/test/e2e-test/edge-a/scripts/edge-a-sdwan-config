@@ -1,0 +1,13 @@
+internal_subnet=192.168.1.0/24
+redirect="
+{
+    \"name\":\"SNAT\",
+    \"src_ip\":\"$ovnSubnet\",
+    \"src_dip\": \"$sdwan_pod_virtual_ip\",
+    \"dest\":\"wan0\",
+    \"dest_ip\":\"$internal_subnet\",
+    \"proto\":\"tcp\",
+    \"target\":\"SNAT\"
+}
+"
+
