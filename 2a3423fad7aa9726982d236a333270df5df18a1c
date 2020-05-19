@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c0b785d_cda305eb",
+        "filename": "platform/test/e2e-test/edge-a/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-19T00:36:39Z",
+      "side": 1,
+      "message": "I notice 3 readme files under `edgea`, `edgeb` and `edgehub`. I wonder if we need a readme file to instruct how to deploy the test env of 3 VMs and how to run the test or demo. If that we may don\u0027t need the individual readme file under each edge directory.",
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
