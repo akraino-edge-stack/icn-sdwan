@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "6e9a0733_4625e608",
+        "filename": "platform/test/e2e-test/edge-a/installer",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-19T13:47:48Z",
+      "side": 1,
+      "message": "Will confirm with Kural.",
+      "parentUuid": "5993cfc7_5987dd9c",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3b31cae3_701a3070",
         "filename": "platform/test/e2e-test/edge-a/setup.sh",
         "patchSetId": 1
@@ -53,6 +77,30 @@
       "writtenOn": "2020-05-19T07:12:43Z",
       "side": 1,
       "message": "Does this file required?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a70466a_58bfa506",
+        "filename": "platform/test/e2e-test/edge-a/setup.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-19T13:47:48Z",
+      "side": 1,
+      "message": "That part i still need to confirm with Kural. This file is required if we don\u0027t have vagrant and its dependencies installed.",
+      "parentUuid": "3b31cae3_701a3070",
       "range": {
         "startLine": 1,
         "startChar": 0,
@@ -88,6 +136,30 @@
     },
     {
       "key": {
+        "uuid": "cd18ea70_2d917926",
+        "filename": "platform/test/e2e-test/edge-scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-19T13:47:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9da929c_6bd218d6",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 14
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b4d17464_328bd0da",
         "filename": "platform/test/e2e-test/edge-scripts/sdwan_verifier.sh",
         "patchSetId": 1
@@ -108,6 +180,30 @@
       "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03fe700a_d95daa66",
+        "filename": "platform/test/e2e-test/edge-scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-19T13:47:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4d17464_328bd0da",
+      "range": {
+        "startLine": 136,
+        "startChar": 43,
+        "endLine": 136,
+        "endChar": 54
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -134,6 +230,30 @@
     },
     {
       "key": {
+        "uuid": "919760b4_2914dfca",
+        "filename": "platform/test/e2e-test/sdewan-hub/scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-19T13:47:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "810cc57b_54a1e791",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 14
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a55ec0b_47b2e068",
         "filename": "platform/test/e2e-test/sdewan-hub/scripts/sdwan_verifier.sh",
         "patchSetId": 1
@@ -154,6 +274,30 @@
       "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3432626_e5ae9c5e",
+        "filename": "platform/test/e2e-test/sdewan-hub/scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-19T13:47:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a55ec0b_47b2e068",
+      "range": {
+        "startLine": 106,
+        "startChar": 28,
+        "endLine": 106,
+        "endChar": 57
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
