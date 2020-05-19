@@ -16,6 +16,144 @@
       "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5993cfc7_5987dd9c",
+        "filename": "platform/test/e2e-test/edge-a/installer",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-19T07:12:43Z",
+      "side": 1,
+      "message": "Seems it is duplicated with installer.sh, does this file required? Similar comments for other 2 install file.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b31cae3_701a3070",
+        "filename": "platform/test/e2e-test/edge-a/setup.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-19T07:12:43Z",
+      "side": 1,
+      "message": "Does this file required?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9da929c_6bd218d6",
+        "filename": "platform/test/e2e-test/edge-scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-19T07:12:43Z",
+      "side": 1,
+      "message": "May remove these 3 lines.",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 14
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4d17464_328bd0da",
+        "filename": "platform/test/e2e-test/edge-scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-19T07:12:43Z",
+      "side": 1,
+      "message": "Use $hubIp?",
+      "range": {
+        "startLine": 136,
+        "startChar": 43,
+        "endLine": 136,
+        "endChar": 54
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "810cc57b_54a1e791",
+        "filename": "platform/test/e2e-test/sdewan-hub/scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-19T07:12:43Z",
+      "side": 1,
+      "message": "May remove these 3 lines.",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 14
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a55ec0b_47b2e068",
+        "filename": "platform/test/e2e-test/sdewan-hub/scripts/sdwan_verifier.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-19T07:12:43Z",
+      "side": 1,
+      "message": "Does it need to limit the range to: \\\"192.168.1.5-192.168.1.6\\\"?",
+      "range": {
+        "startLine": 106,
+        "startChar": 28,
+        "endLine": 106,
+        "endChar": 57
+      },
+      "revId": "2a3423fad7aa9726982d236a333270df5df18a1c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
     }
   ]
 }
