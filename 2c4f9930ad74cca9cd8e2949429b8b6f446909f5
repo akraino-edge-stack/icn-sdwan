@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d574bf35_1c4f6992",
+        "filename": "platform/test/e2e-test/edge-a/installer.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-20T01:35:26Z",
+      "side": 1,
+      "message": "Just keep only ovn4nfv",
+      "revId": "2c4f9930ad74cca9cd8e2949429b8b6f446909f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c3b895e_43314562",
+        "filename": "platform/test/e2e-test/edge-a/installer.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-20T01:35:26Z",
+      "side": 1,
+      "message": "Just keep only ovn4nfv",
+      "revId": "2c4f9930ad74cca9cd8e2949429b8b6f446909f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7b12e52_1c3594c7",
+        "filename": "platform/test/e2e-test/edge-a/installer.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 239
+      },
+      "writtenOn": "2020-05-20T01:35:26Z",
+      "side": 1,
+      "message": "Can remove the install_plugin as well",
+      "range": {
+        "startLine": 258,
+        "startChar": 0,
+        "endLine": 260,
+        "endChar": 2
+      },
+      "revId": "2c4f9930ad74cca9cd8e2949429b8b6f446909f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
