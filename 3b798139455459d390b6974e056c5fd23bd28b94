@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "201ad4cd_c10dd14e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "implement",
+      "range": {
+        "startLine": 7,
+        "startChar": 29,
+        "endLine": 7,
+        "endChar": 39
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3e91a0c_8c4e79f7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "them",
+      "range": {
+        "startLine": 10,
+        "startChar": 57,
+        "endLine": 10,
+        "endChar": 61
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3af0c29e_c246d736",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "extracts",
+      "range": {
+        "startLine": 13,
+        "startChar": 11,
+        "endLine": 13,
+        "endChar": 18
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d01d806_339aeeec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "implements",
+      "range": {
+        "startLine": 13,
+        "startChar": 40,
+        "endLine": 13,
+        "endChar": 49
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad701a56_86365434",
+        "filename": "platform/crd-ctrlr/src/basehandler/isdewanhandler.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "suggest removing all comment out lines",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 43
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "138953f3_6e121ed0",
+        "filename": "platform/crd-ctrlr/src/controllers/base_controller.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "Remove this line.",
+      "range": {
+        "startLine": 79,
+        "startChar": 1,
+        "endLine": 79,
+        "endChar": 21
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77c84044_6e8c5558",
+        "filename": "platform/crd-ctrlr/src/openwrt/mwan3.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-20T14:16:25Z",
+      "side": 1,
+      "message": "Remove comment out line.",
+      "range": {
+        "startLine": 5,
+        "startChar": 1,
+        "endLine": 5,
+        "endChar": 9
+      },
+      "revId": "3b798139455459d390b6974e056c5fd23bd28b94",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
