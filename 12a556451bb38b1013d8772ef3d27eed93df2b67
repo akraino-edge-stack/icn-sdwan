@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d27306a2_2c280702",
+        "filename": "platform/test/e2e-test/test.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-21T06:45:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38943b7c_2f9a9252",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 4
+      },
+      "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ae729a6_35f6c9a8",
         "filename": "platform/test/e2e-test/test.sh",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2020-05-21T00:43:40Z",
       "side": 1,
       "message": "nit: If this script takes too much time, we can make this loop parallel by putting \u0027vagrant up\u0027 in background and using `wait` after loop.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 4
+      },
+      "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da65e97a_c4723988",
+        "filename": "platform/test/e2e-test/test.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-21T06:45:46Z",
+      "side": 1,
+      "message": "I have the same thought, but currently i met some issues when the installers running in parallel. To avoid these errors, i simply start up the vms sequentially.",
+      "parentUuid": "8ae729a6_35f6c9a8",
       "range": {
         "startLine": 28,
         "startChar": 0,
@@ -68,6 +116,30 @@
       "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfb355a7_05e182f4",
+        "filename": "platform/test/e2e-test/test.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-05-21T06:45:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b46ca5f_e562d8da",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 9
+      },
+      "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
