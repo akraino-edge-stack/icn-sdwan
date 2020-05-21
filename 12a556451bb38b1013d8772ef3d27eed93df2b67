@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38943b7c_2f9a9252",
+        "filename": "platform/test/e2e-test/test.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-21T00:43:40Z",
+      "side": 1,
+      "message": "HOME is a well known environment variable which by default stores an user\u0027s home directory. I would suggest not assign value to HOME",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 4
+      },
+      "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ae729a6_35f6c9a8",
+        "filename": "platform/test/e2e-test/test.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-21T00:43:40Z",
+      "side": 1,
+      "message": "nit: If this script takes too much time, we can make this loop parallel by putting \u0027vagrant up\u0027 in background and using `wait` after loop.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 4
+      },
+      "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b46ca5f_e562d8da",
+        "filename": "platform/test/e2e-test/test.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-21T00:43:40Z",
+      "side": 1,
+      "message": "Seems we are waiting for something ready. Do we need to add an annotation here to explain why `sleep 700`?",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 9
+      },
+      "revId": "12a556451bb38b1013d8772ef3d27eed93df2b67",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
