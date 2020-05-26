@@ -10,7 +10,7 @@ RUN mkdir /var/lock && \
     opkg install uhttpd-mod-lua && \
     uci set uhttpd.main.interpreter='.lua=/usr/bin/lua' && \
     uci commit uhttpd && \
-    opkg install mwan3 && \
+    opkg install mwan3 jq bash && \
     opkg install luci-app-mwan3; exit 0
 
 COPY system /etc/config/system
