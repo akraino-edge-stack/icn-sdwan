@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e98f6fd_65e4afc0",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-27T09:20:40Z",
+      "side": 1,
+      "message": "Will the request which is not target for group \"batch.sdewan.akraino.org\" be captured by this webhook handler?",
+      "range": {
+        "startLine": 64,
+        "startChar": 4,
+        "endLine": 64,
+        "endChar": 18
+      },
+      "revId": "afc270ad30f9b4a73cc159156b765ba432bc1843",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07ec283a_b3d5618a",
+        "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-27T09:20:40Z",
+      "side": 1,
+      "message": "Will CreateObject return 404 error?",
+      "range": {
+        "startLine": 61,
+        "startChar": 25,
+        "endLine": 61,
+        "endChar": 28
+      },
+      "revId": "afc270ad30f9b4a73cc159156b765ba432bc1843",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "120279e7_7b8a7d65",
+        "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-05-27T09:20:40Z",
+      "side": 1,
+      "message": "Does it need to try GetObject again if fail? if yes, may be better sleep for a random time.",
+      "range": {
+        "startLine": 103,
+        "startChar": 27,
+        "endLine": 103,
+        "endChar": 44
+      },
+      "revId": "afc270ad30f9b4a73cc159156b765ba432bc1843",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
