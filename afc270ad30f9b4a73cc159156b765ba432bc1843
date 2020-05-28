@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "de720bd7_97af2259",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-28T01:05:45Z",
+      "side": 1,
+      "message": "The ValidatingWebhookConfiguration defines what requests should go through the webhook. By default, the group is \"batch.sdewan.akraino.org\". But the administrator may add other groups into the configuration by mistake. So I would like to make a check here",
+      "parentUuid": "2e98f6fd_65e4afc0",
+      "range": {
+        "startLine": 64,
+        "startChar": 4,
+        "endLine": 64,
+        "endChar": 18
+      },
+      "revId": "afc270ad30f9b4a73cc159156b765ba432bc1843",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "07ec283a_b3d5618a",
         "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "fffbd7b6_c5a59ffa",
+        "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-28T01:05:45Z",
+      "side": 1,
+      "message": "This err is returned by GetObject instead of CreateObject",
+      "parentUuid": "07ec283a_b3d5618a",
+      "range": {
+        "startLine": 61,
+        "startChar": 25,
+        "endLine": 61,
+        "endChar": 28
+      },
+      "revId": "afc270ad30f9b4a73cc159156b765ba432bc1843",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "120279e7_7b8a7d65",
         "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
         "patchSetId": 3
@@ -59,6 +107,30 @@
       "writtenOn": "2020-05-27T09:20:40Z",
       "side": 1,
       "message": "Does it need to try GetObject again if fail? if yes, may be better sleep for a random time.",
+      "range": {
+        "startLine": 103,
+        "startChar": 27,
+        "endLine": 103,
+        "endChar": 44
+      },
+      "revId": "afc270ad30f9b4a73cc159156b765ba432bc1843",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cb8639c_e9118d73",
+        "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-05-28T01:05:45Z",
+      "side": 1,
+      "message": "No, we don\u0027t need to try again with failure. Instead, we trigger the reconcile again.",
+      "parentUuid": "120279e7_7b8a7d65",
       "range": {
         "startLine": 103,
         "startChar": 27,
