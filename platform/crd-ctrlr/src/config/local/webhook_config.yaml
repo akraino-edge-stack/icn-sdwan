@@ -23,6 +23,11 @@ webhooks:
     resources:
     - mwan3policies
     - mwan3rules
+    - firewalldnats
+    - firewallforwardings
+    - firewallrules
+    - firewallsnats
+    - firewallzones
     scope: '*'
   sideEffects: Unknown
   timeoutSeconds: 30

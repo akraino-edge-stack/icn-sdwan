@@ -7,4 +7,19 @@ resources:
 - group: batch
   kind: Mwan3Rule
   version: v1alpha1
+- group: batch
+  kind: FirewallZone
+  version: v1alpha1
+- group: batch
+  kind: FirewallRule
+  version: v1alpha1
+- group: batch
+  kind: FirewallSNAT
+  version: v1alpha1
+- group: batch
+  kind: FirewallDNAT
+  version: v1alpha1
+- group: batch
+  kind: FirewallForwarding
+  version: v1alpha1
 version: "2"

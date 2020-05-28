@@ -68,7 +68,7 @@ To create new CRD and controller
 kubebuilder create api --group batch --version  v1alpha1  --kind  Mwan3Policy
 ```
 
-**NOTE:** For each new created CRD, we need to make correspond changes for webhook.
+**NOTE:** For each new created CRD, we need to make correspond changes(add switch cases and webhook resources) for [webhook](src/api/v1alpha1/bucket_permission_webhook.go).
 
 To run local controller(For test/debug purpose)
 ```
@@ -93,6 +93,7 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
 - One CRD one controller
 - Controller watches itself CR and the Deployment(ready status only)
 - Reconcile calls WrtProvider to add/update/delete rules for CNF
+- `GenerationChangedPredicate` should be added to each CRD controller, to prevent status/meta changes triggering reconcile
 - CnfProvider interfaces defines the function CNF function calls. WrtProvider is one implementation of CnfProvider
 - For the users, CNF rules are CRs. But for openwrt, the rules are openwrt rule entities. We can pass the CRs to OpenWRT API. Instead, we need to convert the CRs to OpenWRT entities.
 - Finalizer should be added to CR only when AddUpdate call succeed. Likewise, finalizer should be removed from CR only when Delete call succeed.
@@ -105,12 +106,20 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
 - A runable framework with Mwan3Policy CRD and controller implemented. It means we can run the controller and add/update/delete mwan3policy rules.
 - We have extracted the common logics of controllers, and implemeted the second crd/controller with it
 - The label based permission system implemented by webhook
+- Supported CRDs:
+  - Mwan3Policy
+  - Mwan3Rule
+  - FirewallForwarding
+  - FirewallZone
+  - FirewallRule
+  - FirewallDNAT
+  - FirewallSNAT
 
 ### What we don't have yet
 
 - Add a watch for deployment, so that the controller can get the CNF ready status change. [predicate feature](https://godoc.org/sigs.k8s.io/controller-runtime/pkg/predicate#example-Funcs) should be used to filter no-status event.
-- Implemente the remain CRDs/controllers. As all the controller logics are almost the same, some workload will be the extracting of the similar logic and make them functions.
-- Add validation webhook to validate CR
+- Implemente the ipsec CRDs/controllers 
+- Add validation webhook to validate CR ( as we have the validation in openwrt, so not validate the CR at frontend)
 
 ### NOTEs
 

@@ -18,6 +18,7 @@ import (
 	batchv1alpha1 "sdewan.akraino.org/sdewan/api/v1alpha1"
 	"sdewan.akraino.org/sdewan/basehandler"
 	"sdewan.akraino.org/sdewan/cnfprovider"
+	"sdewan.akraino.org/sdewan/openwrt"
 )
 
 // Helper functions to check and remove string from a slice of strings.
@@ -201,14 +202,16 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 		_, err := cnf.DeleteObject(handler, instance)
 
 		if err != nil {
-			log.Error(err, "Failed to delete "+handler.GetType())
-			setStatus(instance, batchv1alpha1.SdewanStatus{State: batchv1alpha1.Deleting, Message: err.Error()})
-			err = r.Status().Update(ctx, instance)
-			if err != nil {
-				log.Error(err, "Failed to update status for "+handler.GetType())
-				return ctrl.Result{}, err
+			if err.(*openwrt.OpenwrtError).Code != 404 {
+				log.Error(err, "Failed to delete "+handler.GetType())
+				setStatus(instance, batchv1alpha1.SdewanStatus{State: batchv1alpha1.Deleting, Message: err.Error()})
+				err = r.Status().Update(ctx, instance)
+				if err != nil {
+					log.Error(err, "Failed to update status for "+handler.GetType())
+					return ctrl.Result{}, err
+				}
+				return ctrl.Result{RequeueAfter: during}, nil
 			}
-			return ctrl.Result{RequeueAfter: during}, nil
 		}
 		finalizers := getFinalizers(instance)
 		if containsString(finalizers, finalizerName) {

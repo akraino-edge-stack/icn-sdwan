@@ -5,8 +5,17 @@ metadata:
   annotations:
     sdewan-bucket-type-permission: |-
       { "mwan3rules": ["app-intent", "k8s-service"],
-        "mwan3policies": ["*"] }
+        "mwan3policies": ["*"],
+        "firewall*": ["app-intent"]
+      }
 rules:
 - apiGroups: ["batch.sdewan.akraino.org"]
-  resources: ["mwan3policies", "mwan3rules"]
+  resources:
+  - mwan3policies
+  - mwan3rules
+  - firewallzones
+  - firewallforwardings
+  - firewallsnats
+  - firewalldnats
+  - firewallrules
   verbs: ["create", "get", "watch", "list", "delete"]

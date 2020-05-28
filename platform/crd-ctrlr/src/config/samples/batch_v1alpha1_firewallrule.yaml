@@ -1,0 +1,15 @@
+---
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: FirewallRule
+metadata:
+  name: firewallrule-sample
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec:
+  # Add fields here
+  src: firewallzone-sample
+  src_ip: "192.168.2.2"
+  src_port: "80"
+  proto: tcp
+  target: REJECT
