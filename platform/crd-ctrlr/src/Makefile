@@ -28,13 +28,16 @@ run: generate fmt vet manifests
 # Install CRDs into a cluster
 install: manifests
 	kustomize build config/crd | kubectl apply -f -
+	kubectl apply -f config/local/webhook_config.yaml
+	cp -r ../examples/tmp/k8s-webhook-server /tmp/
 
 # Uninstall CRDs from a cluster
 uninstall: manifests
 	kustomize build config/crd | kubectl delete -f -
+	kubectl delete -f config/local/webhook_config.yaml
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
-deploy: manifests
+deploy: manifests uninstall
 	cd config/manager && kustomize edit set image controller=${IMG}
 	kustomize build config/default | kubectl apply -f -
 

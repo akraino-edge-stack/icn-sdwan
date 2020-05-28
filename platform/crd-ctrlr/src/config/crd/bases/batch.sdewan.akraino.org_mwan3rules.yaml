@@ -42,7 +42,6 @@ spec:
             family:
               type: string
             policy:
-              description: Members []Mwan3Rule `json:"members"`
               type: string
             proto:
               type: string

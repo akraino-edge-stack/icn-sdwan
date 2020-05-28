@@ -16,9 +16,12 @@ limitations under the License.
 package main
 
 import (
+	"context"
 	"flag"
+	"fmt"
 	"os"
 
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -66,6 +69,36 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Add indexer for rolebinding so that we can filter rolebindings by .subject
+	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.RoleBinding{}, ".subjects", func(rawObj runtime.Object) []string {
+		var fieldValues []string
+		rolebinding := rawObj.(*rbacv1.RoleBinding)
+		for _, subject := range rolebinding.Subjects {
+			if subject.Kind == "ServiceAccount" {
+				fieldValues = append(fieldValues, fmt.Sprintf("system:serviceaccount:%s:%s", subject.Namespace, subject.Name))
+			} else {
+				fieldValues = append(fieldValues, subject.Name)
+			}
+		}
+		return fieldValues
+	})
+	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.ClusterRoleBinding{}, ".subjects", func(rawObj runtime.Object) []string {
+		var fieldValues []string
+		clusterrolebinding := rawObj.(*rbacv1.ClusterRoleBinding)
+		for _, subject := range clusterrolebinding.Subjects {
+			if subject.Kind == "ServiceAccount" {
+				fieldValues = append(fieldValues, fmt.Sprintf("system:serviceaccount:%s:%s", subject.Namespace, subject.Name))
+			} else {
+				fieldValues = append(fieldValues, subject.Name)
+			}
+		}
+		return fieldValues
+	})
+	if err != nil {
+		setupLog.Error(err, "unable to start manager")
+		os.Exit(1)
+	}
+
 	if err = (&controllers.Mwan3PolicyReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("Mwan3Policy"),
@@ -80,6 +113,10 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Mwan3Rule")
+		os.Exit(1)
+	}
+	if err = batchv1alpha1.SetupBucketPermissionWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "Mwan3Policy")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
