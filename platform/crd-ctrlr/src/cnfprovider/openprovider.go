@@ -52,6 +52,9 @@ func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, 
 	}
 	cnfChanged := false
 	for _, pod := range podList.Items {
+		if pod.Status.PodIP == "" {
+                        return false, errors.New("The target pod doesn't have an IP address")
+                }
 		clientInfo := &openwrt.OpenwrtClientInfo{Ip: pod.Status.PodIP, User: "root", Password: ""}
 		runtime_instance, err := handler.GetObject(clientInfo, new_instance.GetName())
 		changed := false
