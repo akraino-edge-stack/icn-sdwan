@@ -24,6 +24,10 @@ type SdewanIpsecProposals struct {
 	Proposals []SdewanIpsecProposal `json:"proposals"`
 }
 
+func (o *SdewanIpsecProposal) GetName() string {
+        return o.Name
+}
+
 // Sites
 type SdewanIpsecConnection struct {
 	Name           string   `json:"name"`
