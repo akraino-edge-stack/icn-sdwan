@@ -22,6 +22,30 @@
       "revId": "b35ab34eba4b434707875738478ae87b6b1f010d",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07863f1f_ad638f02",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/ipsecproposal_types.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-02T02:13:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "302a4ca2_38e5b46d",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 0
+      },
+      "revId": "b35ab34eba4b434707875738478ae87b6b1f010d",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
