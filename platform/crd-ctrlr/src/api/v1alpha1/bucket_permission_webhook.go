@@ -45,7 +45,7 @@ func SetupBucketPermissionWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
+// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;ipsecproposal,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
 
 // bucketPermissionValidator validates Pods
 type bucketPermissionValidator struct {
