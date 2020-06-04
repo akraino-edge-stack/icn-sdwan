@@ -9,9 +9,15 @@ import (
 	errs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"reflect"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
+        "sigs.k8s.io/controller-runtime/pkg/event"
+        "sigs.k8s.io/controller-runtime/pkg/handler"
+        "sigs.k8s.io/controller-runtime/pkg/predicate"
+        "sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -19,6 +25,46 @@ import (
 	"sdewan.akraino.org/sdewan/basehandler"
 	"sdewan.akraino.org/sdewan/cnfprovider"
 )
+
+// A global filter to catch the CNF deployments.
+var Filter = builder.WithPredicates(predicate.Funcs{
+        CreateFunc: func(e event.CreateEvent) bool {
+                if _, ok := e.Meta.GetLabels()["sdewanPurpose"]; !ok {
+                        return false
+                }
+                return true
+        },
+        UpdateFunc: func(e event.UpdateEvent) bool {
+                if _, ok := e.MetaOld.GetLabels()["sdewanPurpose"]; !ok {
+                        return false
+                }
+                return e.ObjectOld != e.ObjectNew
+        },
+})
+
+// List the needed CR to specific events and return the reconcile Requests
+func GetToRequestsFunc(r client.Client, crliststruct runtime.Object) func(h handler.MapObject) []reconcile.Request {
+
+        return func(h handler.MapObject) []reconcile.Request {
+                var enqueueRequest []reconcile.Request
+		cnfName := h.Meta.GetLabels()["sdewanPurpose"]
+                ctx := context.Background()
+                r.List(ctx, crliststruct, client.MatchingLabels{"sdewanPurpose": cnfName})
+                value := reflect.ValueOf(crliststruct)
+                items := reflect.Indirect(value).FieldByName("Items")
+                for i := 0; i < items.Len(); i++ {
+                        meta := items.Index(i).Field(1).Interface().(metav1.ObjectMeta)
+                        req := reconcile.Request{
+                                NamespacedName: types.NamespacedName{
+                                        Name:      meta.GetName(),
+                                        Namespace: meta.GetNamespace(),
+                                }}
+                        enqueueRequest = append(enqueueRequest, req)
+
+                }
+                return enqueueRequest
+        }
+}
 
 // Helper functions to check and remove string from a slice of strings.
 func containsString(slice []string, s string) bool {
