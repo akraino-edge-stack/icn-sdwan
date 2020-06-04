@@ -34,6 +34,24 @@
       "revId": "459492d40a1e9fb31bda304ffea7c95c6c881073",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74a7d1f8_0a730e4c",
+        "filename": "platform/crd-ctrlr/src/config/samples/batch_v1alpha1_ipsecproposal.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-04T07:54:11Z",
+      "side": 1,
+      "message": "You can fetch the new patchset and make your changes, then \"commit --amend\"\n```\ngit fetch \"https://gerrit.akraino.org/r/icn/sdwan\" refs/changes/36/3536/5 \u0026\u0026 git checkout FETCH_HEAD\ngit checkout -b ipsec_proposal\n# make your changes here\ngit commit --amend\ngit review\n```",
+      "parentUuid": "f7bd5cc0_aa4008ea",
+      "revId": "459492d40a1e9fb31bda304ffea7c95c6c881073",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
     }
   ]
 }
