@@ -1,0 +1,15 @@
+---
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: FirewallZone
+metadata:
+  name: firewallzone-sample2
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec:
+  # Add fields here    
+    network:
+      - "ovn-net1"
+      - "ovn-net2"
+    input: ACCEPT
+    output: ACCEPT

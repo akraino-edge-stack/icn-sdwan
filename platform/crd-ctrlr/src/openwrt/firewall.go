@@ -30,6 +30,10 @@ type SdewanFirewallZone struct {
 	ExtraDest        string   `json:"etra_dest"`
 }
 
+func (o *SdewanFirewallZone) GetName() string {
+	return o.Name
+}
+
 type SdewanFirewallZones struct {
 	Zones []SdewanFirewallZone `json:"zones"`
 }
@@ -40,6 +44,10 @@ type SdewanFirewallForwarding struct {
 	Src    string `json:"src"`
 	Dest   string `json:"dest"`
 	Family string `json:"family"`
+}
+
+func (o *SdewanFirewallForwarding) GetName() string {
+	return o.Name
 }
 
 type SdewanFirewallForwardings struct {
@@ -66,6 +74,10 @@ type SdewanFirewallRule struct {
 	Extra    string   `json:"extra"`
 }
 
+func (o *SdewanFirewallRule) GetName() string {
+	return o.Name
+}
+
 type SdewanFirewallRules struct {
 	Rules []SdewanFirewallRule `json:"rules"`
 }
@@ -86,6 +98,10 @@ type SdewanFirewallRedirect struct {
 	Mark     string `json:"mark"`
 	Target   string `json:"target"`
 	Family   string `json:"family"`
+}
+
+func (o *SdewanFirewallRedirect) GetName() string {
+	return o.Name
 }
 
 type SdewanFirewallRedirects struct {

@@ -26,3 +26,8 @@ webhooks:
     resources:
     - mwan3policies
     - mwan3rules
+    - firewallzones
+    - firewallforwardings
+    - firewallrules
+    - firewallsnats
+    - firewalldnats

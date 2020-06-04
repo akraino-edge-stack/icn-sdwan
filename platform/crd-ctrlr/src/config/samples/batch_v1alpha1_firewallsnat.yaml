@@ -1,0 +1,14 @@
+---
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: FirewallSNAT
+metadata:
+  name: firewallsnat-sample
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec: 
+  src: firewallzone-sample
+  src_ip: 192.168.1.2
+  src_dip: 1.2.3.5
+  dest: firewallzone-sample2
+  proto: icmp

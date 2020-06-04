@@ -119,6 +119,46 @@ func main() {
 		setupLog.Error(err, "unable to create webhook", "webhook", "Mwan3Policy")
 		os.Exit(1)
 	}
+	if err = (&controllers.FirewallZoneReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("FirewallZone"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "FirewallZone")
+		os.Exit(1)
+	}
+	if err = (&controllers.FirewallRuleReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("FirewallRule"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "FirewallRule")
+		os.Exit(1)
+	}
+	if err = (&controllers.FirewallSNATReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("FirewallSNAT"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "FirewallSNAT")
+		os.Exit(1)
+	}
+	if err = (&controllers.FirewallDNATReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("FirewallDNAT"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "FirewallDNAT")
+		os.Exit(1)
+	}
+	if err = (&controllers.FirewallForwardingReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("FirewallForwarding"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "FirewallForwarding")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("starting manager")
