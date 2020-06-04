@@ -16,6 +16,24 @@
       "revId": "459492d40a1e9fb31bda304ffea7c95c6c881073",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7bd5cc0_aa4008ea",
+        "filename": "platform/crd-ctrlr/src/config/samples/batch_v1alpha1_ipsecproposal.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-04T07:51:12Z",
+      "side": 1,
+      "message": "Sure. So shall i edit it thru a new patch or i can still edit thru this one?",
+      "parentUuid": "d1e6ea30_2434773f",
+      "revId": "459492d40a1e9fb31bda304ffea7c95c6c881073",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
     }
   ]
 }
