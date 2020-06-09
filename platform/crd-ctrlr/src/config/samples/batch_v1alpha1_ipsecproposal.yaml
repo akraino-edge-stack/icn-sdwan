@@ -1,0 +1,11 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: IpsecProposal
+metadata:
+  name: ipsecproposal
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec:
+        dh_group: modp4096
+        encryption_algorithm: aes
+        hash_algorithm: sha1
