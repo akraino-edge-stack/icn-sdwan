@@ -45,7 +45,7 @@ func SetupBucketPermissionWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;ipsecproposal,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
+// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;ipsecproposals;ipsechosts,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
 
 // bucketPermissionValidator validates Pods
 type bucketPermissionValidator struct {
@@ -59,7 +59,7 @@ type BucketPermission map[string][]string
 
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=clusterroles;roles;rolebindings;clusterrolebindings,verbs=get;list;watch
 
-// bucketPermissionValidator admits a pod iff a specific annotation exists.
+// bucketPermissionValidator admits a pod if a specific annotation exists.
 func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Request) admission.Response {
 	if req.Kind.Group != "batch.sdewan.akraino.org" {
 		return admission.Errored(
@@ -97,6 +97,10 @@ func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Re
 		obj = &FirewallDNAT{}
 	case "FirewallSNAT":
 		obj = &FirewallSNAT{}
+	case "IpsecProposal":
+		obj = &IpsecProposal{}
+	case "IpsecHost":
+		obj = &IpsecHost{}
 	default:
 		return admission.Errored(
 			http.StatusBadRequest,
