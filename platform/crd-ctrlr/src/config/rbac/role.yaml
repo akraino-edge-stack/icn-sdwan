@@ -125,6 +125,26 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
+  - ipsechosts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - ipsechosts/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
   - mwan3policies
   verbs:
   - create

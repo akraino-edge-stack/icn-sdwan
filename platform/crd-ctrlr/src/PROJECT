@@ -22,4 +22,7 @@ resources:
 - group: batch
   kind: FirewallForwarding
   version: v1alpha1
+- group: batch
+  kind: IpsecHost
+  version: v1alpha1
 version: "2"

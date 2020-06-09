@@ -22,7 +22,7 @@ Sample deployment of CNF:
   ```
   kubectl apply -f examples/attach-network-ovn.yaml
   kubectl apply -f examples/ovn-net1.yaml
-  kubectl apply -f examples/ovn-net2.yml
+  kubectl apply -f examples/ovn-net2.yaml
   ```
 2. Launch CNF deployment. **NOTE:** CNF deployment is supposed to bind to a Node.
   For the sample cnf yaml, we bind it to master node. You can bind to other node by modifying the `nodeSelector`.
