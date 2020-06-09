@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f9f6154a_4edd16c0",
+        "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-09T06:50:53Z",
+      "side": 1,
+      "message": "Please enhance the error message, it\u0027s too short.\ne.g. \"The CNF pod doesn\u0027t have an IP address\"",
+      "range": {
+        "startLine": 56,
+        "startChar": 50,
+        "endLine": 56,
+        "endChar": 59
+      },
+      "revId": "7d6b77198f636eece0eb462a96be1fa272051493",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0586585_39a26a8a",
+        "filename": "platform/crd-ctrlr/src/cnfprovider/openprovider.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-09T06:50:53Z",
+      "side": 1,
+      "message": "Let\u0027s remove this empty line",
+      "range": {
+        "startLine": 58,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 2
+      },
+      "revId": "7d6b77198f636eece0eb462a96be1fa272051493",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
