@@ -16,6 +16,7 @@ RUN mkdir /var/lock && \
 
 COPY system /etc/config/system
 COPY ipsec /etc/config/ipsec
+COPY ipsec_exec /etc/init.d/ipsec
 COPY rest_v1 /usr/lib/lua/luci/controller/rest_v1
 
 ENV http_proxy=
