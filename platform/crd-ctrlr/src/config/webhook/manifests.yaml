@@ -31,4 +31,5 @@ webhooks:
     - firewallrules
     - firewallsnats
     - firewalldnats
-    - ipsecproposal
+    - ipsecproposals
+    - ipsechosts

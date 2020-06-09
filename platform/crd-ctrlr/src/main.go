@@ -159,12 +159,22 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "FirewallForwarding")
 		os.Exit(1)
 	}
+
 	if err = (&controllers.IpsecProposalReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("IpsecProposal"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IpsecProposal")
+		os.Exit(1)
+	}
+
+	if err = (&controllers.IpsecHostReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("IpsecHost"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "IpsecHost")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
