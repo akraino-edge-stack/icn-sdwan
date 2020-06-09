@@ -42,7 +42,7 @@ config_type=function(value) return value["type"] end,
 
 }
 
-site_validator = {
+remote_validator = {
     config_type="remote",
     object_validator=function(value) return check_auth_method(value) end,
     {name="name"},
@@ -73,7 +73,7 @@ site_validator = {
 
 ipsec_processor = {
     proposal={update="update_proposal", delete="delete_proposal", validator=proposal_validator},
-    site={validator=site_validator},
+    remote={validator=remote_validator},
     configuration=uci_conf
 }
 
@@ -87,7 +87,7 @@ function index()
     ver = "v1"
     configuration = "ipsec"
     entry({"sdewan", configuration, ver, "proposals"}, call("handle_request")).leaf = true
-    entry({"sdewan", configuration, ver, "sites"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "remotes"}, call("handle_request")).leaf = true
 end
 
 -- Validate authentication method and secrets
