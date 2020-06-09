@@ -28,6 +28,8 @@ webhooks:
     - firewallrules
     - firewallsnats
     - firewallzones
+    - ipsechosts
+    - ipsecproposals
     scope: '*'
   sideEffects: Unknown
   timeoutSeconds: 30
