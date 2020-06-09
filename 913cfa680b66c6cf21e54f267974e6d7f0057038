@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "496d1252_083cc5ed",
+        "filename": "platform/crd-ctrlr/src/controllers/base_controller.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-09T07:04:17Z",
+      "side": 1,
+      "message": "Did you run `make` command before creating this patch? I assume that `make` command fixes the code indent for you.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 54
+      },
+      "revId": "913cfa680b66c6cf21e54f267974e6d7f0057038",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dcf4513c_e84bf5ec",
+        "filename": "platform/crd-ctrlr/src/controllers/base_controller.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-09T07:04:17Z",
+      "side": 1,
+      "message": "More than \u0027sdewanPurpose`, we need to filter \"pod ready\" event as well.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 49
+      },
+      "revId": "913cfa680b66c6cf21e54f267974e6d7f0057038",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
