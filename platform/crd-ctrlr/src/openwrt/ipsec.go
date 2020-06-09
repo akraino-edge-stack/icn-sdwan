@@ -24,7 +24,7 @@ type SdewanIpsecProposals struct {
 	Proposals []SdewanIpsecProposal `json:"proposals"`
 }
 
-// Sites
+// Remotes
 type SdewanIpsecConnection struct {
 	Name           string   `json:"name"`
 	Type           string   `json:"type"`
@@ -39,9 +39,11 @@ type SdewanIpsecConnection struct {
 	RemoteUpdown   string   `json:"remote_updown"`
 	RemoteFirewall string   `json:"remote_firewall"`
 	CryptoProposal []string `json:"crypto_proposal"`
+	Mark           string   `json:"mark"`
+        IfId           string   `json:"if_id"`
 }
 
-type SdewanIpsecSite struct {
+type SdewanIpsecRemote struct {
 	Name                 string                  `json:"name"`
 	Gateway              string                  `json:"gateway"`
 	PreSharedKey         string                  `json:"pre_shared_key"`
@@ -56,8 +58,8 @@ type SdewanIpsecSite struct {
 	Connections          []SdewanIpsecConnection `json:"connections"`
 }
 
-type SdewanIpsecSites struct {
-	Sites []SdewanIpsecSite `json:"sites"`
+type SdewanIpsecRemotes struct {
+	Remotes []SdewanIpsecRemote `json:"remotes"`
 }
 
 // Proposal APIs
@@ -146,65 +148,65 @@ func (m *IpsecClient) UpdateProposal(proposal SdewanIpsecProposal) (*SdewanIpsec
 	return &sdewanIpsecProposal, nil
 }
 
-// Site APIs
-// get sites
-func (f *IpsecClient) GetSites() (*SdewanIpsecSites, error) {
+// Remote APIs
+// get remotes
+func (f *IpsecClient) GetRemotes() (*SdewanIpsecRemotes, error) {
 	var response string
 	var err error
-	response, err = f.OpenwrtClient.Get(ipsecBaseURL + "sites")
+	response, err = f.OpenwrtClient.Get(ipsecBaseURL + "remotes")
 	if err != nil {
 		return nil, err
 	}
 
-	var sdewanIpsecSites SdewanIpsecSites
-	err = json.Unmarshal([]byte(response), &sdewanIpsecSites)
+	var sdewanIpsecRemotes SdewanIpsecRemotes
+	err = json.Unmarshal([]byte(response), &sdewanIpsecRemotes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &sdewanIpsecSites, nil
+	return &sdewanIpsecRemotes, nil
 }
 
-// get site
-func (m *IpsecClient) GetSite(site string) (*SdewanIpsecSite, error) {
+// get remote
+func (m *IpsecClient) GetRemote(remote string) (*SdewanIpsecRemote, error) {
 	var response string
 	var err error
-	response, err = m.OpenwrtClient.Get(ipsecBaseURL + "sites/" + site)
+	response, err = m.OpenwrtClient.Get(ipsecBaseURL + "remotes/" + remote)
 	if err != nil {
 		return nil, err
 	}
 
-	var sdewanIpsecSite SdewanIpsecSite
-	err = json.Unmarshal([]byte(response), &sdewanIpsecSite)
+	var sdewanIpsecRemote SdewanIpsecRemote
+	err = json.Unmarshal([]byte(response), &sdewanIpsecRemote)
 	if err != nil {
 		return nil, err
 	}
 
-	return &sdewanIpsecSite, nil
+	return &sdewanIpsecRemote, nil
 }
 
-// create site
-func (m *IpsecClient) CreateSite(site SdewanIpsecSite) (*SdewanIpsecSite, error) {
+// create remote
+func (m *IpsecClient) CreateRemote(remote SdewanIpsecRemote) (*SdewanIpsecRemote, error) {
 	var response string
 	var err error
-	site_obj, _ := json.Marshal(site)
-	response, err = m.OpenwrtClient.Post(ipsecBaseURL+"sites", string(site_obj))
+	remote_obj, _ := json.Marshal(remote)
+	response, err = m.OpenwrtClient.Post(ipsecBaseURL+"remotes", string(remote_obj))
 	if err != nil {
 		return nil, err
 	}
 
-	var sdewanIpsecSite SdewanIpsecSite
-	err = json.Unmarshal([]byte(response), &sdewanIpsecSite)
+	var sdewanIpsecRemote SdewanIpsecRemote
+	err = json.Unmarshal([]byte(response), &sdewanIpsecRemote)
 	if err != nil {
 		return nil, err
 	}
 
-	return &sdewanIpsecSite, nil
+	return &sdewanIpsecRemote, nil
 }
 
-// delete site
-func (m *IpsecClient) DeleteSite(site_name string) error {
-	_, err := m.OpenwrtClient.Delete(ipsecBaseURL + "sites/" + site_name)
+// delete remote
+func (m *IpsecClient) DeleteRemote(remote_name string) error {
+	_, err := m.OpenwrtClient.Delete(ipsecBaseURL + "remotes/" + remote_name)
 	if err != nil {
 		return err
 	}
@@ -212,22 +214,22 @@ func (m *IpsecClient) DeleteSite(site_name string) error {
 	return nil
 }
 
-// update site
-func (m *IpsecClient) UpdateSite(site SdewanIpsecSite) (*SdewanIpsecSite, error) {
+// update remote
+func (m *IpsecClient) UpdateRemote(remote SdewanIpsecRemote) (*SdewanIpsecRemote, error) {
 	var response string
 	var err error
-	site_obj, _ := json.Marshal(site)
-	site_name := site.Name
-	response, err = m.OpenwrtClient.Put(ipsecBaseURL+"sites/"+site_name, string(site_obj))
+	remote_obj, _ := json.Marshal(remote)
+	remote_name := remote.Name
+	response, err = m.OpenwrtClient.Put(ipsecBaseURL+"remotes/"+remote_name, string(remote_obj))
 	if err != nil {
 		return nil, err
 	}
 
-	var sdewanIpsecSite SdewanIpsecSite
-	err = json.Unmarshal([]byte(response), &sdewanIpsecSite)
+	var sdewanIpsecRemote SdewanIpsecRemote
+	err = json.Unmarshal([]byte(response), &sdewanIpsecRemote)
 	if err != nil {
 		return nil, err
 	}
 
-	return &sdewanIpsecSite, nil
+	return &sdewanIpsecRemote, nil
 }
