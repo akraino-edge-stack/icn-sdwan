@@ -1165,3 +1165,29 @@ webhooks:
     - firewallsnats
     - firewalldnats
     - ipsecproposal
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: sdewan-webhook-service
+      namespace: sdewan-system
+      path: /validate-label
+  failurePolicy: Fail
+  name: validate-label.akraino.org
+  rules:
+  - apiGroups:
+    - apps
+    - batch.sdewan.akraino.org
+    apiVersions:
+    - v1
+    - v1alpha1
+    operations:
+    - UPDATE
+    resources:
+    - deployments
+    - mwan3policies
+    - mwan3rules
+    - firewallzones
+    - firewallforwardings
+    - firewallrules
+    - firewallsnats
+    - firewalldnats

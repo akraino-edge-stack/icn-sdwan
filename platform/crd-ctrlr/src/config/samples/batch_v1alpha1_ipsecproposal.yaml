@@ -1,3 +1,4 @@
+---
 apiVersion: batch.sdewan.akraino.org/v1alpha1
 kind: IpsecProposal
 metadata:
@@ -9,3 +10,4 @@ spec:
         dh_group: modp4096
         encryption_algorithm: aes
         hash_algorithm: sha1
+...

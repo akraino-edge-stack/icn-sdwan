@@ -13,3 +13,4 @@ spec:
       - ovn-net2
     input: ACCEPT
     output: ACCEPT
+
