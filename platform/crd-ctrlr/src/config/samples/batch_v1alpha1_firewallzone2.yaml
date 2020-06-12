@@ -7,9 +7,9 @@ metadata:
   labels:
     sdewanPurpose: cnf1
 spec:
-  # Add fields here    
     network:
       - "ovn-net1"
       - "ovn-net2"
     input: ACCEPT
     output: ACCEPT
+...

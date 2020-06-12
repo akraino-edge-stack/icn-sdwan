@@ -40,6 +40,8 @@ spec:
             connections:
               items:
                 properties:
+                  conn_type:
+                    type: string
                   crypto_proposal:
                     items:
                       type: string
@@ -66,12 +68,10 @@ spec:
                     type: string
                   remote_updown:
                     type: string
-                  type:
-                    type: string
                 required:
+                - conn_type
                 - mode
                 - name
-                - type
                 type: object
               type: array
             crypto_proposal:
@@ -95,6 +95,8 @@ spec:
             remote_identifier:
               type: string
             shared_ca:
+              type: string
+            type:
               type: string
           required:
           - authentication_method
