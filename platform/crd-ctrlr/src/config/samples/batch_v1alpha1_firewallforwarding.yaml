@@ -8,6 +8,6 @@ metadata:
     sdewanPurpose: cnf1
     sdewan-bucket-type: app-intent
 spec:
-  # Add fields here
   src: firewallzone-sample2
   dest: firewallzone-sample
+...
