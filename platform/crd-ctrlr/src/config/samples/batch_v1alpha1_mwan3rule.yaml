@@ -8,7 +8,6 @@ metadata:
     sdewanPurpose: cnf1
     # sdewan-bucket-type: app-intent
 spec:
-  # Add fields here
   dest_ip: "10.10.10.1"
   dest_port: "1000"
   family: ipv4
@@ -18,4 +17,4 @@ spec:
   src_port: "22"
   sticky: "1"
   timeout: "200"
-
+...

@@ -12,4 +12,4 @@ spec:
   src_dip: 1.2.3.4
   dest: firewallzone-sample2
   proto: icmp
-
+...
