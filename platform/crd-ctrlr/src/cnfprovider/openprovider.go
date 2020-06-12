@@ -3,6 +3,7 @@ package cnfprovider
 import (
 	"context"
 	"errors"
+	"fmt"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -41,8 +42,16 @@ func NewOpenWrt(namespace string, sdewanPurpose string, k8sClient client.Client)
 func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, instance runtime.Object) (bool, error) {
 	reqLogger := log.WithValues(handler.GetType(), handler.GetName(instance), "cnf", p.Deployment.Name)
 	ctx := context.Background()
+	ReplicaSetList := &appsv1.ReplicaSetList{}
+	err := p.K8sClient.List(ctx, ReplicaSetList, client.MatchingLabels{"sdewanPurpose": p.SdewanPurpose})
+	if err != nil {
+		return false, err
+	}
+	if len(ReplicaSetList.Items) != 1 {
+		return false, errors.New(fmt.Sprintf("More than one of repicaset exist with label: sdewanPurpose=%s", p.SdewanPurpose))
+	}
 	podList := &corev1.PodList{}
-	err := p.K8sClient.List(ctx, podList, client.MatchingLabels{"sdewanPurpose": p.SdewanPurpose})
+	err = p.K8sClient.List(ctx, podList, client.MatchingFields{"OwnBy": ReplicaSetList.Items[0].ObjectMeta.Name})
 	if err != nil {
 		return false, err
 	}

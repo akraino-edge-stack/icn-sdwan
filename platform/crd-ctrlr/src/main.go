@@ -21,7 +21,9 @@ import (
 	"fmt"
 	"os"
 
+	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -82,6 +84,10 @@ func main() {
 		}
 		return fieldValues
 	})
+	if err != nil {
+		setupLog.Error(err, "unable to start manager")
+		os.Exit(1)
+	}
 	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.ClusterRoleBinding{}, ".subjects", func(rawObj runtime.Object) []string {
 		var fieldValues []string
 		clusterrolebinding := rawObj.(*rbacv1.ClusterRoleBinding)
@@ -93,6 +99,20 @@ func main() {
 			}
 		}
 		return fieldValues
+	})
+	if err != nil {
+		setupLog.Error(err, "unable to start manager")
+		os.Exit(1)
+	}
+	err = mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Pod{}, "OwnBy", func(rawObj runtime.Object) []string {
+		// grab the job object, extract the owner...
+		var fieldValues []string
+		pod := rawObj.(*corev1.Pod)
+		owner := metav1.GetControllerOf(pod)
+		if owner == nil || owner.Kind != "ReplicaSet" {
+			return nil
+		}
+		return append(fieldValues, owner.Name)
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
