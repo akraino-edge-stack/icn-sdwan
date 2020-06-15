@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e6208524_f88ea0b2",
+        "filename": "platform/cnf/src/ipsec_exec",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-15T05:37:56Z",
+      "side": 1,
+      "message": "The script doesn\u0027t provide everything we need for ipsec. So i made a few changes to it.",
+      "parentUuid": "07bac8d3_5ecadf74",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 24
+      },
+      "revId": "744f8deb8e1272f040bd94f9d8daf40068d514ca",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bf170351_4196787e",
         "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
         "patchSetId": 6
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "013e34e2_3f39d1d1",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-15T05:37:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf170351_4196787e",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 103,
+        "endChar": 34
+      },
+      "revId": "744f8deb8e1272f040bd94f9d8daf40068d514ca",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d8ada465_35986fb3",
         "filename": "platform/crd-ctrlr/src/config/rbac/ipsechost_editor_role.yaml",
         "patchSetId": 6
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "c5158ebc_81728b99",
+        "filename": "platform/crd-ctrlr/src/config/rbac/ipsechost_editor_role.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-15T05:37:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8ada465_35986fb3",
+      "revId": "744f8deb8e1272f040bd94f9d8daf40068d514ca",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "445ba468_e0847ca8",
         "filename": "platform/crd-ctrlr/src/config/rbac/ipsechost_viewer_role.yaml",
         "patchSetId": 6
@@ -79,6 +145,24 @@
       "revId": "744f8deb8e1272f040bd94f9d8daf40068d514ca",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2560d5e5_baca767e",
+        "filename": "platform/crd-ctrlr/src/config/rbac/ipsechost_viewer_role.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-15T05:37:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "445ba468_e0847ca8",
+      "revId": "744f8deb8e1272f040bd94f9d8daf40068d514ca",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
