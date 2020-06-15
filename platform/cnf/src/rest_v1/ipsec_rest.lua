@@ -25,9 +25,9 @@ proposal_validator = {
 }
 
 connection_validator = {
-config_type=function(value) return value["type"] end,
+config_type=function(value) return value["conn_type"] end,
     {name="name", required=true},
-    {name="type", required=true, validator=function(value) return utils.in_array(value, {"tunnel", "transport"}) end, load_func=function(value) return value[".type"] end, save_func=function(value) return true, "" end, message="invalid type"},
+    {name="conn_type", required=true, validator=function(value) return utils.in_array(value, {"tunnel", "transport"}) end, load_func=function(value) return value[".type"] end, save_func=function(value) return true, "" end, message="invalid type"},
     {name="mode", required=true, validator=function(value) return utils.in_array(value, {"start", "add", "route"}) end, message="invalid connection mode"},
     {name="local_subnet"},
     {name="local_nat"},
@@ -39,13 +39,15 @@ config_type=function(value) return value["type"] end,
     {name="remote_updown"},
     {name="remote_firewall", validator=function(value) return utils.in_array(value, {"yes", "no"}) end},
     {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal"},
+    {name="mark"},
 
 }
 
-site_validator = {
+remote_validator = {
     config_type="remote",
     object_validator=function(value) return check_auth_method(value) end,
     {name="name"},
+    {name="type"},
     {name="gateway", required=true},
     {name="enabled", default="1"},
     {name="authentication_method", required=true, validator=function(value) return utils.in_array(value, {"psk", "pubkey"}) end},
@@ -73,7 +75,7 @@ site_validator = {
 
 ipsec_processor = {
     proposal={update="update_proposal", delete="delete_proposal", validator=proposal_validator},
-    site={validator=site_validator},
+    remote={validator=remote_validator},
     configuration=uci_conf
 }
 
@@ -87,7 +89,7 @@ function index()
     ver = "v1"
     configuration = "ipsec"
     entry({"sdewan", configuration, ver, "proposals"}, call("handle_request")).leaf = true
-    entry({"sdewan", configuration, ver, "sites"}, call("handle_request")).leaf = true
+    entry({"sdewan", configuration, ver, "remotes"}, call("handle_request")).leaf = true
 end
 
 -- Validate authentication method and secrets
@@ -198,7 +200,7 @@ function save_connection(value)
     local connections = value["connections"]
     local ret_value = {_standard_format=true}
     for i=1, #connections do
-        add_to_key_list(ret_value, connections[i]["type"], connections[i])
+        add_to_key_list(ret_value, connections[i]["conn_type"], connections[i])
     end
 
     return true, ret_value
