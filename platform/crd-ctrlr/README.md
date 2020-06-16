@@ -116,6 +116,7 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
   - FirewallSNAT
   - IpsecProposal
   - IpsecHost
+  - IpsecSite
 
 ### What we don't have yet
 
