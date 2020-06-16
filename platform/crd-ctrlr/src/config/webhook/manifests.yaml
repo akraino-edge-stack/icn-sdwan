@@ -33,6 +33,7 @@ webhooks:
     - firewalldnats
     - ipsecproposals
     - ipsechosts
+    - ipsecsites
 - clientConfig:
     caBundle: Cg==
     service:
