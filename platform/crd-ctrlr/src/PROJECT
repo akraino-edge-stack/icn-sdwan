@@ -28,4 +28,7 @@ resources:
 - group: batch
   kind: IpsecHost
   version: v1alpha1
+- group: batch
+  kind: IpsecSite
+  version: v1alpha1
 version: "2"

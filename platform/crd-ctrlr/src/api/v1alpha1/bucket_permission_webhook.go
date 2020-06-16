@@ -45,7 +45,7 @@ func SetupBucketPermissionWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;ipsecproposals;ipsechosts,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
+// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
 
 // bucketPermissionValidator validates Pods
 type bucketPermissionValidator struct {
@@ -101,6 +101,8 @@ func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Re
 		obj = &IpsecProposal{}
 	case "IpsecHost":
 		obj = &IpsecHost{}
+	case "IpsecSite":
+		obj = &IpsecSite{}
 	default:
 		return admission.Errored(
 			http.StatusBadRequest,
