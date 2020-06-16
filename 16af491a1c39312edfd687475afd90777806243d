@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "823b32d4_bd4d5ba3",
+        "filename": "platform/crd-ctrlr/src/main.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2020-06-16T01:55:34Z",
+      "side": 1,
+      "message": "Typo?",
+      "range": {
+        "startLine": 197,
+        "startChar": 62,
+        "endLine": 197,
+        "endChar": 79
+      },
+      "revId": "16af491a1c39312edfd687475afd90777806243d",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
