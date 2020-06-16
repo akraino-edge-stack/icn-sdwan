@@ -1,0 +1,27 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: IpsecSite
+metadata:
+  name: ipsecsite
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec:
+    name: siteA
+    type: "VTI-based"
+    remote: "%any"
+    pre_shared_key: test_key
+    authentication_method: psk
+    remote_identifier: host
+    local_identifier: Hub
+    crypto_proposal:
+      - ipsecproposal
+    force_crypto_proposal: "0"
+    connections:
+    - name: connA
+      conn_type: tunnel
+      mode: start
+      mark: "42"
+      remote_sourceip: "192.168.1.5-192.168.1.6"
+      local_subnet: 192.168.1.1/24,10.10.10.35/32
+      crypto_proposal:
+        - ipsecproposal
