@@ -1,0 +1,7 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: IpsecSite
+metadata:
+  name: ipsecsite-sample
+spec:
+  # Add fields here
+  foo: bar
