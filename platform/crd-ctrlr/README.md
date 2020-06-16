@@ -116,11 +116,11 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
   - FirewallSNAT
   - IpsecProposal
   - IpsecHost
+  - IpsecSite
 
 ### What we don't have yet
 
 - Add a watch for deployment, so that the controller can get the CNF ready status change. [predicate feature](https://godoc.org/sigs.k8s.io/controller-runtime/pkg/predicate#example-Funcs) should be used to filter no-status event.
-- Implemente the ipsec CRDs/controllers 
 - Add validation webhook to validate CR ( as we have the validation in openwrt, so not validate the CR at frontend)
 
 ### NOTEs
