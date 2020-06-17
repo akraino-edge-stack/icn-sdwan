@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ebfd32c_0082e9e9",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-17T00:49:58Z",
+      "side": 1,
+      "message": "we need the same change for \u0027api/v1alpha1/label_validate_webhook.go\u0027 as well.",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 364
+      },
+      "revId": "aff5e8863eda01dc7aa5a8b8b8626816e05d36a5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b02a15d9_0d10bc4c",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-17T00:49:58Z",
+      "side": 1,
+      "message": "Please add the case for ipsecsite here",
+      "revId": "aff5e8863eda01dc7aa5a8b8b8626816e05d36a5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3bfefe4_faac8492",
+        "filename": "platform/crd-ctrlr/src/config/samples/batch_v1alpha1_ipsecsite.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-17T00:49:58Z",
+      "side": 1,
+      "message": "Just like other sample yaml files, let\u0027s add one line on the top\n\"---\"",
+      "revId": "aff5e8863eda01dc7aa5a8b8b8626816e05d36a5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b01e6e1_a0fbc52d",
+        "filename": "platform/crd-ctrlr/src/config/samples/batch_v1alpha1_ipsecsite.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-17T00:49:58Z",
+      "side": 1,
+      "message": "Add the end line \"...\"",
+      "revId": "aff5e8863eda01dc7aa5a8b8b8626816e05d36a5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
