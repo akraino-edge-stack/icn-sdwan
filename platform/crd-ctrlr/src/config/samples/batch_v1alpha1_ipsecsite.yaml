@@ -18,7 +18,7 @@ spec:
       - ipsecproposal
     force_crypto_proposal: "0"
     connections:
-    - name: connA
+    - name: connB
       conn_type: tunnel
       mode: start
       mark: "42"

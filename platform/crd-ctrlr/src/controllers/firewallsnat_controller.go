@@ -25,7 +25,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	batchv1alpha1 "sdewan.akraino.org/sdewan/api/v1alpha1"
 	"sdewan.akraino.org/sdewan/openwrt"
@@ -122,5 +124,11 @@ func (r *FirewallSNATReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	ps := builder.WithPredicates(predicate.GenerationChangedPredicate{})
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&batchv1alpha1.FirewallSNAT{}, ps).
+		Watches(
+			&source.Kind{Type: &appsv1.Deployment{}},
+			&handler.EnqueueRequestsFromMapFunc{
+				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.FirewallSNATList{})),
+			},
+			Filter).
 		Complete(r)
 }
