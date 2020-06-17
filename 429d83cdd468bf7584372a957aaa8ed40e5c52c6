@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f76173a_dd3a0e73",
+        "filename": "platform/crd-ctrlr/README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-17T02:10:15Z",
+      "side": 1,
+      "message": "Ruoyu please remove this line as well, because ipsec crd/controller are all implemented once this patch merged",
+      "range": {
+        "startLine": 124,
+        "startChar": 2,
+        "endLine": 124,
+        "endChar": 40
+      },
+      "revId": "429d83cdd468bf7584372a957aaa8ed40e5c52c6",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76908c5f_53c86010",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/label_validate_webhook.go",
+        "patchSetId": 7
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 247
+      },
+      "writtenOn": "2020-06-17T02:10:15Z",
+      "side": 1,
+      "message": "Add case for ipsecsite here.\n\nThis is not a good design, as we need to add case here and there. We can enhance the design in future.",
+      "revId": "429d83cdd468bf7584372a957aaa8ed40e5c52c6",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
