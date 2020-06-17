@@ -30,6 +30,7 @@ webhooks:
     - firewallzones
     - ipsechosts
     - ipsecproposals
+    - ipsecsites
     scope: '*'
   sideEffects: Unknown
   timeoutSeconds: 30
