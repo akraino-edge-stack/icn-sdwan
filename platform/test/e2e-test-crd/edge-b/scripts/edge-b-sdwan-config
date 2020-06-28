@@ -1,0 +1,21 @@
+#Adding DNAT...
+cat > $sdwanConfigs.yaml << EOF
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: FirewallDNAT
+metadata:
+  name: firewalldnat
+  namespace: default
+  labels:
+    sdewanPurpose: $sdewan_cnf_name
+spec:
+  src: net1 
+  src_ip: $internal_subnet
+  src_dip: $sdwan_pod_virtual_ip
+  src_dport: "80"
+  dest_ip: $appLan0
+  proto: tcp
+  target: DNAT
+
+EOF
+
+

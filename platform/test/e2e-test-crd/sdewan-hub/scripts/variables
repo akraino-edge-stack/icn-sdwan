@@ -1,0 +1,9 @@
+providerSubnet=10.10.10.1/24
+providerGateway=10.10.10.1/24
+providerExcludeIps=10.10.10.2..10.10.10.9
+providerNetworkInterface=eth1
+cnfWanGateway=10.10.10.1
+cnfWan0=10.10.10.35
+
+export hubIp=10.10.10.35
+export sdewan_cnf_name=sdewan-cnf-hub
