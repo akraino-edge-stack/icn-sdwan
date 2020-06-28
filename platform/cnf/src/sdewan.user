@@ -1,0 +1,25 @@
+set -o pipefail
+
+api_server=$(nslookup kubernetes.default.svc.cluster.local | tail -n2 | awk -F':' '{print $2}' | head -1)
+istio_ingress=$(nslookup istio-ingressgateway.istio-system.svc.cluster.local |  tail -n2 | awk -F':' '{print $2}' | head -1)
+
+SNAT_RULE='POSTROUTING -o eth0 -j MASQUERADE'
+
+iptables -t nat -C $SNAT_RULE || if_exist=$?
+
+if [ $if_exist -ne 0 ];
+then
+   echo "Insert Default rules"
+else
+   iptables -t nat -D $SNAT_RULE
+   iptables -t nat -D PREROUTING -p tcp --dport 6443 -j DNAT --to-destination $api_server
+   iptables -t nat -D PREROUTING -i net0 -j DNAT --to-destination $istio_ingress
+fi
+
+iptables -t nat -A $SNAT_RULE
+iptables -t nat -A PREROUTING -p tcp --dport 6443 -j DNAT --to-destination $api_server
+if [[ $istio_ingress != "NXDOMAIN" ]];
+then
+  iptables -t nat -A PREROUTING -i net0 -j DNAT --to-destination $istio_ingress
+fi
+
