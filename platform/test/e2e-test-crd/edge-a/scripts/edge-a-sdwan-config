@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#Adding SNAT rules
+cat > $sdwanConfigs.yaml << EOF
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: FirewallSNAT
+metadata:
+  name: firewallsnat
+  namespace: default
+  labels:
+    sdewanPurpose: $sdewan_cnf_name
+spec:
+  src_ip: $ovnSubnet
+  src_dip: $sdwan_pod_virtual_ip
+  dest: net1
+  dest_ip: $internal_subnet
+  proto: tcp
+  target: SNAT
+
+EOF
+
+
