@@ -14,6 +14,7 @@ RUN mkdir /var/lock && \
 COPY system /etc/config/system
 COPY ipsec /etc/config/ipsec
 COPY ipsec_exec /etc/init.d/ipsec
+COPY sdewan.user /etc/sdewan.user
 COPY rest_v1 /usr/lib/lua/luci/controller/rest_v1
 
 USER root
