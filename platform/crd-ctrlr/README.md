@@ -106,6 +106,7 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
 - A runable framework with Mwan3Policy CRD and controller implemented. It means we can run the controller and add/update/delete mwan3policy rules.
 - We have extracted the common logics of controllers, and implemeted the second crd/controller with it
 - The label based permission system implemented by webhook
+- The watch for deployment, so that the controller can get the CNF ready status change. [predicate feature](https://godoc.org/sigs.k8s.io/controller-runtime/pkg/predicate#example-Funcs) is used to filter events we don't care about.
 - Supported CRDs:
   - Mwan3Policy
   - Mwan3Rule
@@ -118,14 +119,10 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
   - IpsecHost
   - IpsecSite
 
-### What we don't have yet
-
-- Add a watch for deployment, so that the controller can get the CNF ready status change. [predicate feature](https://godoc.org/sigs.k8s.io/controller-runtime/pkg/predicate#example-Funcs) should be used to filter no-status event.
-- Add validation webhook to validate CR ( as we have the validation in openwrt, so not validate the CR at frontend)
 
 ### NOTEs
 
-- We need controller-runtime version at least v0.6.0 to support `GenerationChangedPredicate` which is used to prevent CR status update trigering reconcile
+- We need `controller-runtime` version at least v0.6.0 to support `GenerationChangedPredicate` which is used to prevent CR status update trigering reconcile
 
 ## References
 
