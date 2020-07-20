@@ -1,0 +1,19 @@
+providerSubnet=10.10.10.1/24
+providerGateway=10.10.10.1/24
+providerExcludeIps=10.10.10.2..10.10.10.9
+providerNetworkInterface=eth1
+ovnGateway=172.16.31.1/24
+ovnExcludeIps=172.16.31.2..172.16.31.9
+cnfWanGateway=10.10.10.1
+
+export cnfWan0=10.10.10.25
+export cnfLan0=172.16.31.10
+export appLan0=172.16.31.15
+export hubIp=10.10.10.35
+export ovnSubnet=172.16.31.1/24
+export edgeName=edgeB
+export wan_interface=net1
+export sdewan_cnf_name=sdewan-edge-b
+export app_pod_name=simple-http-service
+export sdwanConfigs=edge-b-sdwan-config
+export internal_subnet=192.168.1.1/24
