@@ -282,7 +282,7 @@ spec:
     - pnetwork
   input: ACCEPT
   output: ACCEPT
-  forward: REJECT
+  forward: ACCEPT
   masq: "0"
   mtu_fix: "1"
 EOF
