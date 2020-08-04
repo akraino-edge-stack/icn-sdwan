@@ -21,6 +21,7 @@ import (
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	batchv1alpha1 "sdewan.akraino.org/sdewan/api/v1alpha1"
 	"sdewan.akraino.org/sdewan/basehandler"
 	"sdewan.akraino.org/sdewan/cnfprovider"
@@ -73,6 +74,45 @@ func GetToRequestsFunc(r client.Client, crliststruct runtime.Object) func(h hand
 
 		}
 		return enqueueRequest
+	}
+}
+
+// A global filter to catch the change of cluster IP.
+var IPFilter = builder.WithPredicates(predicate.Funcs{
+	UpdateFunc: func(e event.UpdateEvent) bool {
+		serviceName := e.MetaOld.GetName()
+		if serviceName != "kubernetes" && serviceName != "istio-ingressgateway" {
+			return false
+		}
+		pre_ip := reflect.ValueOf(e.ObjectOld).Interface().(*corev1.Service).Spec.ClusterIP
+		post_ip := reflect.ValueOf(e.ObjectNew).Interface().(*corev1.Service).Spec.ClusterIP
+		return pre_ip != post_ip
+	},
+})
+
+// List the needed CR to specific events and return the reconcile Requests
+func GetServiceToRequestsFunc(r client.Client) func(h handler.MapObject) []reconcile.Request {
+
+	return func(h handler.MapObject) []reconcile.Request {
+		var cnfName string
+		deploymentList := &appsv1.DeploymentList{}
+		podList := &corev1.PodList{}
+		ctx := context.Background()
+		r.List(ctx, deploymentList)
+		for _, deployment := range deploymentList.Items {
+			if _, ok := deployment.ObjectMeta.GetLabels()["sdewanPurpose"]; !ok {
+				continue
+			}
+			cnfName = deployment.ObjectMeta.GetLabels()["sdewanPurpose"]
+		}
+		r.List(ctx, podList, client.MatchingLabels{"sdewanPurpose": cnfName})
+		for _, pod := range podList.Items {
+			clientInfo := &openwrt.OpenwrtClientInfo{Ip: pod.Status.PodIP, User: "root", Password: ""}
+			openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
+			service := openwrt.ServiceClient{OpenwrtClient: openwrtClient}
+			service.ExecuteService("firewall", "restart")
+		}
+		return []reconcile.Request{}
 	}
 }
 
