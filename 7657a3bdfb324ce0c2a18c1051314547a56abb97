@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ad4c7d82_29156855",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/cnfservice_types.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-08-04T07:19:52Z",
+      "side": 1,
+      "message": "Let\u0027s use \"Name\" first, may add port, dport later.",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 31,
+        "endChar": 4
+      },
+      "revId": "7657a3bdfb324ce0c2a18c1051314547a56abb97",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67a37055_076ffad0",
+        "filename": "platform/crd-ctrlr/src/controllers/base_controller.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-08-04T07:19:52Z",
+      "side": 1,
+      "message": "need \"break\" after this line?",
+      "range": {
+        "startLine": 106,
+        "startChar": 3,
+        "endLine": 106,
+        "endChar": 10
+      },
+      "revId": "7657a3bdfb324ce0c2a18c1051314547a56abb97",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
