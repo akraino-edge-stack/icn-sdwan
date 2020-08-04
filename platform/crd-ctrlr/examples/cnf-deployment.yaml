@@ -52,6 +52,7 @@ data:
     /etc/init.d/log start
     /etc/init.d/dropbear start
     /etc/init.d/mwan3 restart
+    /etc/init.d/firewall restart
     echo "Entering sleep... (success)"
     # Sleep forever.
     while true; do sleep 100; done
@@ -106,7 +107,7 @@ spec:
               #- "3600"
         - /bin/sh
         - /tmp/sdewan/entrypoint.sh
-        image: integratedcloudnative/openwrt:dev
+        image: integratedcloudnative/openwrt:0.3.0
         imagePullPolicy: IfNotPresent
         name: sdewan
         readinessProbe:
