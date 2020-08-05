@@ -67,6 +67,7 @@ data:
     /etc/init.d/log start
     /etc/init.d/dropbear start
     /etc/init.d/mwan3 restart
+    /etc/init.d/firewall restart
     echo "Entering sleep... (success)"
     # Sleep forever.
     while true; do sleep 100; done
