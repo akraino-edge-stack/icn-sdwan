@@ -17,6 +17,7 @@ data:
       interface=$(echo $net | jq -r .interface)
       ipaddr=$(ifconfig $interface | awk '/inet/{print $2}' | cut -f2 -d ":" | awk 'NR==1 {print $1}')
       vif="$interface"
+      netmask=$(ifconfig $interface | awk '/inet/{print $4}'| cut -f2 -d ":" | head -1)
       cat >> /etc/config/network <<EOF
     config interface '$vif'
         option ifname '$interface'
@@ -42,7 +43,7 @@ data:
     done
     /sbin/procd &
     /sbin/ubusd &
-    iptables -S
+    iptables -t nat -L
     sleep 1
     /etc/init.d/rpcd start
     /etc/init.d/dnsmasq start
@@ -52,6 +53,7 @@ data:
     /etc/init.d/log start
     /etc/init.d/dropbear start
     /etc/init.d/mwan3 restart
+    /etc/init.d/firewall restart
     echo "Entering sleep... (success)"
     # Sleep forever.
     while true; do sleep 100; done
