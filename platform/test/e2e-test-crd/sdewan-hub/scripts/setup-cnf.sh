@@ -85,6 +85,7 @@ sudo apt-get update
 sudo apt-get install helm
 
 envsubst < ./cnf/values.yaml >> ./cnf/values.yaml
+helm init
 helm package ./cnf
 helm install ./cnf-0.1.0.tgz
 

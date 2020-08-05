@@ -155,8 +155,8 @@ config_conn() {
 	config_get ikelifetime              "$1"           ikelifetime "3h"
 	config_get lifetime                 "$1"           lifetime "1h"
 	config_get margintime               "$1"           margintime "9m"
-	config_get keyingtries              "$1"           keyingtries "3"
-	config_get dpdaction                "$1"           dpdaction "none"
+	config_get keyingtries              "$1"           keyingtries "%forever"
+	config_get dpdaction                "$1"           dpdaction "restart"
 	config_get dpddelay                 "$1"           dpddelay "30s"
 	config_get inactivity               "$1"           inactivity
 	config_get keyexchange              "$1"           keyexchange "ikev2"

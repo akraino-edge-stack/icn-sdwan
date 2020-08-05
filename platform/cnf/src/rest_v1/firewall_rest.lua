@@ -13,7 +13,7 @@ uci_conf = "firewall"
 
 zone_validator = {
     create_section_name=false,
-    {name="name"},
+    {name="name", item_validator=function(value) return is_valid_name(value) end, message="invalid zone name"},
     {name="network", item_validator=function(value) return is_network_interface_available(value) end, message="invalid network"},
     {name="masq", validator=function(value) return utils.in_array(value, {"0", "1"}) end, message="invalid masq"},
     {name="masq_src", item_validator=function(value) return is_valid_masq_subset(value) end, message="invalid masq_src"},
@@ -107,6 +107,15 @@ function is_network_interface_available(interface)
     end
 
     return true, interface
+end
+
+function is_valid_name(name)
+    local len = string.len(name)
+    if len > 11 then
+	return false, "The length of Name shall not exceed 11 characters"
+    else
+	return true
+    end
 end
 
 function is_valid_masq_subset(s)
