@@ -1,0 +1,2 @@
+kubernetes kubernetes.default.svc.cluster.local 6443 6443 0.0.0.0 0
+istio istio-ingressgateway.istio-system.svc.cluster.local 0 0 0.0.0.0 1
