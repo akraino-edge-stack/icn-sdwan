@@ -2,6 +2,10 @@ apiVersion: batch.sdewan.akraino.org/v1alpha1
 kind: CNFService
 metadata:
   name: cnfservice-sample
+  labels:
+    sdewanPurpose: cnf1
 spec:
-  # Add fields here
-  foo: bar
+        # name: test1
+    fullname: httpd-svc.default.svc.cluster.local
+    port: "2288"
+    dport: "8080"

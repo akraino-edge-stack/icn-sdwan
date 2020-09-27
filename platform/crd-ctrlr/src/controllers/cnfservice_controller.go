@@ -17,6 +17,7 @@ package controllers
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
@@ -56,33 +57,51 @@ func (m *CNFServiceHandler) GetInstance(r client.Client, ctx context.Context, re
 }
 
 func (m *CNFServiceHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
-	return nil, nil
+	svc := instance.(*batchv1alpha1.CNFService)
+	openwrtsvc := openwrt.SdewanSvc{
+		Name:     svc.Name,
+		FullName: svc.Spec.FullName,
+		Port:     svc.Spec.Port,
+		DPort:    svc.Spec.DPort,
+	}
+	return &openwrtsvc, nil
 }
 
 func (m *CNFServiceHandler) IsEqual(instance1 openwrt.IOpenWrtObject, instance2 openwrt.IOpenWrtObject) bool {
-	return false
+	service1 := instance1.(*openwrt.SdewanSvc)
+	service2 := instance2.(*openwrt.SdewanSvc)
+	return reflect.DeepEqual(*service1, *service2)
 }
 
 func (m *CNFServiceHandler) GetObject(clientInfo *openwrt.OpenwrtClientInfo, name string) (openwrt.IOpenWrtObject, error) {
-	return nil, nil
+	openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
+	svc := openwrt.SvcClient{OpenwrtClient: openwrtClient}
+	ret, err := svc.GetSvc(name)
+	return ret, err
 }
 
 func (m *CNFServiceHandler) CreateObject(clientInfo *openwrt.OpenwrtClientInfo, instance openwrt.IOpenWrtObject) (openwrt.IOpenWrtObject, error) {
-	return nil, nil
+	openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
+	svc := openwrt.SvcClient{OpenwrtClient: openwrtClient}
+	service := instance.(*openwrt.SdewanSvc)
+	return svc.CreateSvc(*service)
 }
 
 func (m *CNFServiceHandler) UpdateObject(clientInfo *openwrt.OpenwrtClientInfo, instance openwrt.IOpenWrtObject) (openwrt.IOpenWrtObject, error) {
-	return nil, nil
+	openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
+	svc := openwrt.SvcClient{OpenwrtClient: openwrtClient}
+	service := instance.(*openwrt.SdewanSvc)
+	return svc.UpdateSvc(*service)
 }
 
 func (m *CNFServiceHandler) DeleteObject(clientInfo *openwrt.OpenwrtClientInfo, name string) error {
-	return nil
+	openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
+	svc := openwrt.SvcClient{OpenwrtClient: openwrtClient}
+	return svc.DeleteSvc(name)
 }
 
 func (m *CNFServiceHandler) Restart(clientInfo *openwrt.OpenwrtClientInfo) (bool, error) {
-	openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
-	service := openwrt.ServiceClient{OpenwrtClient: openwrtClient}
-	return service.ExecuteService("cnfService", "restart")
+	return true, nil
 }
 
 // CNFServiceReconciler reconciles a CNFService object
