@@ -24,24 +24,21 @@ import (
 
 // CNFServiceSpec defines the desired state of CNFService
 type CNFServiceSpec struct {
-	Name string `json:"name,omitempty"`
-}
-
-// CNFServiceStatus defines the observed state of CNFService
-type CNFServiceStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	FullName string `json:"fullname,omitempty"`
+	Port     string `json:"port,omitempty"`
+	DPort    string `json:"dport,omitempty"`
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
 
 // CNFService is the Schema for the cnfservices API
 type CNFService struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   CNFServiceSpec   `json:"spec,omitempty"`
-	Status CNFServiceStatus `json:"status,omitempty"`
+	Spec   CNFServiceSpec `json:"spec,omitempty"`
+	Status SdewanStatus   `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
