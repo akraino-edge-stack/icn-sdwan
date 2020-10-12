@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c3af39c_9b269b1b",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "FOR \"PUT\" the _M[handles_table[handle]] is nil which will cause exception. May skimpily use below:\nfunction handle_request()\n    local method \u003d utils.get_req_method()\n    if method \u003d\u003d \"GET\" then\n        return get_service()\n    elseif method \u003d\u003d \"POST\" then\n        return create_service()\n    elseif method \u003d\u003d \"DELETE\" then\n        return delete_service()\n    else\n        utils.response_error(405, \"Method Not Allowed\")\n    end\nend",
+      "range": {
+        "startLine": 32,
+        "startChar": 15,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab196420_e1ef7c4c",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "Move \nlocal file \u003d io.open(\"/etc/sdewan_svc.info\", \"a+\")\n...\nfile:close()\nsync_info()\n\ninto the last \"else\" block?\nThese 3 lines may not required to be executed for invalid request.",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 39,
+        "endChar": 54
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15d93288_a98f71a9",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "Need check whether obj is nil before call this.",
+      "range": {
+        "startLine": 40,
+        "startChar": 18,
+        "endLine": 40,
+        "endChar": 21
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd0b0a1c_0b6c152c",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "What\u0027s the case if port or dport is not input?",
+      "range": {
+        "startLine": 40,
+        "startChar": 32,
+        "endLine": 40,
+        "endChar": 37
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfc58736_51adb013",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "does it need \"break\" after find the service?",
+      "range": {
+        "startLine": 125,
+        "startChar": 16,
+        "endLine": 125,
+        "endChar": 41
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b7af427_94bf9e60",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "Does this cause \"file:close()\" not be called?",
+      "range": {
+        "startLine": 130,
+        "startChar": 12,
+        "endLine": 130,
+        "endChar": 18
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55e64f15_0c8632a3",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "Does this function required？",
+      "range": {
+        "startLine": 148,
+        "startChar": 9,
+        "endLine": 148,
+        "endChar": 14
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01f8efaf_429b2dcf",
+        "filename": "platform/cnf/src/rest_v1/svc_rest.lua",
+        "patchSetId": 3
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-12T07:07:42Z",
+      "side": 1,
+      "message": "arr or ar?",
+      "range": {
+        "startLine": 149,
+        "startChar": 10,
+        "endLine": 149,
+        "endChar": 13
+      },
+      "revId": "90a6215c7733bbfc95fa3af05f2c709fbddd1040",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
