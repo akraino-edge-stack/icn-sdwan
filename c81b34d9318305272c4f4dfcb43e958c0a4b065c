@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03587544_d275d34a",
+        "filename": "platform/cnf/src/updown",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-27T08:12:57Z",
+      "side": 1,
+      "message": "Will us the same $VTI_IF for multiple tunnels in hub?",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 15
+      },
+      "revId": "c81b34d9318305272c4f4dfcb43e958c0a4b065c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61cce5d8_db1a4f88",
+        "filename": "platform/cnf/src/updown_oip",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-10-27T08:12:57Z",
+      "side": 1,
+      "message": "Will us the same $VTI_IF for multiple tunnels in edge?",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 16
+      },
+      "revId": "c81b34d9318305272c4f4dfcb43e958c0a4b065c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
