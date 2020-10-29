@@ -1,25 +1,47 @@
 set -o pipefail
 
-api_server=$(nslookup kubernetes.default.svc.cluster.local | tail -n2 | awk -F':' '{print $2}' | head -1)
-istio_ingress=$(nslookup istio-ingressgateway.istio-system.svc.cluster.local |  tail -n2 | awk -F':' '{print $2}' | head -1)
-
-SNAT_RULE='POSTROUTING -o eth0 -j MASQUERADE'
-
-iptables -t nat -C $SNAT_RULE || if_exist=$?
-
-if [ $if_exist -ne 0 ];
-then
-   echo "Insert Default rules"
-else
-   iptables -t nat -D $SNAT_RULE
-   iptables -t nat -D PREROUTING -p tcp --dport 6443 -j DNAT --to-destination $api_server
-   iptables -t nat -D PREROUTING -i net1 -j DNAT --to-destination $istio_ingress
-fi
-
-iptables -t nat -A $SNAT_RULE
-iptables -t nat -A PREROUTING -p tcp --dport 6443 -j DNAT --to-destination $api_server
-if [[ $istio_ingress != "NXDOMAIN" ]];
-then
-  iptables -t nat -A PREROUTING -i net1 -j DNAT --to-destination $istio_ingress
-fi
+count=1
+while read line
+do
+    name=$(echo $line | awk '{print $1}')
+    fullname=$(echo $line | awk '{print $2}')
+    port=$(echo $line | awk '{print $3}')
+    dport=$(echo $line | awk '{print $4}')
+    old_ip=$(echo $line | awk '{print $5}')
+    rule=$(echo $line | awk '{print $6}')
+    new_ip=$(nslookup $fullname | tail -n2 | awk -F':' '{print $2}' | head -1 | sed -e 's/^[ \t]*//g')
+    target=$(iptables -t nat -L PREROUTING | grep "dpt:${port}")
+    if [ $old_ip == "0.0.0.0" ];
+    then
+        if [ $rule == 0 ];
+        then
+            iptables -t nat -I PREROUTING -p tcp --dport $port -j DNAT --to-destination $new_ip":"$dport
+        elif [ $rule == 1 ];
+        then
+            iptables -t nat -A PREROUTING -i net1 -j DNAT --to-destination $new_ip
+        fi
+    elif [ $old_ip != $new_ip ];
+    then
+        if [ $rule == 0 ];
+        then
+            iptables -t nat -D PREROUTING -p tcp --dport $port -j DNAT --to-destination $old_ip":"$dport
+            iptables -t nat -I PREROUTING -p tcp --dport $port -j DNAT --to-destination $new_ip":"$dport
+        elif [ $rule == 1 ];
+        then
+            iptables -t nat -D PREROUTING -i net1 -j DNAT --to-destination $old_ip
+            iptables -t nat -A PREROUTING -i net1 -j DNAT --to-destination $new_ip
+        fi
+    elif [ ! $target]
+    then
+        if [ $rule == 0 ];
+        then
+            iptables -t nat -I PREROUTING -p tcp --dport $port -j DNAT --to-destination $new_ip":"$dport
+        elif [ $rule == 1 ];
+        then
+            iptables -t nat -A PREROUTING -i net1 -j DNAT --to-destination $new_ip
+        fi
+    fi
+    sed -i "${count}c ${name} ${fullname} ${port} ${dport} ${new_ip} ${rule}" /etc/sdewan_svc.info
+    count=$(($count+1))
+done < /etc/sdewan_svc.info
 
