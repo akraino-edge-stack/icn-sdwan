@@ -1,0 +1,969 @@
+
+openapi: 3.0.2
+info:
+  version: '2.0.0'
+
+  title: SCC
+
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  x-logo:
+    url: 'https://redocly.github.io/openapi-template/logo.png'
+
+  description: |
+    SCC - SDEWAN Central Controller
+
+externalDocs:
+  description: Wiki for the API's.
+  url: 'https://wiki.akraino.org/display/AK/SDEWAN+Central+Controller'
+
+tags:
+  - name: v1
+    description: |
+     SCC V1 API
+
+paths:
+  ############################ Overlay Registration API'S #################################################
+  /overlays:
+    post:
+      tags:
+        - Overlay Registration
+      summary: Overlay Registration
+      description: Add a new `Overlay`
+      operationId: addOverlay
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Overlay'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Overlay'
+        description: Overlay Info
+        required: true
+    get: # documentation for GET operation for this path
+          tags:
+            - Overlay Registration
+          summary: Get all overlays
+
+          description: |
+            Get all `overlays`
+
+          operationId: getOverlays
+          responses: # list of responses
+            '200':
+              description: Success
+              content:
+                application/json: # operation response mime type
+                  schema:
+                    $ref: '#/components/schemas/OverlayArray'
+            '500':
+              description: Internal error
+              content: {}
+
+  /overlays/{overlay-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    get: # documentation for GET operation for this path
+      tags:
+        - Overlay Registration
+      summary: Get overlay by name
+
+      description: overlay name
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Overlay'
+        '500':
+          description: Internal error
+          content: {}
+    put:
+      tags:
+        - Overlay Registration
+      summary: Update overlay
+      description: Update `overlay`
+      operationId: updateOverlay
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Overlay'
+        '422':
+          description: Invalid data
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      # request body documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Overlay'
+        description: Update overlay object
+        required: true
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Overlay Registration
+      summary: Delete overlay
+
+      description: |
+        Delete `overlay`
+
+      operationId: deleteOverlay
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+  ############################ Proposal Registration API'S #################################################
+  /overlays/{overlay-name}/proposals:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    post:
+      tags:
+        - Proposal Registration
+      summary: Proposal Registration
+      description: Add a new `Proposal`
+      operationId: addProposal
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Proposal'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Proposal'
+        description: Proposal Info
+        required: true
+    get: # documentation for GET operation for this path
+          tags:
+            - Proposal Registration
+          summary: Get all proposals
+
+          description: |
+            Get all `proposals`
+
+          operationId: getProposals
+          responses: # list of responses
+            '200':
+              description: Success
+              content:
+                application/json: # operation response mime type
+                  schema:
+                    $ref: '#/components/schemas/ProposalArray'
+            '500':
+              description: Internal error
+              content: {}
+
+  /overlays/{overlay-name}/proposals/{proposal-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/ProposalName'
+    get: # documentation for GET operation for this path
+      tags:
+        - Proposal Registration
+      summary: Get proposal by name
+
+      description: proposal name
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Proposal'
+        '500':
+          description: Internal error
+          content: {}
+    put:
+      tags:
+        - Proposal Registration
+      summary: Update proposal
+      description: Update `proposal`
+      operationId: updateProposal
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Proposal'
+        '422':
+          description: Invalid data
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      # request body documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proposal'
+        description: Update Proposal object
+        required: true
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Proposal Registration
+      summary: Delete proposal
+
+      description: |
+        Delete `proposal`
+
+      operationId: deleteProposal
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+          
+  ############################ Hub Registration API'S #################################################
+  /overlays/{overlay-name}/hubs:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    post:
+      tags:
+        - Hub Registration
+      summary: Hub
+      description: Add a new `hub`
+      operationId: addHub
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Hub'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Hub'
+        description: Traffic Hub information
+        required: true
+
+    get: # documentation for GET operation for this path
+      tags:
+        - Hub Registration
+      summary: Get all registered hubs
+
+      description: |
+        Get all `hubs`
+
+      operationId: getAllHubs
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/HubArray'
+        '500':
+          description: Internal error
+          content: {}
+
+  /overlays/{overlay-name}/hubs/{hub-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/HubName'
+    get: # documentation for GET operation for this path
+      tags:
+        - Hub Registration
+      summary: Get a traffic hub by hub name
+
+      description: |
+        Get `hub`
+
+      operationId: getHubByName
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Hub'
+        '500':
+          description: Internal error
+          content: {}
+    put:
+      tags:
+        - Hub Registration
+      summary: Update Hub
+      description: Update `hub`
+      operationId: updateHub
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Hub'
+        '422':
+          description: Invalid data
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      # request body documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hub'
+        description: Update hub object
+        required: true
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Hub Registration
+      summary: Delete hub by hub name
+
+      description: |
+        Delete `hub`
+
+      operationId: deleteHubByName
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+
+  ############################ Hub connection API'S #################################################
+  /overlays/{overlay-name}/hubs/{hub-name}/connections:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/HubName'
+
+    get: # get all connections (hub or device) to this hub
+      tags:
+        - Hub Connection
+      summary: Get all connections
+
+      description: |
+        Get all `connections`
+
+      operationId: getAllHubConnections
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/ConnectionArray'
+        '500':
+          description: Internal error
+          content: {}
+
+  /overlays/{overlay-name}/hubs/{hub-name}/devices/{device-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/HubName'
+    - $ref: '#/components/parameters/DeviceName'
+    post: # documentation for GET operation for this path
+      tags:
+        - Hub Connection
+      summary: create hub-device connection
+
+      description: |
+        create `hub-device connection`
+
+      operationId: addHubConnection
+      responses: # list of responses
+        '201':
+          description: Success
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Hub Connection
+      summary: Delete hub-device connection
+
+      description: |
+        Delete `hub-device connection`
+
+      operationId: deleteHubConnection
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+  ############################ Device Registration API'S #################################################
+  /overlays/{overlay-name}/devices:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    post:
+      tags:
+        - Device Registration
+      summary: Edge location device Registration
+      description: Add a new `device`
+      operationId: addDevice
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Device'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Device'
+        description: Edge location device Info
+        required: true
+    get: # documentation for GET operation for this path
+          tags:
+            - Device Registration
+          summary: Get all devices
+
+          description: |
+            Get all `devices`
+
+          operationId: getDevices
+          responses: # list of responses
+            '200':
+              description: Success
+              content:
+                application/json: # operation response mime type
+                  schema:
+                    $ref: '#/components/schemas/DeviceArray'
+            '500':
+              description: Internal error
+              content: {}
+
+  /overlays/{overlay-name}/devices/{device-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/DeviceName'
+    get: # documentation for GET operation for this path
+      tags:
+        - Device Registration
+      summary: Get device by name
+
+      description: edge location device name
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Device'
+        '500':
+          description: Internal error
+          content: {}
+    put:
+      tags:
+        - Device Registration
+      summary: Update device
+      description: Update `device`
+      operationId: updateDevice
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/Device'
+        '422':
+          description: Invalid data
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      # request body documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+        description: Update devices object
+        required: true
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Device Registration
+      summary: Delete device
+
+      description: |
+        Delete `device`
+
+      operationId: deleteDevice
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+
+  ############################ Device connection API'S #################################################
+  /overlays/{overlay-name}/devices/{device-name}/connections:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/DeviceName'
+
+    get: # get all connections (hub or device) to this device
+      tags:
+        - Device Connection
+      summary: Get all connections
+
+      description: |
+        Get all `connections`
+
+      operationId: getAllDeviceConnections
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/ConnectionArray'
+        '500':
+          description: Internal error
+          content: {}
+  
+  ############################ IP ranges API'S #################################################
+  /overlays/{overlay-name}/ipranges:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    post:
+      tags:
+        - IP range Registration
+      summary: IP range
+      description: Add a new `ip range`
+      operationId: addIpRange
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRange'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/IpRange'
+        description: Ip range information
+        required: true
+
+    get: # documentation for GET operation for this path
+      tags:
+        - IP range Registration
+      summary: Get all ip ranges
+
+      description: |
+        Get all `ip ranges`
+
+      operationId: getAllIpRanges
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRangeArray'
+        '500':
+          description: Internal error
+          content: {}
+
+  /overlays/{overlay-name}/ipranges/{iprange-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/IpRangeName'
+    get: # documentation for GET operation for this path
+      tags:
+        - IP range Registration
+      summary: Get a Ip range by ip range name
+
+      description: |
+        Get `ip range`
+
+      operationId: getIpRangeByName
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRange'
+        '500':
+          description: Internal error
+          content: {}
+    put:
+      tags:
+        - IP range Registration
+      summary: Update ip range
+      description: Update `ip range`
+      operationId: updateIpRange
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRange'
+        '422':
+          description: Invalid data
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      # request body documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpRange'
+        description: Update ip range object
+        required: true
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - IP range Registration
+      summary: Delete ip range by ip range name
+
+      description: |
+        Delete `ip range`
+
+      operationId: deleteIpRangeByName
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+     
+######################### SCHEMAS ####################################################
+# An object to hold reusable parts that can be used across the definition
+components:
+  schemas:
+    MetadataBase:
+      type: object
+      properties:
+        name:
+          description: Name of the resource
+          type: string
+          maxLength: 128
+          example: "ResName"
+        description:
+          description: Description for the resource
+          type: string
+          maxLength: 1024
+          example: "Resource description"
+        userData1:
+          description: User relevant data for the resource
+          type: string
+          maxLength: 512
+          example: "Some data"
+        userData2:
+          description: User relevant data for the resource
+          type: string
+          maxLength: 512
+          example: "Some more data"
+    Metadata:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+    MetadataArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Metadata'
+    ProposalSpec:
+      type: object
+      properties:
+        encryption:
+          description: encryption algorithm
+          type: string
+          maxLength: 1024
+          example: "aes256"
+        hash:
+          type: string
+          description: hash algorithm
+          example: "sha256"
+        dhGroup:
+          type: string
+          description: dh group
+          example: "modp4096"
+      required:
+      - encryption
+      - hash
+      - dhGroup
+    Proposal:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/ProposalSpec'
+    ProposalArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Proposal'
+    HubSpec:
+      type: object
+      properties:
+        publicIps:
+          description: public ip list for the traffic hub
+          type: string
+          maxLength: 1024
+          example: "192.168.10.1;192.168.10.2"
+        kubeConfig:
+          type: string
+          description: kubeconfiguration information for the traffic hub device
+          example: "token"
+      required:
+      - publicIps
+      - kubeConfig
+    Hub:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/HubSpec'
+    HubArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Hub'
+    DeviceSpec:
+      type: object
+      properties:
+        publicIps:
+          description: public ip list for the devices
+          type: string
+          maxLength: 1024
+          example: "192.168.10.1;192.168.10.2"
+        forceHubConnectivity:
+          description: Whether connect Hub for connectivity, Valid only if "External IP address type is Public"
+          type: boolean
+          example: false
+        proxyHub:
+          description: Name of proxy hub which used for connectivity, Valid only if "forceHubConnectivity is true"
+          type: string
+          example: "hub1"
+        proxyHubPort:
+          description: the port used by proxy hub to connect this device, Valid only if "forceHubConnectivity is true"
+          type: integer
+          example: 9001  
+        kubeConfig:
+          type: string
+          description: kubeconfiguration information for the traffic hub device
+          example: "token"
+      required:
+      - name
+      - kubeConfig
+    Device:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/DeviceSpec'
+    DeviceArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Device'
+    ConnectionEnd:
+      type: object
+      properties:
+        name:
+          type: string
+          description: connection end name
+          example: "Hub.hub1"
+        type:
+          type: string
+          description: connection end type
+          example: "Hub"
+        ip:
+          type: string
+          description: ip used for connection end
+          example: "10.10.10.10"
+    ConnectionInfo:
+      type: object
+      properties:
+        end1:
+          $ref: '#/components/schemas/ConnectionEnd'
+        end2:
+          $ref: '#/components/schemas/ConnectionEnd'
+        state:
+          type: string
+          description: connection state
+          example: "Deployed"
+        message:
+          type: string
+          description: error message if connection state is Error
+          example: ""
+    Connection:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        info:
+          $ref: '#/components/schemas/ConnectionInfo'
+    ConnectionArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Connection'
+    IpRangeSpec:
+      type: object
+      properties:
+        subnet:
+          description: subnet of the ip range
+          type: string
+          maxLength: 128
+          example: "192.168.11.0/24"
+        minIp:
+          description: minium ip of the ip range
+          type: int
+          example: "1"
+        maxIp:
+          description: maximum ip of the ip range
+          type: int
+          example: "100"
+      required:
+      - name
+      - subnet
+    IpRange:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/IpRangeSpec'
+    IpRangeArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/IpRange'
+    OverlaySpec:
+      type: object
+      properties:
+    Overlay:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/OverlaySpec'
+    OverlayArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Overlay'
+
+################## PARAMETERS #########################################################    
+  parameters:
+    ProposalName:
+      name: proposal-name
+      in: path
+      description: Name of the Proposal
+      required: true
+      schema:
+        type: string
+        maxLength: 128
+    HubName:
+      name: hub-name
+      in: path
+      description: Name of the traffic
+      required: true
+      schema:
+        type: string
+        maxLength: 128
+    DeviceName:
+      name: device-name
+      in: path
+      description: Name of the edge location device
+      required: true
+      schema:
+        type: string
+        maxLength: 128
+    IpRangeName:
+      name: iprange-name
+      in: path
+      description: Name of the ip range
+      required: true
+      schema:
+        type: string
+        maxLength: 128
+    OverlayName:
+      name: overlay-name
+      in: path
+      description: Name of the overlay
+      required: true
+      schema:
+        type: string
+        maxLength: 128
