@@ -18,6 +18,7 @@ COPY sdewan.user /etc/sdewan.user
 COPY sdewan_svc.info /etc/sdewan_svc.info
 COPY default_firewall /etc/config/firewall
 COPY rest_v1 /usr/lib/lua/luci/controller/rest_v1
+COPY 10-default.conf /etc/sysctl.d/10-default.conf
 
 USER root
 
