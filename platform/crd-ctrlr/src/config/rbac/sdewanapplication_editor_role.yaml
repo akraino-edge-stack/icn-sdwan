@@ -1,0 +1,24 @@
+# permissions for end users to edit sdewanapplications.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sdewanapplication-editor-role
+rules:
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - sdewanapplications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - sdewanapplications/status
+  verbs:
+  - get
