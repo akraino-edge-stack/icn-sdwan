@@ -34,4 +34,7 @@ resources:
 - group: batch
   kind: CNFService
   version: v1alpha1
+- group: batch
+  kind: SdewanApplication
+  version: v1alpha1
 version: "2"

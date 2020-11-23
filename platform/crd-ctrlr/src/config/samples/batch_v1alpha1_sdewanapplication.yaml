@@ -1,0 +1,13 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: SdewanApplication
+metadata:
+  name: sdewanapplication-sample
+  labels:
+    sdewanPurpose: cnf1
+spec:
+  namespaceSelector:
+    matchLabels:
+      project: myproject
+  podSelector:
+    matchLabels:
+      app: myapp
