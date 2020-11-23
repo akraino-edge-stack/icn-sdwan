@@ -217,6 +217,14 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "CNFService")
 		os.Exit(1)
 	}
+	if err = (&controllers.SdewanApplicationReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("SdewanApplication"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SdewanApplication")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("starting manager")
