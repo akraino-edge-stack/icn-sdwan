@@ -244,6 +244,11 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 			// No instance
 			return ctrl.Result{}, nil
 		}
+
+		err1, ok := err.(*AppCRError)
+		if ok && err1.Code == 404 {
+			return ctrl.Result{}, nil
+		}
 		// Error reading the object - requeue the request.
 		return ctrl.Result{RequeueAfter: during}, nil
 	}
@@ -316,7 +321,8 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 		_, err := cnf.DeleteObject(handler, instance)
 
 		if err != nil {
-			if err.(*openwrt.OpenwrtError).Code != 404 {
+			err2, ok := err.(*openwrt.OpenwrtError)
+			if !ok || err2.Code != 404 {
 				log.Error(err, "Failed to delete "+handler.GetType())
 				setStatus(instance, batchv1alpha1.SdewanStatus{State: batchv1alpha1.Deleting, Message: err.Error()})
 				err = r.Status().Update(ctx, instance)
