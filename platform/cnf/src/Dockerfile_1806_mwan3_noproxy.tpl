@@ -17,6 +17,7 @@ COPY ipsec /etc/config/ipsec
 COPY ipsec_exec /etc/init.d/ipsec
 COPY sdewan.user /etc/sdewan.user
 COPY sdewan_svc.info /etc/sdewan_svc.info
+COPY app_cr.info /etc/app_cr.info
 COPY default_firewall /etc/config/firewall
 COPY rest_v1 /usr/lib/lua/luci/controller/rest_v1
 COPY 10-default.conf /etc/sysctl.d/10-default.conf
