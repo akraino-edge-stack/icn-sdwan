@@ -110,9 +110,8 @@ sudo apt-get install helm
 
 envsubst < ./cnf/values.yaml >> ./cnf/value.yaml
 mv ./cnf/value.yaml ./cnf/values.yaml
-helm init
 helm package ./cnf
-helm install ./cnf-0.1.0.tgz
+helm install ./cnf-0.1.0.tgz --generate-name
 sleep 20
 
 sdwan_status=$(kubectl get po | grep $sdewan_cnf_name | awk '{print $3}' | head -1)
@@ -192,7 +191,7 @@ fi
 
 echo "--------------------- Setup sdewan controller with helm ---------------------"
 helm package ./controllers
-helm install controllers-0.1.0.tgz
+helm install controllers-0.1.0.tgz --generate-name
 sleep 1m
 
 echo "--------------------- Applying IPSec CRDs ---------------------"
