@@ -79,7 +79,7 @@ spec:
           name: podinfo
           readOnly: true
       nodeSelector:
-        node-role.kubernetes.io/master: {{ .Values.nodeSelector }}
+        node-role.kubernetes.io/master: "{{ .Values.nodeSelector }}"
       restartPolicy: {{ .Values.restartPolicy }}
       volumes:
       - configMap:
