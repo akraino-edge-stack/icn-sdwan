@@ -35,6 +35,7 @@ end
 function create_service()
     local obj = utils.get_request_body_object()
     if obj == nil then
+        utils.response_error(400, "No Service Data")
         return
     end
     if is_invalid(obj.port, obj.dport) then
@@ -75,6 +76,9 @@ end
 -- Delete
 function delete_service()
     local uri_list = utils.get_URI_list(7)
+    if uri_list == nil then
+        return
+    end
     local name = uri_list[#uri_list]
     local info_file = io.open("/etc/sdewan_svc.info", "w")
     local up_file = io.open("/etc/sdewan_svc.up", "r")
