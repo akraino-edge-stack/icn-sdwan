@@ -102,6 +102,7 @@ function _set_environment_file {
     echo "export OVN_CENTRAL_ADDRESS=$(get_ovn_central_address)" | sudo tee --append /etc/environment
     echo "export KUBE_CONFIG_DIR=/opt/kubeconfig" | sudo tee --append /etc/environment
     echo "export CSAR_DIR=/opt/csar" | sudo tee --append /etc/environment
+    echo "export ANSIBLE_CONFIG=${ANSIBLE_CONFIG}" | sudo tee --append /etc/environment
 }
 
 # install_k8s() - Install Kubernetes using kubespray tool
