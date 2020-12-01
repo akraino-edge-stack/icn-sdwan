@@ -45,3 +45,15 @@ do
     count=$(($count+1))
 done < /etc/sdewan_svc.info
 
+SNAT_RULE='POSTROUTING -o eth0 -j MASQUERADE'
+
+iptables -t nat -C $SNAT_RULE || if_exist=$?
+
+if [ $if_exist -ne 0 ];
+then
+   echo "Insert Default rules"
+else
+   iptables -t nat -D $SNAT_RULE
+fi
+
+iptables -t nat -A $SNAT_RULE
