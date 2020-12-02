@@ -1,4 +1,5 @@
--- Licensed to the public under the GNU General Public License v2.
+-- Copyright 2020 Intel Corporation, Inc
+-- Licensed to the public under the Apache License 2.0.
 
 module("luci.controller.rest_v1.service", package.seeall)
 
