@@ -40,7 +40,7 @@ central-controller's high level design can be found at: https://www.linkedin.com
 ## Comprehensive Documentation
 - [How to use](platform/crd-ctrlr#deployment-guide)
 - [Development](platform/crd-ctrlr#developer-guide)
-- [test](platform/test#sdewan-solution-e2e-test)
+- [Test](platform/test#sdewan-solution-e2e-test)
 - [End2End](https://wiki.akraino.org/display/AK/ICN+R3+Test+Document#ICNR3TestDocument-SDEWAN)
 - [Validation Result](https://wiki.akraino.org/display/AK/ICN+R3+Test+Document#ICNR3TestDocument-BluValTesting)
 
