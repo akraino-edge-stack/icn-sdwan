@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5765317_3333bfc4",
+        "filename": "platform/test/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-12-04T05:13:09Z",
+      "side": 1,
+      "message": "RESTful API exported by SDEWAN CNF",
+      "range": {
+        "startLine": 3,
+        "startChar": 51,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "0ac31489baf3763e0111134b8ff57fcdbccd7e8a",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "490dabfb_a5b1e715",
+        "filename": "platform/test/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-12-04T05:13:09Z",
+      "side": 1,
+      "message": "... exported by SDEWAN CRD Controller",
+      "range": {
+        "startLine": 3,
+        "startChar": 74,
+        "endLine": 3,
+        "endChar": 113
+      },
+      "revId": "0ac31489baf3763e0111134b8ff57fcdbccd7e8a",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4db38411_8cfa8f28",
+        "filename": "platform/test/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-12-04T05:13:09Z",
+      "side": 1,
+      "message": "The test scripts will setup 3 all-in-one node k8s clusters based on virtual machines which acting as edge-a, edge-b and the hub. The three clusters are linked through provider network based on OVN. The two edges only obtain a private IP address, hence they cannot be reached by the hub. However, the hub obtains a public IP address which is accessible by others. IPSEC tunnel are then setup up between edge and hub to enable security connection.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 41
+      },
+      "revId": "0ac31489baf3763e0111134b8ff57fcdbccd7e8a",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b2d9327_ec241c32",
+        "filename": "platform/test/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2020-12-04T05:13:09Z",
+      "side": 1,
+      "message": "please help to remove \"space\".",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 1
+      },
+      "revId": "0ac31489baf3763e0111134b8ff57fcdbccd7e8a",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
