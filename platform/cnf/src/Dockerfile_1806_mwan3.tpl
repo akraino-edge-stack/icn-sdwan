@@ -10,6 +10,7 @@ RUN mkdir /var/lock && \
     opkg install uhttpd-mod-lua && \
     uci set uhttpd.main.interpreter='.lua=/usr/bin/lua' && \
     uci commit uhttpd && \
+    opkg install shadow-useradd shadow-groupadd shadow-usermod sudo && \
     opkg install mwan3 jq bash && \
     opkg install strongswan-default && \
     opkg install luci-app-mwan3; exit 0
@@ -27,7 +28,11 @@ ENV http_proxy=
 ENV https_proxy=
 ENV no_proxy=
 
-USER root
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN groupadd --system sudo && useradd wrt
+RUN usermod -a -G sudo wrt
+
+USER wrt
 
 # using exec format so that /sbin/init is proc 1 (see procd docs)
 CMD ["/sbin/init"]
