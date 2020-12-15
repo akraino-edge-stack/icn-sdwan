@@ -24,9 +24,14 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	batchv1alpha1 "sdewan.akraino.org/sdewan/api/v1alpha1"
@@ -132,6 +137,74 @@ func (m *SdewanApplicationHandler) Restart(clientInfo *openwrt.OpenwrtClientInfo
 	return true, nil
 }
 
+var appFilter = builder.WithPredicates(predicate.Funcs{
+	CreateFunc: func(e event.CreateEvent) bool {
+		podPhase := reflect.ValueOf(e.Object).Interface().(*corev1.Pod).Status.Phase
+
+		if podPhase == "Running" {
+			return true
+		}
+		return false
+	},
+	UpdateFunc: func(e event.UpdateEvent) bool {
+		podOldPhase := reflect.ValueOf(e.ObjectOld).Interface().(*corev1.Pod).Status.Phase
+		podNewPhase := reflect.ValueOf(e.ObjectNew).Interface().(*corev1.Pod).Status.Phase
+
+		if podOldPhase != podNewPhase && podNewPhase == "Running" {
+			return true
+		}
+
+		return false
+	},
+})
+
+func GetAppToRequestsFunc(r client.Client) func(h handler.MapObject) []reconcile.Request {
+
+	return func(h handler.MapObject) []reconcile.Request {
+		podLabels := h.Meta.GetLabels()
+		podNamespace := h.Meta.GetNamespace()
+		appCRList := &batchv1alpha1.SdewanApplicationList{}
+		cr := &batchv1alpha1.SdewanApplication{}
+		ctx := context.Background()
+		r.List(ctx, appCRList)
+		crIsFound := false
+		for _, appCR := range appCRList.Items {
+			ps := appCR.Spec.PodSelector.MatchLabels
+			ns := appCR.Spec.AppNamespace
+			judge := true
+			if ns != podNamespace {
+				judge = false
+			} else {
+				for key, value := range ps {
+					if _, ok := podLabels[key]; ok && podLabels[key] == value {
+						continue
+					} else {
+						judge = false
+						break
+					}
+				}
+			}
+			if judge {
+				// Assume one application only have one Application CR
+				cr = &appCR
+				crIsFound = true
+				break
+			}
+		}
+
+		if crIsFound {
+			return []reconcile.Request{
+				{NamespacedName: types.NamespacedName{
+					Name:      cr.ObjectMeta.GetName(),
+					Namespace: cr.ObjectMeta.GetNamespace(),
+				}},
+			}
+		} else {
+			return []reconcile.Request{}
+		}
+	}
+}
+
 // SdewanApplicationReconciler reconciles a SdewanApplication object
 type SdewanApplicationReconciler struct {
 	client.Client
@@ -155,5 +228,11 @@ func (r *SdewanApplicationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				ToRequests: handler.ToRequestsFunc(GetServiceToRequestsFunc(r)),
 			},
 			IPFilter).
+		Watches(
+			&source.Kind{Type: &corev1.Pod{}},
+			&handler.EnqueueRequestsFromMapFunc{
+				ToRequests: handler.ToRequestsFunc(GetAppToRequestsFunc(r)),
+			},
+			appFilter).
 		Complete(r)
 }
