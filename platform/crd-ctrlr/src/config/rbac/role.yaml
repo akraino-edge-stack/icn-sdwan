@@ -243,6 +243,26 @@ rules:
   - patch
   - update
 - apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - sdewanapplications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - sdewanapplications/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - rbac.authorization.k8s.io
   resources:
   - clusterrolebindings
