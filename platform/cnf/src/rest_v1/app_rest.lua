@@ -44,19 +44,23 @@ function create_application()
         return
     end
 
-    local iplist = utils.split_and_trim(obj.iplist, ',')
-    if not is_valid_ip(iplist) then
-        utils.response_error(400, "Invalid IP Address")
-        return
-    end
-    for _, ip in ipairs(iplist) do
-        local comm = "ip rule add from "..ip.." lookup 40"
-        os.execute(comm)
-    end
-
-    iplist = array_to_string(iplist)
     local file = io.open("/etc/app_cr.info", "a+")
-    file:write(obj.name, " ", iplist, "\n")
+    if obj.iplist ~= nil then
+        local iplist = utils.split_and_trim(obj.iplist, ',')
+        if not is_valid_ip(iplist) then
+            utils.response_error(400, "Invalid IP Address")
+            return
+        end
+        for _, ip in ipairs(iplist) do
+            local comm = "ip rule add from "..ip.." lookup 40"
+            os.execute(comm)
+        end
+
+        iplist = array_to_string(iplist)
+        file:write(obj.name, " ", iplist, "\n")
+    else
+        file:write(obj.name, "\n")
+    end
     file:close()
     luci.http.prepare_content("application/json")
     luci.http.write_json(obj)
@@ -76,10 +80,12 @@ function delete_application()
         if name ~= message[1] then
             content[#content+1] = line
         else
-            local iplist = split(message[2], ',')
-            for _, ip in ipairs(iplist) do
-                local comm = "ip rule del from "..ip.." lookup 40"
-                os.execute(comm)
+            if #message ~= 1 then
+                local iplist = split(message[2], ',')
+                for _, ip in ipairs(iplist) do
+                    local comm = "ip rule del from "..ip.." lookup 40"
+                    os.execute(comm)
+                end
             end
         end
     end
@@ -108,30 +114,43 @@ function update_application()
         return
     end
 
-    local input = utils.split_and_trim(obj.iplist, ",")
-    if not is_valid_ip(input) then
-        utils.response_error(400, "Invalid IP Address")
-        return
-    end
-
     local file = io.open("/etc/app_cr.info", "r")
-    content = {}
-    for line in file:lines() do
-        local message = split(line, ' ')
-        if name ~= message[1] then
-            content[#content+1] = line
-        else
-            local iplist = split(message[2], ',')
-            for _, ip in ipairs(iplist) do
-                local comm = "ip rule del from "..ip.." lookup 40"
-                os.execute(comm)
+    if obj.iplist ~= nil then
+        local input = utils.split_and_trim(obj.iplist, ",")
+        if not is_valid_ip(input) then
+            utils.response_error(400, "Invalid IP Address")
+            return
+        end
+
+        content = {}
+        for line in file:lines() do
+            local message = split(line, ' ')
+            if name ~= message[1] then
+                content[#content+1] = line
+            else
+                if #message ~= 1 then
+                    local iplist = split(message[2], ',')
+                    for _, ip in ipairs(iplist) do
+                        local comm = "ip rule del from "..ip.." lookup 40"
+                        os.execute(comm)
+                    end
+                end
+                for _, ip in ipairs(input) do
+                    local comm = "ip rule add from "..ip.." lookup 40"
+                    os.execute(comm)
+                end
+                local str = array_to_string(input)
+                content[#content+1] = obj.name.." "..str.."\n"
             end
-            for _, ip in ipairs(input) do
-                local comm = "ip rule add from "..ip.." lookup 40"
-                os.execute(comm)
+        end
+    else
+        for line in file:lines() do
+            local message = split(line, ' ')
+            if name ~= message[1] then
+                content[#content+1] = line
+            else
+                content[#content+1] = obj.name.."\n"
             end
-            local str = array_to_string(input)
-            content[#content+1] = obj.name.." "..str.."\n"
         end
     end
     file:close()
@@ -155,7 +174,11 @@ function get_application()
             local message = split(line, ' ')
             local obj = {}
             obj["name"] = message[1]
-            obj["iplist"] = message[2]
+            if #message == 1 then
+                obj["iplist"] = ""
+            else
+                obj["iplist"] = message[2]
+            end
             table.insert(objs["applications"], obj)
         end
         luci.http.prepare_content("application/json")
@@ -169,7 +192,11 @@ function get_application()
                 no = false
                 local obj = {}
                 obj["name"] = message[1]
-                obj["iplist"] = message[2]
+                if #message == 1 then
+                    obj["iplist"] = ""
+                else
+                    obj["iplist"] = message[2]
+                end
                 luci.http.prepare_content("application/json")
                 luci.http.write_json(obj)
                 break
