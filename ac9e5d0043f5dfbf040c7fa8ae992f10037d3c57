@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2981a8c7_ccb4c984",
+        "filename": "platform/cnf/src/rest_v1/app_rest.lua",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-01-05T08:32:09Z",
+      "side": 1,
+      "message": "Where does the iplist defined, or is it obj.iplist?",
+      "range": {
+        "startLine": 48,
+        "startChar": 7,
+        "endLine": 48,
+        "endChar": 13
+      },
+      "revId": "ac9e5d0043f5dfbf040c7fa8ae992f10037d3c57",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
