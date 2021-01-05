@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90609010_3550d440",
+        "filename": "platform/crd-ctrlr/src/controllers/sdewanapplication_controller.go",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-01-05T09:04:18Z",
+      "side": 1,
+      "message": "Let\u0027s remove these lines.",
+      "range": {
+        "startLine": 87,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 4
+      },
+      "revId": "186b7925343f3ef61a6b222193ad0a211e02bf40",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
