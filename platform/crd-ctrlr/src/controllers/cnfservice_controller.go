@@ -122,6 +122,12 @@ func (r *CNFServiceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&batchv1alpha1.CNFService{}).
 		Watches(
+                        &source.Kind{Type: &appsv1.Deployment{}},
+                        &handler.EnqueueRequestsFromMapFunc{
+                                ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.CNFServiceList{})),
+                        },
+                        Filter).
+		Watches(
 			&source.Kind{Type: &corev1.Service{}},
 			&handler.EnqueueRequestsFromMapFunc{
 				ToRequests: handler.ToRequestsFunc(GetServiceToRequestsFunc(r)),
