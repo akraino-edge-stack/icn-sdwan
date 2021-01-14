@@ -48,7 +48,7 @@ type AppCRError struct {
 	Message string
 }
 
-func (e AppCRError) Error() string {
+func (e *AppCRError) Error() string {
 	return fmt.Sprintf("Error Code: %d, Error Message: %s", e.Code, e.Message)
 }
 

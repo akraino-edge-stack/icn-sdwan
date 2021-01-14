@@ -31,6 +31,8 @@ webhooks:
     - ipsechosts
     - ipsecproposals
     - ipsecsites
+    - cnfservice
+    - sdewanapplication
     scope: '*'
   sideEffects: Unknown
   timeoutSeconds: 30
@@ -62,6 +64,8 @@ webhooks:
     - firewallzones
     - ipsechosts
     - ipsecproposals
+    - cnfservice
+    - sdewanapplication
     scope: '*'
   sideEffects: Unknown
   timeoutSeconds: 30
