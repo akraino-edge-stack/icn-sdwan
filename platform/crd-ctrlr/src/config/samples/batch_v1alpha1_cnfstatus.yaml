@@ -1,0 +1,6 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: CNFStatus
+metadata:
+  name: cnfstatus-sample
+spec:
+  # Add fields here

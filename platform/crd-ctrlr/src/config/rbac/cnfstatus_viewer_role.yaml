@@ -1,0 +1,20 @@
+# permissions for end users to view cnfstatuses.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cnfstatus-viewer-role
+rules:
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfstatuses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfstatuses/status
+  verbs:
+  - get

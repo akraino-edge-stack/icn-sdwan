@@ -1,0 +1,24 @@
+# permissions for end users to edit cnfstatuses.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cnfstatus-editor-role
+rules:
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfstatuses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfstatuses/status
+  verbs:
+  - get
