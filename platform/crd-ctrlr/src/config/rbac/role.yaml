@@ -25,6 +25,26 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
+  - cnfroutes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfroutes/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
   - cnfservices
   verbs:
   - create

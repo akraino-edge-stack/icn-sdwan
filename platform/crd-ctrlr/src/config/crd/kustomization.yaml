@@ -14,6 +14,7 @@ resources:
 - bases/batch.sdewan.akraino.org_ipsecsites.yaml
 - bases/batch.sdewan.akraino.org_cnfservices.yaml
 - bases/batch.sdewan.akraino.org_sdewanapplications.yaml
+- bases/batch.sdewan.akraino.org_cnfroutes.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
@@ -31,6 +32,7 @@ patchesStrategicMerge:
 #- patches/webhook_in_ipsecsites.yaml
 #- patches/webhook_in_cnfservices.yaml
 #- patches/webhook_in_sdewanapplications.yaml
+#- patches/webhook_in_cnfroutes.yaml
 # +kubebuilder:scaffold:crdkustomizewebhookpatch
 
 # [CERTMANAGER] To enable webhook, uncomment all the sections with [CERTMANAGER] prefix.
@@ -47,6 +49,7 @@ patchesStrategicMerge:
 #- patches/cainjection_in_ipsecsites.yaml
 #- patches/cainjection_in_cnfservices.yaml
 #- patches/cainjection_in_sdewanapplications.yaml
+#- patches/cainjection_in_cnfroutes.yaml
 # +kubebuilder:scaffold:crdkustomizecainjectionpatch
 
 # the following config is for teaching kustomize how to do kustomization for CRDs.
