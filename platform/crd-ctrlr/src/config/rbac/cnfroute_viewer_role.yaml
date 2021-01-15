@@ -1,0 +1,20 @@
+# permissions for end users to view cnfroutes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cnfroute-viewer-role
+rules:
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfroutes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfroutes/status
+  verbs:
+  - get

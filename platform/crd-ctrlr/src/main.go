@@ -229,6 +229,14 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "SdewanApplication")
 		os.Exit(1)
 	}
+	if err = (&controllers.CNFRouteReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("CNFRoute"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "CNFRoute")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("start CNFStatusController to query CNF status periodicly")

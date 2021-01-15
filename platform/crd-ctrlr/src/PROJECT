@@ -40,4 +40,7 @@ resources:
 - group: batch
   kind: CNFStatus
   version: v1alpha1
+- group: batch
+  kind: CNFRoute
+  version: v1alpha1
 version: "2"
