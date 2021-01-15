@@ -37,4 +37,7 @@ resources:
 - group: batch
   kind: SdewanApplication
   version: v1alpha1
+- group: batch
+  kind: CNFRoute
+  version: v1alpha1
 version: "2"
