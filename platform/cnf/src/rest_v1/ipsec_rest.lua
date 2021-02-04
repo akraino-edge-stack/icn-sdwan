@@ -1,5 +1,4 @@
--- Copyright 2020 Intel Corporation, Inc
--- Licensed to the public under the Apache License 2.0.
+-- Copyright 2020 Intel Corporation, Inc.
 
 module("luci.controller.rest_v1.ipsec_rest", package.seeall)
 
@@ -9,6 +8,7 @@ json = require "luci.jsonc"
 io = require "io"
 sys = require "luci.sys"
 utils = require "luci.controller.rest_v1.utils"
+mime = require "mime"
 
 uci_conf = "ipsec"
 
@@ -134,7 +134,9 @@ function save_cert(content, path)
         return false, "Can not generate cert at: " .. path
     end
 
-    file:write(content)
+    mime.decode("base64")
+    local cert = mime.unb64(content)
+    file:write(cert)
     file:close()
 
     return true, path
@@ -150,7 +152,8 @@ function load_cert(path)
         content = file:read "*a"
         file:close()
     end
-    return content
+    mime.decode("base64")
+    return mime.unb64(content)
 end
 
 function delete_cert(path)
