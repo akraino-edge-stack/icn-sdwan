@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# set charon.install_virtual_ip = no to prevent the daemon from also installing the VIP
+
+set -o nounset
+set -o errexit
+
+MARK=`echo ${PLUTO_MARK_IN} | cut -d'/' -f1`
+VTI_IF="vti${MARK}"
+
+case "${PLUTO_VERB}" in
+    up-host)
+        ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote "${PLUTO_PEER}" mode vti \
+            key "${PLUTO_MARK_OUT%%/*}"
+        ip link set "${VTI_IF}" up
+        ip route add "${PLUTO_PEER_SOURCEIP}" dev "${VTI_IF}" src "${PLUTO_ME}"
+        sysctl -w "net.ipv4.conf.${VTI_IF}.disable_policy=1"
+        ;;
+    down-host)
+        ip tunnel del "${VTI_IF}"
+        ;;
+esac
