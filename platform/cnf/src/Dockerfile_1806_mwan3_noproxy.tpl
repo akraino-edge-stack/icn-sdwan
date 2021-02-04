@@ -9,12 +9,14 @@ RUN mkdir /var/lock && \
     uci commit uhttpd && \
     opkg install shadow-useradd shadow-groupadd shadow-usermod sudo && \
     opkg install mwan3 jq bash && \
-    opkg install strongswan-default && \
+    opkg install strongswan-default luasocket && \
     opkg install luci-app-mwan3; exit 0
 
 COPY system /etc/config/system
 COPY ipsec /etc/config/ipsec
 COPY ipsec_exec /etc/init.d/ipsec
+COPY updown /etc/updown
+COPY updown_oip /etc/updown_oip
 COPY sdewan.user /etc/sdewan.user
 COPY sdewan_svc.info /etc/sdewan_svc.info
 COPY app_cr.info /etc/app_cr.info
