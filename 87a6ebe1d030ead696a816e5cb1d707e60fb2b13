@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fa57aef6_665b6a2f",
+        "filename": "platform/cnf/src/rest_v1/ipsec_rest.lua",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-02-05T01:05:25Z",
+      "side": 1,
+      "message": "Got it.",
+      "parentUuid": "aca22405_b56a588b",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 66
+      },
+      "revId": "87a6ebe1d030ead696a816e5cb1d707e60fb2b13",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "52e68b5e_97f3a51f",
         "filename": "platform/cnf/src/updown",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2021-02-04T14:19:47Z",
       "side": 1,
       "message": "Something missing?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 84
+      },
+      "revId": "87a6ebe1d030ead696a816e5cb1d707e60fb2b13",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce42e5b3_1810f921",
+        "filename": "platform/cnf/src/updown",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-02-05T01:05:25Z",
+      "side": 1,
+      "message": "This is just some notes. But the setting is already enabled in /etc/init.d/ipsec",
+      "parentUuid": "52e68b5e_97f3a51f",
       "range": {
         "startLine": 1,
         "startChar": 0,
