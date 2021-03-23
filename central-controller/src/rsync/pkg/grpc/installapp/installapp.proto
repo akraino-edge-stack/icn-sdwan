@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2020 Intel Corporation
+
+syntax = "proto3";
+
+service installapp {
+    // Sync
+    rpc InstallApp(InstallAppRequest) returns (InstallAppResponse) {
+    }
+
+    rpc UninstallApp(UninstallAppRequest) returns (UninstallAppResponse) {
+    }
+}
+
+message InstallAppRequest {
+    string app_context = 1;
+}
+
+message InstallAppResponse {
+    bool app_context_installed = 1;
+    string app_context_install_message = 2;
+}
+
+message UninstallAppRequest {
+    string app_context = 1;
+}
+
+message UninstallAppResponse {
+    bool app_context_uninstalled = 1;
+    string app_context_uninstall_message = 2;
+}
+

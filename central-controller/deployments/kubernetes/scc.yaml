@@ -1,0 +1,100 @@
+# Resources to create SDEWAN Central Controller v1 Microservices
+# SCC Config Map
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: scc-rbac
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: sdewan-system
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# SCC Config Map
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: scc
+  labels:
+    app: scc
+data:
+  config.json: |
+          {
+          "database-type": "mongo",
+          "database-ip": "mongo",
+          "etcd-ip": "etcd",
+          "service-port": "9015"
+          }
+  rsync_config.json: |
+          {
+          "rsync-ip": "rsync",
+          "rsync-port": "9041"
+          }
+
+---
+# SCC Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: scc
+  labels:
+    app: scc
+spec:
+  selector:
+    app: scc
+  type: NodePort
+  ports:
+  - name: http
+    port: 9015
+    nodePort: 31298
+    protocol: TCP
+    targetPort: 9015
+
+---
+# SCC Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scc
+  template:
+    metadata:
+      labels:
+        app: scc
+    spec:
+      containers:
+        - name: scc
+          image: scc:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/opt/scc/entrypoint", "scc"]
+          workingDir: /opt/scc
+          ports:
+          - containerPort: 9015
+          volumeMounts:
+          - name: config
+            mountPath: /opt/scc/config.json
+            subPath: config.json
+          - name: rsync-config
+            mountPath: /opt/scc/rsync_config.json
+            subPath: rsync_config.json
+      volumes:
+        - name: config
+          configMap:
+            name: scc
+            items:
+            - key: config.json
+              path: config.json
+        - name: rsync-config
+          configMap:
+            name: scc
+            items:
+            - key: rsync_config.json
+              path: rsync_config.json

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor
+  labels:
+    "emco/deployment-id": "monitor"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      "emco/deployment-id": "monitor"
+  template:
+    metadata:
+      labels:
+        "emco/deployment-id": "monitor"
+    spec:
+      serviceAccountName: monitor
+      containers:
+        - name: monitor
+          # Replace this with the built image name
+          image: scc:latest
+          command: ["/opt/scc/entrypoint", "monitor"]
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: WATCH_NAMESPACE
+              value: ""
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "monitor"

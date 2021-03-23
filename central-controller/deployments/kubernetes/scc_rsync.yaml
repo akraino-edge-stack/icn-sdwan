@@ -1,0 +1,71 @@
+# Resources to create Rsync used by SDEWAN Central Controller v1 Microservices
+---
+# RSYNC ConfigMap
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rsync
+  labels:
+    app: rsync
+data:
+  config.json: |
+          {
+          "database-type": "mongo",
+          "database-ip": "mongo",
+          "etcd-ip": "etcd"
+          }
+
+---
+# RSYNC Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsync
+  labels:
+    app: rsync
+spec:
+  selector:
+    app: rsync
+  type: NodePort
+  ports:
+  - name: internal
+    port: 9041
+    protocol: TCP
+    targetPort: 9041
+    nodePort: 31297
+
+---
+# RSYNC Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsync
+  template:
+    metadata:
+      labels:
+        app: rsync
+    spec:
+      containers:
+        - name: rsync
+          image: scc:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/opt/scc/entrypoint", "rsync"]
+          workingDir: /opt/scc
+          ports:
+          - containerPort: 9041
+          volumeMounts:
+          - name: config
+            mountPath: /opt/scc/config.json
+            subPath: config.json
+      volumes:
+        - name: config
+          configMap:
+            name: rsync
+            items:
+            - key: config.json
+              path: config.json

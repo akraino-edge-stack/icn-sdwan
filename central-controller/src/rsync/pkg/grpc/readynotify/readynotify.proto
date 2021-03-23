@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2020 Intel Corporation
+
+syntax = "proto3";
+
+service readyNotify {
+	rpc Alert (Topic) returns (stream Notification);
+}
+
+message Alert {
+	string message = 1;
+}
+
+message Topic {
+	string clientName = 1;
+	string appContext = 2;
+}
+
+message Notification {
+	string clientName = 1;
+	string serverName = 2;
+	string appContext = 3;
+}

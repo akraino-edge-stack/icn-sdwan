@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2020 Intel Corporation
+
+syntax = "proto3";
+
+service contextupdate {
+    // Controllers
+    rpc UpdateAppContext(ContextUpdateRequest) returns (ContextUpdateResponse) {
+    }
+}
+
+message ContextUpdateRequest {
+    string app_context = 1;
+    string intent_name = 2;
+}
+
+message ContextUpdateResponse {
+    bool app_context_updated = 1;
+    string app_context_update_message = 2;
+}
