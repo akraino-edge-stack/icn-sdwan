@@ -1,22 +1,15 @@
-/*
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// SPDX-License-Identifier: Apache-2.0
 // Based on Code: https://github.com/johandry/klient
+
 package client
 
 import (
 	"context"
+	"errors"
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 )
 
 // CreateNamespace creates a namespace with the given name
@@ -65,13 +58,40 @@ func (c *Client) NodesReady() (ready int, total int, err error) {
 	return ready, len(nodes.Items), nil
 }
 
+// GetMasterNodeIP returns the master node IP of the deployed app
+func (c *Client) GetMasterNodeIP() (nodeIP string, err error) {
+
+	ip := ""
+	nodes, err := c.Clientset.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return ip, err
+	}
+	total := len(nodes.Items)
+	if total == 0 {
+		return ip, nil
+	}
+	for _, item := range nodes.Items {
+		for _, address := range item.Status.Addresses {
+			// This gives the ip address of the master node
+			ip = address.Address
+			break
+		}
+		break
+	}
+
+	return ip, nil
+}
+
 // Version returns the cluster version. It can be used to verify if the cluster
 // is reachable. It will return an error if failed to connect.
 func (c *Client) Version() (string, error) {
-	v, err := c.Clientset.ServerVersion()
-	if err != nil {
-		return "", err
+	cl, ok := (c.Clientset.(*kubernetes.Clientset))
+	if ok {
+		v, err := cl.ServerVersion()
+		if err != nil {
+			return "", err
+		}
+		return v.String(), nil
 	}
-
-	return v.String(), nil
+	return "", errors.New("error in getting client")
 }

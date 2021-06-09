@@ -30,6 +30,6 @@ func (c *EmptyResource) GetType() string {
 	return "Empty"
 }
 
-func (c *EmptyResource) ToYaml() string {
+func (c *EmptyResource) ToYaml(target string) string {
 	return ""
 }

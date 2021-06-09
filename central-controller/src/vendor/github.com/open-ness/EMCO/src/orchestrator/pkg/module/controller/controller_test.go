@@ -100,15 +100,17 @@ func TestGetController(t *testing.T) {
 			},
 			expectedError: "",
 			mockdb: &db.MockDB{
-				Items: map[string]map[string][]byte{
-					ControllerKey{ControllerName: "testController"}.String(): {
-						"controllermetadata": []byte(
-							"{\"metadata\":{" +
-								"\"name\":\"testController\"" +
-								"}," +
-								"\"spec\":{" +
-								"\"host\":\"132.156.0.10\"," +
-								"\"port\": 8080 }}"),
+				Items: []map[string]map[string][]byte{
+					{
+						ControllerKey{ControllerName: "testController"}.String(): {
+							"controllermetadata": []byte(
+								"{\"metadata\":{" +
+									"\"name\":\"testController\"" +
+									"}," +
+									"\"spec\":{" +
+									"\"host\":\"132.156.0.10\"," +
+									"\"port\": 8080 }}"),
+						},
 					},
 				},
 			},

@@ -66,7 +66,7 @@ func (c *IpsecResource) GetType() string {
         return "Ipsec"
 }
 
-func (c *IpsecResource) ToYaml() string {
+func (c *IpsecResource) ToYaml(target string) string {
         p := strings.Join(c.CryptoProposal, ",")
         pr := strings.Join(c.Connections.CryptoProposal, ",")
 	var connection = ""
@@ -79,6 +79,7 @@ metadata:
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   type: ` + c.Type + `
   remote: '` + c.Remote + `'

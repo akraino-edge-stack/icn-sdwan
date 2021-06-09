@@ -34,7 +34,7 @@ func (c *ProposalResource) GetType() string {
     return "Proposal"
 }
 
-func (c *ProposalResource) ToYaml() string {
+func (c *ProposalResource) ToYaml(target string) string {
     return `apiVersion: ` + SdewanApiVersion + `
 kind: IpsecProposal
 metadata:
@@ -42,6 +42,7 @@ metadata:
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   encryption_algorithm: ` + c.Encryption + `
   hash_algorithm: ` + c.Hash + `

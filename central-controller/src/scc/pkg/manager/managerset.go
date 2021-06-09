@@ -22,8 +22,11 @@ type Managerset struct {
     Hub *HubObjectManager
     HubConn *HubConnObjectManager
     HubDevice *HubDeviceObjectManager
+    HubCNF *CNFObjectManager
     Device *DeviceObjectManager
     DeviceConn *DeviceConnObjectManager
+    DeviceCNF *CNFObjectManager
+    ProviderIPRange *IPRangeObjectManager
     IPRange *IPRangeObjectManager
     Cert *CertificateObjectManager
 }

@@ -64,9 +64,12 @@ func NewRouter(
     hubObjectClient manager.ControllerObjectManager,
     hubConnObjectClient manager.ControllerObjectManager,
     hubDeviceObjectClient manager.ControllerObjectManager,
+    hubCNFObjectClient manager.ControllerObjectManager,
     deviceObjectClient manager.ControllerObjectManager,
     deviceConnObjectClient manager.ControllerObjectManager,
+    deviceCNFObjectClient manager.ControllerObjectManager,
     ipRangeObjectClient manager.ControllerObjectManager,
+    providerIpRangeObjectClient manager.ControllerObjectManager,
     certificateObjectClient manager.ControllerObjectManager) *mux.Router {
 
     router := mux.NewRouter()
@@ -75,6 +78,7 @@ func NewRouter(
 
     // router
     verRouter := router.PathPrefix("/scc/" + ver).Subrouter()
+    providerRouter := router.PathPrefix("/scc/" + ver + "/provider").Subrouter()
     olRouter := verRouter.PathPrefix("/" + manager.OverlayCollection + "/{" + manager.OverlayResource + "}").Subrouter()
     hubRouter := olRouter.PathPrefix("/" + manager.HubCollection + "/{" + manager.HubResource + "}").Subrouter()
     devRouter := olRouter.PathPrefix("/" + manager.DeviceCollection + "/{" + manager.DeviceResource + "}").Subrouter()
@@ -95,7 +99,7 @@ func NewRouter(
 
     // hub API
     if hubObjectClient == nil {
-	 hubObjectClient = manager.NewHubObjectManager()
+         hubObjectClient = manager.NewHubObjectManager()
     }
     mgrset.Hub = hubObjectClient.(*manager.HubObjectManager)
     createHandlerMapping(hubObjectClient, olRouter, manager.HubCollection, manager.HubResource)
@@ -106,6 +110,13 @@ func NewRouter(
     }
     mgrset.HubConn = hubConnObjectClient.(*manager.HubConnObjectManager)
     createHandlerMapping(hubConnObjectClient, hubRouter, manager.ConnectionCollection, manager.ConnectionResource)
+
+    // hub-cnf API
+    if hubCNFObjectClient == nil {
+         hubCNFObjectClient = manager.NewCNFObjectManager(true)
+    }
+    mgrset.HubCNF = hubCNFObjectClient.(*manager.CNFObjectManager)
+    createHandlerMapping(hubCNFObjectClient, hubRouter, manager.CNFCollection, manager.CNFResource)
 
     // hub-device API
     if hubDeviceObjectClient == nil {
@@ -128,9 +139,23 @@ func NewRouter(
     mgrset.DeviceConn = deviceConnObjectClient.(*manager.DeviceConnObjectManager)
     createHandlerMapping(deviceConnObjectClient, devRouter, manager.ConnectionCollection, manager.ConnectionResource)
 
+    // device-cnf API
+    if deviceCNFObjectClient == nil {
+         deviceCNFObjectClient = manager.NewCNFObjectManager(false)
+    }
+    mgrset.DeviceCNF = deviceCNFObjectClient.(*manager.CNFObjectManager)
+    createHandlerMapping(deviceCNFObjectClient, devRouter, manager.CNFCollection, manager.CNFResource)
+
+    // provider iprange API
+    if providerIpRangeObjectClient == nil {
+         providerIpRangeObjectClient = manager.NewIPRangeObjectManager(true)
+    }
+    mgrset.ProviderIPRange = providerIpRangeObjectClient.(*manager.IPRangeObjectManager)
+    createHandlerMapping(providerIpRangeObjectClient, providerRouter, manager.IPRangeCollection, manager.IPRangeResource)
+
     // iprange API
     if ipRangeObjectClient == nil {
-         ipRangeObjectClient = manager.NewIPRangeObjectManager()
+         ipRangeObjectClient = manager.NewIPRangeObjectManager(false)
     }
     mgrset.IPRange = ipRangeObjectClient.(*manager.IPRangeObjectManager)
     createHandlerMapping(ipRangeObjectClient, olRouter, manager.IPRangeCollection, manager.IPRangeResource)
@@ -149,6 +174,7 @@ func NewRouter(
     overlayObjectClient.AddOwnResManager(ipRangeObjectClient)
     overlayObjectClient.AddOwnResManager(certificateObjectClient)
     hubObjectClient.AddOwnResManager(hubDeviceObjectClient)
+    deviceObjectClient.AddOwnResManager(hubDeviceObjectClient)
 
     proposalObjectClient.AddDepResManager(overlayObjectClient)
     hubObjectClient.AddDepResManager(overlayObjectClient)
@@ -156,8 +182,11 @@ func NewRouter(
     ipRangeObjectClient.AddDepResManager(overlayObjectClient)
     certificateObjectClient.AddDepResManager(overlayObjectClient)
     hubDeviceObjectClient.AddDepResManager(hubObjectClient)
+    hubDeviceObjectClient.AddDepResManager(deviceObjectClient)
     hubConnObjectClient.AddDepResManager(hubObjectClient)
     deviceConnObjectClient.AddDepResManager(deviceObjectClient)
+    hubCNFObjectClient.AddDepResManager(hubObjectClient)
+//    deviceCNFObjectClient.AddDepResManager(deviceObjectClient)
 
     return router
 }

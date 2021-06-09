@@ -367,6 +367,9 @@ func (m *MongoStore) Remove(coll string, key Key) error {
 	if err != nil {
 		return pkgerrors.Errorf("Error finding: %s", err.Error())
 	}
+	if count == 0 {
+		return pkgerrors.Errorf("key not found")
+	}
 	if count > 1 {
 		return pkgerrors.Errorf("Can't delete parent without deleting child references first")
 	}

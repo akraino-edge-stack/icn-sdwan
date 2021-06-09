@@ -34,7 +34,7 @@ func (c *FileResource) GetType() string {
 	return "File"
 }
 
-func (c *FileResource) ToYaml() string {
+func (c *FileResource) ToYaml(target string) string {
 	yamlFile, _ := ioutil.ReadFile(c.FileName)
 	return string(yamlFile)
 }

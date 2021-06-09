@@ -10,6 +10,10 @@ service installapp {
 
     rpc UninstallApp(UninstallAppRequest) returns (UninstallAppResponse) {
     }
+
+    rpc ReadAppContext(ReadAppContextRequest) returns (ReadAppContextResponse){
+    }
+
 }
 
 message InstallAppRequest {
@@ -30,3 +34,11 @@ message UninstallAppResponse {
     string app_context_uninstall_message = 2;
 }
 
+message ReadAppContextRequest {
+    string app_context = 1;
+}
+
+message ReadAppContextResponse {
+    bool app_context_read_successful = 1;
+    string app_context_read_message = 2;
+}

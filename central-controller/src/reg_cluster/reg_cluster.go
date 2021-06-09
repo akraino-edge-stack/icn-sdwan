@@ -16,7 +16,7 @@ func registerCluster(provider_name string, cluster_name string, kubeconfig_file 
 
     ccc := rsync.NewCloudConfigClient()
 
-    _, err = ccc.CreateCloudConfig(provider_name, cluster_name, "0", "sdewan-system", base64.StdEncoding.EncodeToString(content))
+    _, err = ccc.CreateCloudConfig(provider_name, cluster_name, "0", "default", base64.StdEncoding.EncodeToString(content))
     if err != nil {
         return pkgerrors.Wrap(err, "Error creating cloud config")
     }

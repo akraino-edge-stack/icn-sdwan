@@ -121,7 +121,7 @@ func main() {
     }
 
     // create http server
-    httpRouter := api.NewRouter(nil, nil, nil, nil, nil, nil, nil, nil, nil)
+    httpRouter := api.NewRouter(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
     loggedRouter := handlers.LoggingHandler(os.Stdout, httpRouter)
     log.Println("Starting SDEWAN Central Controller API")
 

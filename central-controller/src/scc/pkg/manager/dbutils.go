@@ -172,12 +172,12 @@ func (d *DBUtils) DeleteObject(c ControllerObjectManager, m map[string]string) e
 func (d *DBUtils) RegisterDevice(cluster_name string, kubeconfig string) error {
     ccc := rsync.NewCloudConfigClient()
 
-    config, _ := ccc.GetCloudConfig(PROVIDERNAME, cluster_name, "0", "sdewan-system")
+    config, _ := ccc.GetCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
     if config.Config != "" {
-        ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "sdewan-system")
+        ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
     }
 
-    _, err := ccc.CreateCloudConfig(PROVIDERNAME, cluster_name, "0", "sdewan-system", kubeconfig)
+    _, err := ccc.CreateCloudConfig(PROVIDERNAME, cluster_name, "0", "default", kubeconfig)
     if err != nil {
         return pkgerrors.Wrap(err, "Error creating cloud config")
     }
@@ -188,7 +188,7 @@ func (d *DBUtils) RegisterDevice(cluster_name string, kubeconfig string) error {
 func (d *DBUtils) UnregisterDevice(cluster_name string) error {
     ccc := rsync.NewCloudConfigClient()
 
-    err := ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "sdewan-system")
+    err := ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
     if err != nil {
         return pkgerrors.Wrap(err, "Error deleting cloud config")
     }

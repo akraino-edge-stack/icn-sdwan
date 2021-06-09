@@ -38,7 +38,7 @@ func (c *FirewallDnatResource) GetType() string {
     return "FirewallDNAT"
 }
 
-func (c *FirewallDnatResource) ToYaml() string {
+func (c *FirewallDnatResource) ToYaml(target string) string {
     basic := `apiVersion: ` + SdewanApiVersion + `
 kind: FirewallDNAT
 metadata:
@@ -46,6 +46,7 @@ metadata:
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   src: ` + c.Source + `
   src_dip: ` + c.SourceDestIP + `

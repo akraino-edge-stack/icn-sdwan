@@ -5,6 +5,7 @@ package connector
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -15,6 +16,9 @@ import (
 	"github.com/open-ness/EMCO/src/rsync/pkg/db"
 	pkgerrors "github.com/pkg/errors"
 )
+
+// IsTestKubeClient .. global variable used during unit-tests to check whether a fake kube client object has to be instantiated
+var IsTestKubeClient bool = false
 
 type Connector struct {
 	cid     string
@@ -65,6 +69,12 @@ func (c *Connector) GetClient(cluster string, level string, namespace string) (*
 	c.Lock()
 	defer c.Unlock()
 
+	// Check if Fake kube client is required(it's true for unit tests)
+	log.Info("GetClient .. start", log.Fields{"IsTestKubeClient": fmt.Sprintf("%v", IsTestKubeClient)})
+	if IsTestKubeClient {
+		return kubeclient.NewKubeFakeClient()
+	}
+
 	client, ok := c.Clients[cluster]
 	if !ok {
 		// Get file from DB
@@ -91,6 +101,8 @@ func (c *Connector) GetClient(cluster string, level string, namespace string) (*
 		client = kubeclient.New("", kubeConfig, namespace)
 		if client != nil {
 			c.Clients[cluster] = client
+		} else {
+			return nil, errors.New("failed to connect with the cluster")
 		}
 	}
 	return client, nil

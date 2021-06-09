@@ -349,11 +349,12 @@ func ValidateJsonSchemaData(jsonSchemaFile string, jsonData interface{}) (error,
 	if err != nil {
 		return pkgerrors.Wrap(err, "JsonSchemaValidation: Validation error"), http.StatusInternalServerError
 	}
+
 	// Validate document against Json Schema
 	if !result.Valid() {
 		for _, desc := range result.Errors() {
 			log.Error("The document is not valid", log.Fields{
-				"Error": desc.Description(),
+				"param": desc.Field(), "reason": desc.Description(), "req": string(req),
 			})
 		}
 		return pkgerrors.New("JsonSchemaValidation: Document Validation failed"), http.StatusBadRequest

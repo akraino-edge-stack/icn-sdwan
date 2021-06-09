@@ -56,10 +56,10 @@ func startGrpcServer() error {
 		}
 		opts = []grpc.ServerOption{grpc.Creds(creds)}
 	}
+	
 	grpcServer := grpc.NewServer(opts...)
 	installpb.RegisterInstallappServer(grpcServer, installappserver.NewInstallAppServer())
-	readyNotifyServer := readynotifyserver.NewReadyNotifyServer()
-	readynotifypb.RegisterReadyNotifyServer(grpcServer, readyNotifyServer)
+	readynotifypb.RegisterReadyNotifyServer(grpcServer, readynotifyserver.NewReadyNotifyServer())
 
 	log.Println("Starting rsync gRPC Server")
 	err = grpcServer.Serve(lis)
@@ -76,7 +76,7 @@ func main() {
 	// Initialize the mongodb
 	err := db.InitializeDatabaseConnection("scc")
 	if err != nil {
-		log.Println("Unable to initialize database connection...")
+		log.Println("Unable to initialize mongo database connection...")
 		log.Println(err)
 		log.Fatalln("Exiting...")
 	}
@@ -84,7 +84,7 @@ func main() {
 	// Initialize contextdb
 	err = contextDb.InitializeContextDatabase()
 	if err != nil {
-		log.Println("Unable to initialize database connection...")
+		log.Println("Unable to initialize etcd database connection...")
 		log.Println(err)
 		log.Fatalln("Exiting...")
 	}

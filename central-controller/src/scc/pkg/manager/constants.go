@@ -31,6 +31,8 @@ const (
     HubResource = "hub-name"
     ConnectionCollection = "connections"
     ConnectionResource = "connection-name"
+    CNFCollection = "cnfs"
+    CNFResource = "cnf-name"
     DeviceCollection = "devices"
     DeviceResource = "device-name"
     IPRangeCollection = "ipranges"

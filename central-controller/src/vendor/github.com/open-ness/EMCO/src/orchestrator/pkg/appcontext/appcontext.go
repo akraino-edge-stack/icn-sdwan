@@ -54,13 +54,14 @@ var AppContextStatusEnum = &statuses{
 // CompositeAppVersion, ReleaseName. This shall be used for
 // instantiation of a compositeApp
 type CompositeAppMeta struct {
-	Project               string `json:"Project"`
-	CompositeApp          string `json:"CompositeApp"`
-	Version               string `json:"Version"`
-	Release               string `json:"Release"`
-	DeploymentIntentGroup string `json:"DeploymentIntentGroup"`
-	Namespace             string `json:"Namespace"`
-	Level                 string `json:"Level"`
+	Project               string   `json:"Project"`
+	CompositeApp          string   `json:"CompositeApp"`
+	Version               string   `json:"Version"`
+	Release               string   `json:"Release"`
+	DeploymentIntentGroup string   `json:"DeploymentIntentGroup"`
+	Namespace             string   `json:"Namespace"`
+	Level                 string   `json:"Level"`
+	ChildContextIDs       []string `json:"ChildContextIDs"`
 }
 
 // Init app context
@@ -328,6 +329,13 @@ func (ac *AppContext) GetClusterNames(appname string) ([]string, error) {
 			}
 		}
 	}
+
+	if len(cs) == 0 {
+		err = pkgerrors.New("Cluster list is empty")
+		log.Error("Cluster list is empty",
+			log.Fields{"clusters": cs})
+		return cs, err
+	}
 	return cs, nil
 }
 
@@ -402,6 +410,39 @@ func (ac *AppContext) GetResourceStatusHandle(appname string, clustername string
 		}
 	}
 	return nil, pkgerrors.Errorf("No handle was found for the given resource")
+}
+
+//GetResourceNames ... Returns a list of all resource names for a given app
+func (ac *AppContext) GetResourceNames(appname string, clustername string) ([]string, error) {
+	if appname == "" {
+		return nil, pkgerrors.Errorf("Not a valid run time context app name")
+	}
+	if clustername == "" {
+		return nil, pkgerrors.Errorf("Not a valid run time context cluster name")
+	}
+
+	rh, err := ac.rtc.RtcGet()
+	if err != nil {
+		return nil, err
+	}
+
+	prefix := fmt.Sprintf("%v", rh) + "app/" + appname + "/cluster/" + clustername + "/resource/"
+	hs, err := ac.rtc.RtcGetHandles(prefix)
+	if err != nil {
+		return nil, pkgerrors.Errorf("Error getting handles for %v", prefix)
+	}
+	var cs []string
+	for _, h := range hs {
+		hstr := fmt.Sprintf("%v", h)
+		ks := strings.Split(hstr, prefix)
+		for _, k := range ks {
+			ck := strings.Split(k, "/")
+			if len(ck) == 2 && ck[1] == "" {
+				cs = append(cs, ck[0])
+			}
+		}
+	}
+	return cs, nil
 }
 
 //Add instruction under given handle and type
@@ -568,6 +609,14 @@ func (ac *AppContext) GetCompositeAppMeta() (CompositeAppMeta, error) {
 	dig := fmt.Sprintf("%v", datamap["DeploymentIntentGroup"])
 	namespace := fmt.Sprintf("%v", datamap["Namespace"])
 	level := fmt.Sprintf("%v", datamap["Level"])
+	var childInterface []interface{}
+	childCtxs := make([]string, len(childInterface))
+	if datamap["ChildContextIDs"] != nil {
+		childInterface = datamap["ChildContextIDs"].([]interface{})
+		for _, v := range childInterface {
+			childCtxs = append(childCtxs, v.(string))
+		}
+	}
 
-	return CompositeAppMeta{Project: p, CompositeApp: ca, Version: v, Release: rn, DeploymentIntentGroup: dig, Namespace: namespace, Level: level}, nil
+	return CompositeAppMeta{Project: p, CompositeApp: ca, Version: v, Release: rn, DeploymentIntentGroup: dig, Namespace: namespace, Level: level, ChildContextIDs: childCtxs}, nil
 }

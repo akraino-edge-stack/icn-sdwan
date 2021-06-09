@@ -38,7 +38,7 @@ func (c *FirewallZoneResource) GetType() string {
     return "FirewallZone"
 }
 
-func (c *FirewallZoneResource) ToYaml() string {
+func (c *FirewallZoneResource) ToYaml(target string) string {
     basic := `apiVersion: ` + SdewanApiVersion + `
 kind: FirewallZone
 metadata:
@@ -46,6 +46,7 @@ metadata:
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   network: [` + strings.Join(c.Network, ",") + `]
   input: ` + c.Input + `

@@ -31,13 +31,22 @@ type IPRangeObjectKey struct {
     IPRangeName string `json:"iprange-name"`
 }
 
+type ProviderIPRangeObjectKey struct {
+    IPRangeName string `json:"iprange-name"`
+}
+
 // IPRangeObjectManager implements the ControllerObjectManager
 type IPRangeObjectManager struct {
     BaseObjectManager
+    provider  bool
 }
 
-func NewIPRangeObjectManager() *IPRangeObjectManager {
+func NewIPRangeObjectManager(provider bool) *IPRangeObjectManager {
     object_meta := "iprange"
+    if provider {
+        object_meta = "provider-" + object_meta
+    }
+
     validate := validation.GetValidator(object_meta)
     validate.RegisterStructValidation(ValidateIPRangeObject, module.IPRangeObject{})
 
@@ -48,6 +57,7 @@ func NewIPRangeObjectManager() *IPRangeObjectManager {
             depResManagers: []ControllerObjectManager {},
             ownResManagers: []ControllerObjectManager {},
         },
+        provider,
     }
 }
 
@@ -77,11 +87,29 @@ func (c *IPRangeObjectManager) CreateEmptyObject() module.ControllerObject {
     return &module.IPRangeObject{}
 }
 
+func (c *IPRangeObjectManager) SetIPRangeName(k db.Key, name string) {
+    if c.provider {
+        ko := k.(*ProviderIPRangeObjectKey)
+        ko.IPRangeName = name
+    } else {
+        ko := k.(*IPRangeObjectKey)
+        ko.IPRangeName = name
+    }
+}
+
 func (c *IPRangeObjectManager) GetStoreKey(m map[string]string, t module.ControllerObject, isCollection bool) (db.Key, error) {
-    overlay_name := m[OverlayResource]
-    key := IPRangeObjectKey{
-        OverlayName: overlay_name,
-        IPRangeName: "",
+    var key db.Key
+
+    if c.provider {
+        key = ProviderIPRangeObjectKey{
+            IPRangeName: "",
+        }
+    } else {
+        overlay_name := m[OverlayResource]
+        key = IPRangeObjectKey{
+            OverlayName: overlay_name,
+            IPRangeName: "",
+        }
     }
 
     if isCollection == true {
@@ -97,13 +125,13 @@ func (c *IPRangeObjectManager) GetStoreKey(m map[string]string, t module.Control
             return key, pkgerrors.New("Resource name unmatched metadata name")
         }
 
-        key.IPRangeName = res_name
+        c.SetIPRangeName(key, res_name)
     } else {
         if meta_name == "" {
             return key, pkgerrors.New("Unable to find resource name")
         }
 
-        key.IPRangeName = meta_name
+        c.SetIPRangeName(key, meta_name)
     }
 
     return key, nil;
@@ -121,9 +149,49 @@ func (c *IPRangeObjectManager) ParseObject(r io.Reader) (module.ControllerObject
     return &v, err
 }
 
+func (c *IPRangeObjectManager) GetDefinedObjects(m map[string]string)  ([]module.ControllerObject, error) {
+    objs, err := c.GetObjects(m)
+    if err != nil {
+        return []module.ControllerObject{}, pkgerrors.Wrap(err, "Failed to get available IPRange objects")
+    }
+
+    if c.provider {
+        ipr_manager := GetManagerset().IPRange
+        overlay_manager := GetManagerset().Overlay
+
+        // concact ip ranges defined in all overlays
+        ol_objs, err := overlay_manager.GetObjects(m)
+        if err != nil {
+            return []module.ControllerObject{}, pkgerrors.Wrap(err, "Failed to get overlays")
+        }
+
+        for _, ol_obj := range ol_objs {
+            o_m := make(map[string]string)
+            o_m[OverlayResource] = ol_obj.GetMetadata().Name
+            // get ip range for the overlay
+            ip_objs, err := ipr_manager.GetObjects(o_m)
+            if err != nil {
+                return []module.ControllerObject{}, pkgerrors.Wrap(err, "Failed to get ip ranges for overlay")
+            }
+            objs = append(objs, ip_objs...)
+        }
+    } else {
+        // concact ip ranges defined in provider
+        providerIP_manager := GetManagerset().ProviderIPRange
+        p_objs, err := providerIP_manager.GetObjects(m)
+        if err != nil {
+            return []module.ControllerObject{}, pkgerrors.Wrap(err, "Failed to get provider IPRange objects")
+        }
+
+        objs = append(objs, p_objs...)
+    }
+
+    return objs, nil
+}
+
 func (c *IPRangeObjectManager) CreateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
     // Check whether conflict with other IPRange object
-    objs, err := c.GetObjects(m)
+    objs, err := c.GetDefinedObjects(m)
     if err != nil {
         return t, pkgerrors.Wrap(err, "Failed to get available IPRange objects")
     }
@@ -181,7 +249,10 @@ func (c *IPRangeObjectManager) DeleteObject(m map[string]string) error {
 
 func (c *IPRangeObjectManager) Allocate(oname string, name string) (string, error) {
     m := make(map[string]string)
-    m[OverlayResource] = oname
+
+    if !c.provider {
+        m[OverlayResource] = oname
+    }
 
     objs, err := c.GetObjects(m)
     if err != nil {
@@ -203,7 +274,10 @@ func (c *IPRangeObjectManager) Allocate(oname string, name string) (string, erro
 
 func (c *IPRangeObjectManager) Free(oname string, ip string) error {
     m := make(map[string]string)
-    m[OverlayResource] = oname
+
+    if !c.provider {
+        m[OverlayResource] = oname
+    }
 
     objs, err := c.GetObjects(m)
     if err != nil {
@@ -225,7 +299,10 @@ func (c *IPRangeObjectManager) Free(oname string, ip string) error {
 
 func (c *IPRangeObjectManager) FreeAll(oname string) error {
     m := make(map[string]string)
-    m[OverlayResource] = oname
+
+    if !c.provider {
+        m[OverlayResource] = oname
+    }
 
     objs, err := c.GetObjects(m)
     if err != nil {

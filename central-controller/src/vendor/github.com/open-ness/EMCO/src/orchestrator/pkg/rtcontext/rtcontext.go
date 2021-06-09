@@ -259,6 +259,7 @@ func (rtc *RunTimeContext) RtcDeletePrefix(handle interface{}) error {
 	str := fmt.Sprintf("%v", handle)
 	sid := fmt.Sprintf("%v", rtc.cid)
 	if !strings.HasPrefix(str, sid) {
+		logutils.Error("Not a valid run time context handle", logutils.Fields{"key ::": str, "sid :: ": sid})
 		return pkgerrors.Errorf("Not a valid run time context handle")
 	}
 
@@ -280,6 +281,7 @@ func (rtc *RunTimeContext) RtcGetHandles(handle interface{}) ([]interface{}, err
 
 	s, err := contextdb.Db.GetAllKeys(str)
 	if err != nil {
+
 		return nil, pkgerrors.Errorf("Error getting run time context handles: %s", err.Error())
 	}
 	r := make([]interface{}, len(s))

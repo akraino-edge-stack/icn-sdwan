@@ -27,5 +27,5 @@ const (
 type ISdewanResource interface {
 	GetName() string
 	GetType() string
-	ToYaml() string
+	ToYaml(target string) string
 }
