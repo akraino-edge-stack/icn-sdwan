@@ -87,7 +87,7 @@ func defaultConfiguration() *Configuration {
 		GrpcServerNameOverride: "",
 		ServicePort:            "9015",
 		KubernetesLabelName:    "orchestrator.io/rb-instance-id",
-		LogLevel:               "warn",
+		LogLevel:               "warn", // default log-level of all modules
 		MaxRetries:             "",
 	}
 }

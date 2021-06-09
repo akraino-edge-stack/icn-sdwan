@@ -16,36 +16,36 @@
 
 package resource
 
-import (
-)
+import ()
 
 type FirewallDnatResource struct {
-    Name string
-    Source string
-    SourceIP string
-    SourceDestIP string
-    SourceDestPort string
-    DestinationIP string
-    DestinationPort string
-    Protocol string
+	Name            string
+	Source          string
+	SourceIP        string
+	SourceDestIP    string
+	SourceDestPort  string
+	DestinationIP   string
+	DestinationPort string
+	Protocol        string
 }
 
 func (c *FirewallDnatResource) GetName() string {
-    return c.Name
+	return c.Name
 }
 
 func (c *FirewallDnatResource) GetType() string {
-    return "FirewallDNAT"
+	return "FirewallDNAT"
 }
 
-func (c *FirewallDnatResource) ToYaml() string {
-    basic := `apiVersion: ` + SdewanApiVersion + `
+func (c *FirewallDnatResource) ToYaml(target string) string {
+	basic := `apiVersion: ` + SdewanApiVersion + `
 kind: FirewallDNAT
 metadata:
   name: ` + c.Name + `
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   src: ` + c.Source + `
   src_dip: ` + c.SourceDestIP + `
@@ -55,14 +55,14 @@ spec:
   proto: ` + c.Protocol + `
   target: DNAT `
 
-    if c.SourceIP != "" {
-      basic +=  `
+	if c.SourceIP != "" {
+		basic += `
   src_ip: ` + c.SourceIP
-  }
+	}
 
-  return basic
+	return basic
 }
 
 func init() {
-  GetResourceBuilder().Register("FirewallDnat", &FirewallDnatResource{})
+	GetResourceBuilder().Register("FirewallDnat", &FirewallDnatResource{})
 }

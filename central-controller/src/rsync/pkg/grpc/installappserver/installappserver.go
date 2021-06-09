@@ -6,9 +6,10 @@ package installappserver
 import (
 	"context"
 	"encoding/json"
+	"log"
+
 	con "github.com/open-ness/EMCO/src/rsync/pkg/context"
 	"github.com/open-ness/EMCO/src/rsync/pkg/grpc/installapp"
-	"log"
 )
 
 type installappServer struct {
@@ -46,6 +47,21 @@ func (cs *installappServer) UninstallApp(ctx context.Context, req *installapp.Un
 	}
 
 	return &installapp.UninstallAppResponse{AppContextUninstalled: true}, nil
+}
+
+func (cs *installappServer) ReadAppContext(ctx context.Context, req *installapp.ReadAppContextRequest) (*installapp.ReadAppContextResponse, error) {
+	readAppContext, _ := json.Marshal(req)
+	log.Println("GRPC Server received ReadAppContext: ", string(readAppContext))
+
+	// Try instantiate the comp app
+	instca := con.CompositeAppContext{}
+	err := instca.ReadComApp(req.GetAppContext())
+	if err != nil {
+		log.Println("Termination failed: " + err.Error())
+		return &installapp.ReadAppContextResponse{AppContextReadSuccessful: false, AppContextReadMessage: "AppContext read failed"}, err
+	}
+
+	return &installapp.ReadAppContextResponse{AppContextReadSuccessful: true, AppContextReadMessage: "AppContext read successfully"}, nil
 }
 
 // NewInstallAppServer exported

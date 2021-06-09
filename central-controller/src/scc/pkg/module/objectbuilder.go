@@ -17,10 +17,10 @@
 package module
 
 import (
-	"strings"
-	"reflect"
 	"encoding/json"
 	pkgerrors "github.com/pkg/errors"
+	"reflect"
+	"strings"
 )
 
 type ObjectBuilder struct {
@@ -32,7 +32,7 @@ var obj_builder = ObjectBuilder{
 }
 
 func GetObjectBuilder() *ObjectBuilder {
-    return &obj_builder
+	return &obj_builder
 }
 
 func (c *ObjectBuilder) Register(name string, r interface{}) {
@@ -59,6 +59,6 @@ func (c *ObjectBuilder) ToObject(obj_str string) (ControllerObject, error) {
 		err := json.Unmarshal([]byte(strs[1]), retObj)
 		return retObj.(ControllerObject), err
 	} else {
-	    return &EmptyObject{}, pkgerrors.New("Not a valid object")
+		return &EmptyObject{}, pkgerrors.New("Not a valid object")
 	}
 }

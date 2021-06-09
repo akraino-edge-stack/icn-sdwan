@@ -5,6 +5,7 @@ package controller
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
 	log "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
@@ -78,6 +79,8 @@ func NewControllerClient() *ControllerClient {
 // CreateController a new collection based on the Controller
 func (mc *ControllerClient) CreateController(m Controller, mayExist bool) (Controller, error) {
 
+	log.Info("CreateController .. start", log.Fields{"Controller": m, "exists": mayExist})
+
 	//Construct the composite key to select the entry
 	key := ControllerKey{
 		ControllerName: m.Metadata.Name,
@@ -97,6 +100,7 @@ func (mc *ControllerClient) CreateController(m Controller, mayExist bool) (Contr
 	// send message to create/update the  rpc connection
 	rpc.UpdateRpcConn(m.Metadata.Name, m.Spec.Host, m.Spec.Port)
 
+	log.Info("CreateController .. end", log.Fields{"Controller": m, "exists": mayExist})
 	return m, nil
 }
 
@@ -109,7 +113,9 @@ func (mc *ControllerClient) GetController(name string) (Controller, error) {
 	}
 	value, err := db.DBconn.Find(mc.collectionName, key, mc.tagMeta)
 	if err != nil {
-		return Controller{}, pkgerrors.Wrap(err, "Get Controller")
+		return Controller{}, pkgerrors.Wrap(err, "db Find error")
+	} else if len(value) == 0 {
+		return Controller{}, pkgerrors.New("Controller not found")
 	}
 
 	if value != nil {
@@ -135,7 +141,7 @@ func (mc *ControllerClient) GetControllers() ([]Controller, error) {
 	var resp []Controller
 	values, err := db.DBconn.Find(mc.collectionName, key, mc.tagMeta)
 	if err != nil {
-		return []Controller{}, pkgerrors.Wrap(err, "Get Controller")
+		return []Controller{}, pkgerrors.Wrap(err, "db Find error")
 	}
 
 	for _, value := range values {
@@ -160,7 +166,13 @@ func (mc *ControllerClient) DeleteController(name string) error {
 	}
 	err := db.DBconn.Remove(mc.collectionName, key)
 	if err != nil {
-		return pkgerrors.Wrap(err, "Delete Controller Entry;")
+		if strings.Contains(err.Error(), "Error finding:") {
+			return pkgerrors.Wrap(err, "db Remove error - not found")
+		} else if strings.Contains(err.Error(), "Can't delete parent without deleting child") {
+			return pkgerrors.Wrap(err, "db Remove error - conflict")
+		} else {
+			return pkgerrors.Wrap(err, "db Remove error - general")
+		}
 	}
 
 	// send message to close rpc connection

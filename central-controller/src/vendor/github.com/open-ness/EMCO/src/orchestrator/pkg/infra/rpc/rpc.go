@@ -5,6 +5,7 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -46,23 +47,58 @@ func GetRpcConn(name string) *grpc.ClientConn {
 	mutex.Lock()
 	defer mutex.Unlock()
 	if val, ok := rpcConnections[name]; ok {
+		log.Info("GetRpcConn .. RPC intermediate-connection info", log.Fields{"name": name, "conn": val.conn, "host": val.host, "port": val.port, "conn-state": val.conn.GetState().String()})
+
 		if val.conn.GetState() == connectivity.TransientFailure {
 			val.conn.ResetConnectBackoff()
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+			defer cancel()
 			if !val.conn.WaitForStateChange(ctx, connectivity.TransientFailure) {
 				log.Warn("Error re-establishing RPC connection", log.Fields{
-					"Server": name,
-					"Host":   val.host,
-					"Port":   val.port,
+					"Server":    name,
+					"Host":      val.host,
+					"Port":      val.port,
+					"ConnState": val.conn.GetState().String(),
 				})
+				return nil
 			}
-			cancel()
 		}
+
+		if val.conn.GetState() == connectivity.Connecting {
+			ctx, cancel := context.WithTimeout(context.Background(), 2000*time.Millisecond)
+			defer cancel()
+			if !val.conn.WaitForStateChange(ctx, connectivity.Connecting) {
+				log.Warn("GetRpcConn .. Error establishing RPC connection .. ClientConn is still in CONNECTING", log.Fields{
+					"Server":    name,
+					"Host":      val.host,
+					"Port":      val.port,
+					"ConnState": val.conn.GetState().String(),
+				})
+				return nil
+			}
+		}
+
+		if val.conn.GetState() == connectivity.TransientFailure {
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Millisecond)
+			defer cancel()
+			if !val.conn.WaitForStateChange(ctx, connectivity.TransientFailure) {
+				log.Warn("Error establishing RPC connection", log.Fields{
+					"Server":    name,
+					"Host":      val.host,
+					"Port":      val.port,
+					"ConnState": val.conn.GetState().String(),
+				})
+				return nil
+			}
+		}
+
+		log.Warn("GetRpcConn .. RPC final-connection info", log.Fields{"name": name, "conn": val.conn, "host": val.host, "port": val.port, "conn-state": val.conn.GetState().String()})
 		return val.conn
 	}
 	return nil
 }
 
+// UpdateRpcConn ... Update RPC connections
 func UpdateRpcConn(name, host string, port int) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -78,7 +114,7 @@ func UpdateRpcConn(name, host string, port int) {
 			})
 			err := val.conn.Close()
 			if err != nil {
-				log.Warn("Error closing RPC connection", log.Fields{
+				log.Error("Error closing RPC connection", log.Fields{
 					"Server": name,
 					"Host":   val.host,
 					"Port":   val.port,
@@ -95,25 +131,25 @@ func UpdateRpcConn(name, host string, port int) {
 	// connect and update rpcConnection list - for new or modified connection
 	conn, err := createClientConn(host, port)
 	if err != nil {
-		log.Warn("Failed to create RPC Client connection", log.Fields{
+		log.Error("Failed to create RPC Client connection", log.Fields{
 			"Error": err,
 		})
 		delete(rpcConnections, name)
 	} else {
-		log.Info("Added RPC Client connection", log.Fields{
-			"Controller": name,
-		})
 		rpcConnections[name] = rpcInfo{
 			conn: conn,
 			host: host,
 			port: port,
 		}
+		log.Info("Added RPC Client connection", log.Fields{"Controller": name, "conn": conn, "rpcConnection": fmt.Sprintf("%v", rpcConnections[name])})
 	}
+	log.Info("UpdateRpcConn .. end", log.Fields{"conn": conn, "name": name, "host": host, "port": port})
 }
 
 // CloseAllRpcConn closes all connections
 func CloseAllRpcConn() {
 	mutex.Lock()
+	log.Info("CloseAllRpcConn..", nil)
 	for k, v := range rpcConnections {
 		err := v.conn.Close()
 		if err != nil {

@@ -5,9 +5,9 @@ package contextdb
 
 import (
 	"context"
-	mvccpb "github.com/coreos/etcd/mvcc/mvccpb"
 	pkgerrors "github.com/pkg/errors"
 	"go.etcd.io/etcd/clientv3"
+	mvccpb "go.etcd.io/etcd/mvcc/mvccpb"
 	"strings"
 	"testing"
 )

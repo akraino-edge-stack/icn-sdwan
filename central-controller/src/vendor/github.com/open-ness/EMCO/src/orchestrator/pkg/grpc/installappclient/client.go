@@ -28,6 +28,13 @@ type RsyncInfo struct {
 var rsyncInfo RsyncInfo
 var mutex = &sync.Mutex{}
 
+type _testvars struct {
+	UseGrpcMock   bool
+	InstallClient installpb.InstallappClient
+}
+
+var Testvars _testvars
+
 // InitRsyncClient initializes connctions to the Resource Synchronizer service
 func initRsyncClient() bool {
 	if (RsyncInfo{}) == rsyncInfo {
@@ -63,6 +70,21 @@ func InvokeInstallApp(appContextId string) error {
 	var installRes *installpb.InstallAppResponse
 	ctx, cancel := context.WithTimeout(context.Background(), 600*time.Second)
 	defer cancel()
+
+	// Unit test helper code
+	if Testvars.UseGrpcMock {
+		rpcClient = Testvars.InstallClient
+		installReq := new(installpb.InstallAppRequest)
+		installReq.AppContext = appContextId
+		installRes, err = rpcClient.InstallApp(ctx, installReq)
+		if err == nil {
+			log.Info("Response from InstappApp GRPC call", log.Fields{
+				"Succeeded": installRes.AppContextInstalled,
+				"Message":   installRes.AppContextInstallMessage,
+			})
+		}
+		return nil
+	}
 
 	conn := rpc.GetRpcConn(rsyncName)
 	if conn == nil {

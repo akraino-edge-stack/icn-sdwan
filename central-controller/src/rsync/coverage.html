@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>readynotifyserver: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotifyserver/readynotifyserver.go (69.4%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2020-2021 Intel Corporation
+
+package readynotifyserver
+
+import (
+        "context"
+        "log"
+        "sync"
+
+        "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
+        pb "github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotify"
+)
+
+// readyNotifyServer will be initialized by NewReadyNotifyServer() and
+// its lifecycle is valid until all the clients unsubscribed the stream notification channel
+type readyNotifyServer struct {
+        name string
+        // alertNotify contains the map of "appContextID" and "map of client name and stream server"
+        // For Ex: map[12345687:map[[dtc:st1] [dcm:st2]] 456785369:map[[ncm:st3] [dtc:st4]]]
+        alertNotify   map[string]map[string]pb.ReadyNotify_AlertServer
+        streamChannel map[pb.ReadyNotify_AlertServer]chan int
+        mutex         sync.Mutex
+}
+
+var notifServer *readyNotifyServer
+
+// Alert gets notified when the subscriber subscribes for an appcontext event notification
+func (s *readyNotifyServer) Alert(topic *pb.Topic, stream pb.ReadyNotify_AlertServer) error <span class="cov4" title="2">{
+        client := topic.GetClientName()
+        appContextID := topic.GetAppContext()
+        log.Printf("[ReadyNotify gRPC] Received an Alert subscription request (%s, %s)", client, appContextID)
+
+        // Adding the appContextID entry to the map
+        s.mutex.Lock()
+        if len(s.alertNotify[appContextID]) == 0 </span><span class="cov1" title="1">{
+                s.alertNotify[appContextID] = make(map[string]pb.ReadyNotify_AlertServer)
+        }</span>
+        <span class="cov4" title="2">s.alertNotify[appContextID][client] = stream
+        s.streamChannel[stream] = make(chan int)
+        c := s.streamChannel[stream]
+        s.mutex.Unlock()
+
+        // Keep stream open
+        for </span><span class="cov4" title="2">{
+                select </span>{
+                case &lt;-c:<span class="cov4" title="2">
+                        log.Printf("[ReadyNotify gRPC] stop channel got triggered for the client = %s\n", client)
+                        return nil</span>
+                }
+        }
+}
+
+//SendAppContextNotification sends appcontext back to the subscriber if pending
+func SendAppContextNotification(appContextID string) error <span class="cov0" title="0">{
+        streams := notifServer.alertNotify[appContextID]
+        var err error = nil
+        for _, stream := range streams </span><span class="cov0" title="0">{
+                err := stream.Send(&amp;pb.Notification{AppContext: appContextID})
+                if err != nil </span><span class="cov0" title="0">{
+                        logutils.Error("[ReadyNotify gRPC] Notification back to client failed to be sent", logutils.Fields{"err": err})
+                        // return pkgerrors.New("Notification failed")
+                }</span> else<span class="cov0" title="0"> {
+                        logutils.Info("[ReadyNotify gRPC] Notified the subscriber about appContext status changes", logutils.Fields{"appContextID": appContextID})
+                }</span>
+        }
+        <span class="cov0" title="0">return err</span>
+}
+
+// Unsubscribe will be called when the subscriber wants to terminate the stream
+func (s *readyNotifyServer) Unsubscribe(ctx context.Context, topic *pb.Topic) (*pb.UnsubscribeResponse, error) <span class="cov7" title="3">{
+
+        s.mutex.Lock()
+        defer s.mutex.Unlock()
+        for appContextID, clientStreamMap := range s.alertNotify </span><span class="cov10" title="5">{
+                if appContextID == topic.GetAppContext() </span><span class="cov7" title="3">{
+                        stream := clientStreamMap[topic.ClientName]
+                        s.streamChannel[stream] &lt;- 1
+
+                        delete(clientStreamMap, topic.ClientName)
+                        delete(s.streamChannel, stream)
+                        // Delete the outer map's appcontextIDs if there is no inner map contents
+                        if len(clientStreamMap) == 0 </span><span class="cov4" title="2">{
+                                delete(s.alertNotify, appContextID)
+                        }</span>
+                }
+        }
+
+        <span class="cov7" title="3">return &amp;pb.UnsubscribeResponse{}, nil</span>
+}
+
+// NewReadyNotifyServer will create a new readyNotifyServer and destroys the previous one
+func NewReadyNotifyServer() *readyNotifyServer <span class="cov0" title="0">{
+        s := &amp;readyNotifyServer{
+                name:          "readyNotifyServer",
+                alertNotify:   make(map[string](map[string]pb.ReadyNotify_AlertServer)),
+                streamChannel: make(map[pb.ReadyNotify_AlertServer]chan int),
+        }
+        notifServer = s
+        return s
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

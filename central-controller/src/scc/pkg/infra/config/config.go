@@ -26,8 +26,8 @@ import (
 // Configuration loads up all the values that are used to configure
 // backend implementations
 type Configuration struct {
-	RsyncIP                string `json:"rsync-ip"`
-	RsyncPort              string `json:"rsync-port"`
+	RsyncIP   string `json:"rsync-ip"`
+	RsyncPort string `json:"rsync-port"`
 }
 
 // Config is the structure that stores the configuration
@@ -58,8 +58,8 @@ func readConfigFile(file string) (*Configuration, error) {
 
 func defaultConfiguration() *Configuration {
 	return &Configuration{
-		RsyncIP:                "localhost",
-		RsyncPort:              "9031",
+		RsyncIP:   "localhost",
+		RsyncPort: "9031",
 	}
 }
 

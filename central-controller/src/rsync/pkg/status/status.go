@@ -18,6 +18,7 @@ import (
 	informers "github.com/open-ness/EMCO/src/monitor/pkg/generated/informers/externalversions"
 	appcontext "github.com/open-ness/EMCO/src/orchestrator/pkg/appcontext"
 	"github.com/open-ness/EMCO/src/rsync/pkg/connector"
+	"github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotifyserver"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
@@ -62,7 +63,7 @@ func HandleStatusUpdate(clusterId string, id string, v *v1alpha1.ResourceBundleS
 		return
 	}
 
-	// produce yaml representation of the status
+	// Produce yaml representation of the status
 	vjson, err := json.Marshal(v.Status)
 	if err != nil {
 		logrus.Info(clusterId, "::Error marshalling status information::", err)
@@ -84,7 +85,11 @@ func HandleStatusUpdate(clusterId string, id string, v *v1alpha1.ResourceBundleS
 		ac.UpdateStatusValue(handle, string(vjson))
 	}
 
-	return
+	// Send notification to the subscribers
+	err = readynotifyserver.SendAppContextNotification(result[0])
+	if err != nil {
+		logrus.Error(clusterId, "::Error sending ReadyNotify to subscribers::", err)
+	}
 }
 
 // StartClusterWatcher watches for CR

@@ -14,150 +14,179 @@ limitations under the License.
 package api
 
 import (
-    "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/manager"
-    "github.com/gorilla/mux"
+	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/manager"
+	"github.com/gorilla/mux"
 )
 
 // NewRouter creates a router that registers the various urls that are
 // supported
 
 func createHandlerMapping(
-    objectClient manager.ControllerObjectManager,
-    router *mux.Router,
-    collections string,
-    resource string ) {
-    objectHandler := ControllerHandler{client: objectClient}
-    if objectClient.IsOperationSupported("POST") == true {
-        router.HandleFunc(
-            "/" + collections,
-            objectHandler.createHandler).Methods("POST")
-    }
+	objectClient manager.ControllerObjectManager,
+	router *mux.Router,
+	collections string,
+	resource string) {
+	objectHandler := ControllerHandler{client: objectClient}
+	if objectClient.IsOperationSupported("POST") == true {
+		router.HandleFunc(
+			"/"+collections,
+			objectHandler.createHandler).Methods("POST")
+	}
 
-    if objectClient.IsOperationSupported("GETS") == true {
-        router.HandleFunc(
-            "/" + collections,
-            objectHandler.getsHandler).Methods("GET")
-    }
+	if objectClient.IsOperationSupported("GETS") == true {
+		router.HandleFunc(
+			"/"+collections,
+			objectHandler.getsHandler).Methods("GET")
+	}
 
-    if objectClient.IsOperationSupported("GET") == true {
-        router.HandleFunc(
-            "/" + collections + "/{" + resource + "}",
-            objectHandler.getHandler).Methods("GET")
-    }
+	if objectClient.IsOperationSupported("GET") == true {
+		router.HandleFunc(
+			"/"+collections+"/{"+resource+"}",
+			objectHandler.getHandler).Methods("GET")
+	}
 
-    if objectClient.IsOperationSupported("DELETE") == true {
-        router.HandleFunc(
-            "/" + collections + "/{" + resource + "}",
-            objectHandler.deleteHandler).Methods("DELETE")
-    }
+	if objectClient.IsOperationSupported("DELETE") == true {
+		router.HandleFunc(
+			"/"+collections+"/{"+resource+"}",
+			objectHandler.deleteHandler).Methods("DELETE")
+	}
 
-    if objectClient.IsOperationSupported("PUT") == true {
-        router.HandleFunc(
-            "/" + collections + "/{" + resource + "}",
-            objectHandler.updateHandler).Methods("PUT")
-    }
+	if objectClient.IsOperationSupported("PUT") == true {
+		router.HandleFunc(
+			"/"+collections+"/{"+resource+"}",
+			objectHandler.updateHandler).Methods("PUT")
+	}
 }
 
 func NewRouter(
-    overlayObjectClient manager.ControllerObjectManager,
-    proposalObjectClient manager.ControllerObjectManager,
-    hubObjectClient manager.ControllerObjectManager,
-    hubConnObjectClient manager.ControllerObjectManager,
-    hubDeviceObjectClient manager.ControllerObjectManager,
-    deviceObjectClient manager.ControllerObjectManager,
-    deviceConnObjectClient manager.ControllerObjectManager,
-    ipRangeObjectClient manager.ControllerObjectManager,
-    certificateObjectClient manager.ControllerObjectManager) *mux.Router {
+	overlayObjectClient manager.ControllerObjectManager,
+	proposalObjectClient manager.ControllerObjectManager,
+	hubObjectClient manager.ControllerObjectManager,
+	hubConnObjectClient manager.ControllerObjectManager,
+	hubDeviceObjectClient manager.ControllerObjectManager,
+	hubCNFObjectClient manager.ControllerObjectManager,
+	deviceObjectClient manager.ControllerObjectManager,
+	deviceConnObjectClient manager.ControllerObjectManager,
+	deviceCNFObjectClient manager.ControllerObjectManager,
+	ipRangeObjectClient manager.ControllerObjectManager,
+	providerIpRangeObjectClient manager.ControllerObjectManager,
+	certificateObjectClient manager.ControllerObjectManager) *mux.Router {
 
-    router := mux.NewRouter()
-    ver := "v1"
-    mgrset := manager.GetManagerset()
+	router := mux.NewRouter()
+	ver := "v1"
+	mgrset := manager.GetManagerset()
 
-    // router
-    verRouter := router.PathPrefix("/scc/" + ver).Subrouter()
-    olRouter := verRouter.PathPrefix("/" + manager.OverlayCollection + "/{" + manager.OverlayResource + "}").Subrouter()
-    hubRouter := olRouter.PathPrefix("/" + manager.HubCollection + "/{" + manager.HubResource + "}").Subrouter()
-    devRouter := olRouter.PathPrefix("/" + manager.DeviceCollection + "/{" + manager.DeviceResource + "}").Subrouter()
+	// router
+	verRouter := router.PathPrefix("/scc/" + ver).Subrouter()
+	providerRouter := router.PathPrefix("/scc/" + ver + "/provider").Subrouter()
+	olRouter := verRouter.PathPrefix("/" + manager.OverlayCollection + "/{" + manager.OverlayResource + "}").Subrouter()
+	hubRouter := olRouter.PathPrefix("/" + manager.HubCollection + "/{" + manager.HubResource + "}").Subrouter()
+	devRouter := olRouter.PathPrefix("/" + manager.DeviceCollection + "/{" + manager.DeviceResource + "}").Subrouter()
 
-    // overlay API
-    if overlayObjectClient == nil {
-         overlayObjectClient = manager.NewOverlayObjectManager()
-    }
-    mgrset.Overlay = overlayObjectClient.(*manager.OverlayObjectManager)
-    createHandlerMapping(overlayObjectClient, verRouter, manager.OverlayCollection, manager.OverlayResource)
+	// overlay API
+	if overlayObjectClient == nil {
+		overlayObjectClient = manager.NewOverlayObjectManager()
+	}
+	mgrset.Overlay = overlayObjectClient.(*manager.OverlayObjectManager)
+	createHandlerMapping(overlayObjectClient, verRouter, manager.OverlayCollection, manager.OverlayResource)
 
-    // proposal API
-    if proposalObjectClient == nil {
-         proposalObjectClient = manager.NewProposalObjectManager()
-    }
-    mgrset.Proposal = proposalObjectClient.(*manager.ProposalObjectManager)
-    createHandlerMapping(proposalObjectClient, olRouter, manager.ProposalCollection, manager.ProposalResource)
+	// proposal API
+	if proposalObjectClient == nil {
+		proposalObjectClient = manager.NewProposalObjectManager()
+	}
+	mgrset.Proposal = proposalObjectClient.(*manager.ProposalObjectManager)
+	createHandlerMapping(proposalObjectClient, olRouter, manager.ProposalCollection, manager.ProposalResource)
 
-    // hub API
-    if hubObjectClient == nil {
-	 hubObjectClient = manager.NewHubObjectManager()
-    }
-    mgrset.Hub = hubObjectClient.(*manager.HubObjectManager)
-    createHandlerMapping(hubObjectClient, olRouter, manager.HubCollection, manager.HubResource)
+	// hub API
+	if hubObjectClient == nil {
+		hubObjectClient = manager.NewHubObjectManager()
+	}
+	mgrset.Hub = hubObjectClient.(*manager.HubObjectManager)
+	createHandlerMapping(hubObjectClient, olRouter, manager.HubCollection, manager.HubResource)
 
-    // hub-connection API
-    if hubConnObjectClient == nil {
-         hubConnObjectClient = manager.NewHubConnObjectManager()
-    }
-    mgrset.HubConn = hubConnObjectClient.(*manager.HubConnObjectManager)
-    createHandlerMapping(hubConnObjectClient, hubRouter, manager.ConnectionCollection, manager.ConnectionResource)
+	// hub-connection API
+	if hubConnObjectClient == nil {
+		hubConnObjectClient = manager.NewHubConnObjectManager()
+	}
+	mgrset.HubConn = hubConnObjectClient.(*manager.HubConnObjectManager)
+	createHandlerMapping(hubConnObjectClient, hubRouter, manager.ConnectionCollection, manager.ConnectionResource)
 
-    // hub-device API
-    if hubDeviceObjectClient == nil {
-         hubDeviceObjectClient = manager.NewHubDeviceObjectManager()
-    }
-    mgrset.HubDevice = hubDeviceObjectClient.(*manager.HubDeviceObjectManager)
-    createHandlerMapping(hubDeviceObjectClient, hubRouter, manager.DeviceCollection, manager.DeviceResource)
+	// hub-cnf API
+	if hubCNFObjectClient == nil {
+		hubCNFObjectClient = manager.NewCNFObjectManager(true)
+	}
+	mgrset.HubCNF = hubCNFObjectClient.(*manager.CNFObjectManager)
+	createHandlerMapping(hubCNFObjectClient, hubRouter, manager.CNFCollection, manager.CNFResource)
 
-    // device API
-    if deviceObjectClient == nil {
-         deviceObjectClient = manager.NewDeviceObjectManager()
-    }
-    mgrset.Device = deviceObjectClient.(*manager.DeviceObjectManager)
-    createHandlerMapping(deviceObjectClient, olRouter, manager.DeviceCollection, manager.DeviceResource)
+	// hub-device API
+	if hubDeviceObjectClient == nil {
+		hubDeviceObjectClient = manager.NewHubDeviceObjectManager()
+	}
+	mgrset.HubDevice = hubDeviceObjectClient.(*manager.HubDeviceObjectManager)
+	createHandlerMapping(hubDeviceObjectClient, hubRouter, manager.DeviceCollection, manager.DeviceResource)
 
-    // device-connection API
-    if deviceConnObjectClient == nil {
-         deviceConnObjectClient = manager.NewDeviceConnObjectManager()
-    }
-    mgrset.DeviceConn = deviceConnObjectClient.(*manager.DeviceConnObjectManager)
-    createHandlerMapping(deviceConnObjectClient, devRouter, manager.ConnectionCollection, manager.ConnectionResource)
+	// device API
+	if deviceObjectClient == nil {
+		deviceObjectClient = manager.NewDeviceObjectManager()
+	}
+	mgrset.Device = deviceObjectClient.(*manager.DeviceObjectManager)
+	createHandlerMapping(deviceObjectClient, olRouter, manager.DeviceCollection, manager.DeviceResource)
 
-    // iprange API
-    if ipRangeObjectClient == nil {
-         ipRangeObjectClient = manager.NewIPRangeObjectManager()
-    }
-    mgrset.IPRange = ipRangeObjectClient.(*manager.IPRangeObjectManager)
-    createHandlerMapping(ipRangeObjectClient, olRouter, manager.IPRangeCollection, manager.IPRangeResource)
+	// device-connection API
+	if deviceConnObjectClient == nil {
+		deviceConnObjectClient = manager.NewDeviceConnObjectManager()
+	}
+	mgrset.DeviceConn = deviceConnObjectClient.(*manager.DeviceConnObjectManager)
+	createHandlerMapping(deviceConnObjectClient, devRouter, manager.ConnectionCollection, manager.ConnectionResource)
 
-    // certificate API
-    if certificateObjectClient == nil {
-         certificateObjectClient = manager.NewCertificateObjectManager()
-    }
-    mgrset.Cert = certificateObjectClient.(*manager.CertificateObjectManager)
-    createHandlerMapping(certificateObjectClient, olRouter, manager.CertCollection, manager.CertResource)
+	// device-cnf API
+	if deviceCNFObjectClient == nil {
+		deviceCNFObjectClient = manager.NewCNFObjectManager(false)
+	}
+	mgrset.DeviceCNF = deviceCNFObjectClient.(*manager.CNFObjectManager)
+	createHandlerMapping(deviceCNFObjectClient, devRouter, manager.CNFCollection, manager.CNFResource)
 
-    // Add depedency
-    overlayObjectClient.AddOwnResManager(proposalObjectClient)
-    overlayObjectClient.AddOwnResManager(hubObjectClient)
-    overlayObjectClient.AddOwnResManager(deviceObjectClient)
-    overlayObjectClient.AddOwnResManager(ipRangeObjectClient)
-    overlayObjectClient.AddOwnResManager(certificateObjectClient)
-    hubObjectClient.AddOwnResManager(hubDeviceObjectClient)
+	// provider iprange API
+	if providerIpRangeObjectClient == nil {
+		providerIpRangeObjectClient = manager.NewIPRangeObjectManager(true)
+	}
+	mgrset.ProviderIPRange = providerIpRangeObjectClient.(*manager.IPRangeObjectManager)
+	createHandlerMapping(providerIpRangeObjectClient, providerRouter, manager.IPRangeCollection, manager.IPRangeResource)
 
-    proposalObjectClient.AddDepResManager(overlayObjectClient)
-    hubObjectClient.AddDepResManager(overlayObjectClient)
-    deviceObjectClient.AddDepResManager(overlayObjectClient)
-    ipRangeObjectClient.AddDepResManager(overlayObjectClient)
-    certificateObjectClient.AddDepResManager(overlayObjectClient)
-    hubDeviceObjectClient.AddDepResManager(hubObjectClient)
-    hubConnObjectClient.AddDepResManager(hubObjectClient)
-    deviceConnObjectClient.AddDepResManager(deviceObjectClient)
+	// iprange API
+	if ipRangeObjectClient == nil {
+		ipRangeObjectClient = manager.NewIPRangeObjectManager(false)
+	}
+	mgrset.IPRange = ipRangeObjectClient.(*manager.IPRangeObjectManager)
+	createHandlerMapping(ipRangeObjectClient, olRouter, manager.IPRangeCollection, manager.IPRangeResource)
 
-    return router
+	// certificate API
+	if certificateObjectClient == nil {
+		certificateObjectClient = manager.NewCertificateObjectManager()
+	}
+	mgrset.Cert = certificateObjectClient.(*manager.CertificateObjectManager)
+	createHandlerMapping(certificateObjectClient, olRouter, manager.CertCollection, manager.CertResource)
+
+	// Add depedency
+	overlayObjectClient.AddOwnResManager(proposalObjectClient)
+	overlayObjectClient.AddOwnResManager(hubObjectClient)
+	overlayObjectClient.AddOwnResManager(deviceObjectClient)
+	overlayObjectClient.AddOwnResManager(ipRangeObjectClient)
+	overlayObjectClient.AddOwnResManager(certificateObjectClient)
+	hubObjectClient.AddOwnResManager(hubDeviceObjectClient)
+	deviceObjectClient.AddOwnResManager(hubDeviceObjectClient)
+
+	proposalObjectClient.AddDepResManager(overlayObjectClient)
+	hubObjectClient.AddDepResManager(overlayObjectClient)
+	deviceObjectClient.AddDepResManager(overlayObjectClient)
+	ipRangeObjectClient.AddDepResManager(overlayObjectClient)
+	certificateObjectClient.AddDepResManager(overlayObjectClient)
+	hubDeviceObjectClient.AddDepResManager(hubObjectClient)
+	hubDeviceObjectClient.AddDepResManager(deviceObjectClient)
+	hubConnObjectClient.AddDepResManager(hubObjectClient)
+	deviceConnObjectClient.AddDepResManager(deviceObjectClient)
+	hubCNFObjectClient.AddDepResManager(hubObjectClient)
+	deviceCNFObjectClient.AddDepResManager(deviceObjectClient)
+
+	return router
 }

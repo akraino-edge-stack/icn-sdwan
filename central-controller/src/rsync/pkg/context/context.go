@@ -190,6 +190,39 @@ func instantiateResource(ac appcontext.AppContext, c *kubeclient.Client, name st
 	return nil
 }
 
+func readResource(ac appcontext.AppContext, c *kubeclient.Client, name string, app string, cluster string, label string) error {
+	res, sh, err := getRes(ac, name, app, cluster)
+	if err != nil {
+		if sh != nil {
+			ac.UpdateStatusValue(sh, resourcestatus.ResourceStatus{Status: resourcestatus.RsyncStatusEnum.Failed})
+		}
+		return err
+	}
+	namespace := "default"
+	appmeta, err := ac.GetCompositeAppMeta()
+	if err == nil {
+		namespace = appmeta.Namespace
+	}
+	// Get the resource from the cluster
+	b, err := c.Get(res, namespace)
+	if err != nil {
+		return pkgerrors.Wrap(err, "Client Get failed")
+	}
+	// Get the handle for the context/app/cluster/res status object
+	rh, err := ac.GetResourceHandle(app, cluster, name)
+	if err != nil {
+		return err
+	}
+	handle, _ := ac.GetLevelHandle(rh, "definition")
+	// If definition handle was not found, then create it
+	if handle == nil {
+		ac.AddLevelValue(rh, "definition", string(b))
+	} else {
+		ac.UpdateStatusValue(rh, string(b))
+	}
+	return nil
+}
+
 func updateResourceStatus(ac appcontext.AppContext, resState resourcestatus.ResourceStatus, app string, cluster string, aov map[string][]string) error {
 
 	for _, res := range aov["resorder"] {
@@ -626,7 +659,7 @@ func waitForDone(ac appcontext.AppContext) {
 			return
 		}
 	}
-	return
+
 }
 
 func kickoffRetryWatcher(instca *CompositeAppContext, ac appcontext.AppContext, acStatus appcontext.AppContextStatus, wg *errgroup.Group) {
@@ -914,6 +947,7 @@ func (instca *CompositeAppContext) InstantiateComApp(cid interface{}) error {
 	}
 	go applyFnComApp(instca, appcontext.AppContextStatus{Status: appcontext.AppContextStatusEnum.Instantiating},
 		instantiateResource, addStatusTracker, true)
+
 	return nil
 }
 
@@ -929,5 +963,19 @@ func (instca *CompositeAppContext) TerminateComApp(cid interface{}) error {
 	}
 	go applyFnComApp(instca, appcontext.AppContextStatus{Status: appcontext.AppContextStatusEnum.Terminating},
 		terminateResource, deleteStatusTracker, false)
+	return nil
+}
+
+func (instca *CompositeAppContext) ReadComApp(cid interface{}) error {
+	instca.cid = cid
+	instca.chans = []chan bool{}
+	instca.mutex = sync.Mutex{}
+	err := updateAppContextFlag(cid, false)
+	if err != nil {
+		logutils.Error("Encountered error updating AppContext flag", logutils.Fields{"error": err})
+		return err
+	}
+	go applyFnComApp(instca, appcontext.AppContextStatus{Status: appcontext.AppContextStatusEnum.Instantiating},
+		readResource, addStatusTracker, true)
 	return nil
 }

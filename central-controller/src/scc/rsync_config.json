@@ -1,4 +1,4 @@
 {
-"rsync-ip": "localhost",
-"rsync-port": "9031"
+"rsync-ip": "",
+"rsync-port": "9041"
 }

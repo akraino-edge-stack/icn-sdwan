@@ -18,7 +18,7 @@ package module
 
 // App contains metadata for Apps
 type OverlayObject struct {
-	Metadata ObjectMetaData `json:"metadata"`
+	Metadata      ObjectMetaData    `json:"metadata"`
 	Specification OverlayObjectSpec `json:"spec"`
 }
 
@@ -31,5 +31,5 @@ func (c *OverlayObject) GetMetadata() ObjectMetaData {
 }
 
 func (c *OverlayObject) GetType() string {
-    return "Overlay"
+	return "Overlay"
 }

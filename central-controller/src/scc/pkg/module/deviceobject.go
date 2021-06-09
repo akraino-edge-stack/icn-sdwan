@@ -18,33 +18,33 @@ package module
 
 // App contains metadata for Apps
 type DeviceObject struct {
-	Metadata ObjectMetaData `json:"metadata"`
-	Specification DeviceObjectSpec `json:"spec"`
-	Status DeviceObjectStatus `json:"-"`
+	Metadata      ObjectMetaData     `json:"metadata"`
+	Specification DeviceObjectSpec   `json:"spec"`
+	Status        DeviceObjectStatus `json:"-"`
 }
 
 // DeviceObjectSpec contains the parameters
 type DeviceObjectSpec struct {
-	PublicIps    	[]string 	`json:"publicIps"`
-	ForceHubConnectivity    	bool 	`json:"forceHubConnectivity"`
-	ProxyHub		string 	`json:"proxyHub"`
-	ProxyHubPort	int 	`json:"proxyHubPort"`
-	UseHub4Internet	bool 	`json:"useHub4Internet"`
-	DedicatedSFC	bool 	`json:"dedicatedSFC"`	
-	CertificateId 	string 	`json:"certificateId"`
-	KubeConfig 		string 	`json:"kubeConfig"`
+	PublicIps            []string `json:"publicIps"`
+	ForceHubConnectivity bool     `json:"forceHubConnectivity"`
+	ProxyHub             string   `json:"proxyHub"`
+	ProxyHubPort         int      `json:"proxyHubPort"`
+	UseHub4Internet      bool     `json:"useHub4Internet"`
+	DedicatedSFC         bool     `json:"dedicatedSFC"`
+	CertificateId        string   `json:"certificateId"`
+	KubeConfig           string   `json:"kubeConfig"`
 }
 
 // DeviceObjectStatus
 type DeviceObjectStatus struct {
-    // 1: use public ip 2: use hub as proxy
-    Mode  int
-    // ip used for external connection
-    // if Mode=1, ip is one of public ip
-    // if Mode=2, ip is the OIP allocated by SCC
-    Ip string
-    // Status Data
-    Data map[string]string
+	// 1: use public ip 2: use hub as proxy
+	Mode int
+	// ip used for external connection
+	// if Mode=1, ip is one of public ip
+	// if Mode=2, ip is the OIP allocated by SCC
+	Ip string
+	// Status Data
+	Data map[string]string
 }
 
 func (c *DeviceObject) GetMetadata() ObjectMetaData {
@@ -57,10 +57,10 @@ func (c *DeviceObject) GetType() string {
 
 func (c *DeviceObject) IsProxyHub(hub_name string) bool {
 	if c.Status.Mode == 2 {
-        return c.Specification.ProxyHub == hub_name
+		return c.Specification.ProxyHub == hub_name
 	}
 
-    return false
+	return false
 }
 
 func init() {
@@ -68,5 +68,5 @@ func init() {
 }
 
 func (c *DeviceObject) GetCertName() string {
-    return "device-" + c.Metadata.Name + "-cert"
+	return "device-" + c.Metadata.Name + "-cert"
 }

@@ -1,4 +1,5 @@
 {
-"etcd-ip": "192.168.65.173",
-"database-ip": "192.168.65.174"
+    "database-type": "mongo",
+    "database-ip": "mongo",
+    "etcd-ip": "etcd"
 }

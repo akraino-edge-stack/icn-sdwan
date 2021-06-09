@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Intel Corporation
+
 # Database Abstraction Layer
 
 This package contains implementations of the Database interface defined in `store.go`

@@ -17,20 +17,20 @@
 package module
 
 import (
-    "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
+	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
 )
 
 // App contains metadata for Apps
 type ProposalObject struct {
-	Metadata ObjectMetaData `json:"metadata"`
+	Metadata      ObjectMetaData     `json:"metadata"`
 	Specification ProposalObjectSpec `json:"spec"`
 }
 
 //ProposalObjectSpec contains the parameters
 type ProposalObjectSpec struct {
-	Encryption    	string 	`json:"encryption"`
-	Hash    		string 	`json:"hash"`
-	DhGroup    		string 	`json:"dhGroup"`
+	Encryption string `json:"encryption"`
+	Hash       string `json:"hash"`
+	DhGroup    string `json:"dhGroup"`
 }
 
 func (c *ProposalObject) GetMetadata() ObjectMetaData {
@@ -38,14 +38,14 @@ func (c *ProposalObject) GetMetadata() ObjectMetaData {
 }
 
 func (c *ProposalObject) GetType() string {
-    return "Proposal"
+	return "Proposal"
 }
 
 func (c *ProposalObject) ToResource() *resource.ProposalResource {
-    return &resource.ProposalResource{
-        Name: c.Metadata.Name,
-        Encryption: c.Specification.Encryption,
-        Hash: c.Specification.Hash,
-        DhGroup: c.Specification.DhGroup,
-    }
+	return &resource.ProposalResource{
+		Name:       c.Metadata.Name,
+		Encryption: c.Specification.Encryption,
+		Hash:       c.Specification.Hash,
+		DhGroup:    c.Specification.DhGroup,
+	}
 }

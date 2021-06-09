@@ -24,5 +24,5 @@ func format_resource_name(name1 string, name2 string) string {
 	name1 = strings.Replace(name1, "-", "", -1)
 	name2 = strings.Replace(name2, "-", "", -1)
 
-	return strings.ToLower(name1+name2)
+	return strings.ToLower(name1 + name2)
 }

@@ -17,10 +17,10 @@
 package validation
 
 import (
-	"reflect"
 	"fmt"
-	"sync"
 	"github.com/go-playground/validator/v10"
+	"reflect"
+	"sync"
 )
 
 type SdewanValidator struct {
@@ -29,7 +29,7 @@ type SdewanValidator struct {
 
 type safeSdewanValidators struct {
 	validates map[string]*SdewanValidator
-	mux     sync.Mutex
+	mux       sync.Mutex
 }
 
 var gvalidates = safeSdewanValidators{validates: make(map[string]*SdewanValidator)}
@@ -53,7 +53,7 @@ func (s *safeSdewanValidators) getValidate(name string) *SdewanValidator {
 }
 
 // SdewanValidator
-func(v *SdewanValidator) Validate(data interface{}) (bool, string) {
+func (v *SdewanValidator) Validate(data interface{}) (bool, string) {
 	err := v.validate.Struct(data)
 	if err != nil {
 		if _, ok := err.(*validator.InvalidValidationError); ok {
@@ -73,19 +73,19 @@ func(v *SdewanValidator) Validate(data interface{}) (bool, string) {
 			index = index + 1
 		}
 
-		msg = msg +"]"
+		msg = msg + "]"
 
 		// from here you can create your own error messages in whatever language you wish
 		return false, msg
 	}
 
-    return true, ""
+	return true, ""
 }
 
-func(v *SdewanValidator) RegisterValidation(tag string, fn validator.Func) error {
+func (v *SdewanValidator) RegisterValidation(tag string, fn validator.Func) error {
 	return v.validate.RegisterValidation(tag, fn)
 }
 
-func(v *SdewanValidator) RegisterStructValidation(fn validator.StructLevelFunc, types interface{}) {
+func (v *SdewanValidator) RegisterStructValidation(fn validator.StructLevelFunc, types interface{}) {
 	v.validate.RegisterStructValidation(fn, types)
 }

@@ -4,7 +4,13 @@
 syntax = "proto3";
 
 service readyNotify {
-	rpc Alert (Topic) returns (stream Notification);
+	rpc Alert (Topic) returns (stream Notification){
+
+	}
+
+	rpc Unsubscribe (Topic) returns (UnsubscribeResponse){
+		
+	}
 }
 
 message Alert {
@@ -20,4 +26,7 @@ message Notification {
 	string clientName = 1;
 	string serverName = 2;
 	string appContext = 3;
+}
+
+message UnsubscribeResponse {
 }

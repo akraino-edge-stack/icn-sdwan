@@ -2,19 +2,19 @@ module github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc
 
 require (
 	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
-	github.com/go-playground/validator/v10 v10.4.1 // indirect
-	github.com/gorilla/mux v1.7.2 // indirect
-	github.com/jetstack/cert-manager v1.2.0 // indirect
-	github.com/matryer/runner v0.0.0-20190427160343-b472a46105b1 // indirect
+	github.com/go-playground/validator/v10 v10.4.1
+	github.com/gorilla/mux v1.7.2
+	github.com/jetstack/cert-manager v1.2.0
+	github.com/matryer/runner v0.0.0-20190427160343-b472a46105b1
 	github.com/open-ness/EMCO/src/orchestrator v0.0.0-00010101000000-000000000000
-	github.com/open-ness/EMCO/src/rsync v0.0.0-00010101000000-000000000000 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
+	github.com/open-ness/EMCO/src/rsync v0.0.0-00010101000000-000000000000
+	github.com/pkg/errors v0.9.1
 	go.etcd.io/etcd v3.3.12+incompatible
 	google.golang.org/grpc v1.28.0
-	k8s.io/api v0.19.4 // indirect
-	k8s.io/apimachinery v0.19.4 // indirect
+	k8s.io/api v0.20.2
+	k8s.io/apimachinery v0.20.2
 	k8s.io/client-go v12.0.0+incompatible
-	sigs.k8s.io/yaml v1.2.0 // indirect
+	sigs.k8s.io/yaml v1.2.0
 )
 
 replace (

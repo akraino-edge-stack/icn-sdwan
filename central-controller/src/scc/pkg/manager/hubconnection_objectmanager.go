@@ -17,110 +17,110 @@
 package manager
 
 import (
-    "io"
-    "encoding/json"
-    "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
-    "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-    pkgerrors "github.com/pkg/errors"
+	"encoding/json"
+	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
+	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	pkgerrors "github.com/pkg/errors"
+	"io"
 )
 
 type HubConnObjectKey struct {
-    OverlayName string `json:"overlay-name"`
-    HubName string `json:"hub-name"`
-    ConnName string `json:"connection-name"`
+	OverlayName string `json:"overlay-name"`
+	HubName     string `json:"hub-name"`
+	ConnName    string `json:"connection-name"`
 }
 
 // HubConnObjectManager implements the ControllerObjectManager
 type HubConnObjectManager struct {
-    BaseObjectManager
+	BaseObjectManager
 }
 
 func NewHubConnObjectManager() *HubConnObjectManager {
-    return &HubConnObjectManager{
-        BaseObjectManager {
-            storeName:  StoreName,
-            tagMeta:    "hubconn",
-            depResManagers: []ControllerObjectManager {},
-            ownResManagers: []ControllerObjectManager {},
-        },
-    }
+	return &HubConnObjectManager{
+		BaseObjectManager{
+			storeName:      StoreName,
+			tagMeta:        "hubconn",
+			depResManagers: []ControllerObjectManager{},
+			ownResManagers: []ControllerObjectManager{},
+		},
+	}
 }
 
 func (c *HubConnObjectManager) GetResourceName() string {
-    return ConnectionResource
+	return ConnectionResource
 }
 
 func (c *HubConnObjectManager) IsOperationSupported(oper string) bool {
-    if oper == "GETS" {
-        return true
-    }
-    return false
+	if oper == "GETS" {
+		return true
+	}
+	return false
 }
 
 func (c *HubConnObjectManager) CreateEmptyObject() module.ControllerObject {
-    return &module.ConnectionObject{}
+	return &module.ConnectionObject{}
 }
 
 func (c *HubConnObjectManager) GetStoreKey(m map[string]string, t module.ControllerObject, isCollection bool) (db.Key, error) {
-    overlay_name := m[OverlayResource]
-    hub_name := m[HubResource]
-    key := HubConnObjectKey{
-        OverlayName: overlay_name,
-        HubName: hub_name,
-        ConnName: "",
-    }
+	overlay_name := m[OverlayResource]
+	hub_name := m[HubResource]
+	key := HubConnObjectKey{
+		OverlayName: overlay_name,
+		HubName:     hub_name,
+		ConnName:    "",
+	}
 
-    if isCollection == true {
-        return key, nil
-    }
+	if isCollection == true {
+		return key, nil
+	}
 
-    to := t.(*module.ConnectionObject)
-    meta_name := to.Metadata.Name
-    res_name := m[ConnectionResource]
+	to := t.(*module.ConnectionObject)
+	meta_name := to.Metadata.Name
+	res_name := m[ConnectionResource]
 
-    if res_name != "" {
-        if meta_name != "" && res_name != meta_name {
-            return key, pkgerrors.New("Resource name unmatched metadata name")
-        } 
+	if res_name != "" {
+		if meta_name != "" && res_name != meta_name {
+			return key, pkgerrors.New("Resource name unmatched metadata name")
+		}
 
-        key.ConnName = res_name
-    } else {
-        if meta_name == "" {
-            return key, pkgerrors.New("Unable to find resource name")  
-        }
+		key.ConnName = res_name
+	} else {
+		if meta_name == "" {
+			return key, pkgerrors.New("Unable to find resource name")
+		}
 
-        key.ConnName = meta_name
-    }
+		key.ConnName = meta_name
+	}
 
-    return key, nil;
+	return key, nil
 }
 
 func (c *HubConnObjectManager) ParseObject(r io.Reader) (module.ControllerObject, error) {
-    var v module.ConnectionObject
-    err := json.NewDecoder(r).Decode(&v)
+	var v module.ConnectionObject
+	err := json.NewDecoder(r).Decode(&v)
 
-    return &v, err
+	return &v, err
 }
 
 func (c *HubConnObjectManager) CreateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
-    return c.CreateEmptyObject(), pkgerrors.New("Not implemented")
+	return c.CreateEmptyObject(), pkgerrors.New("Not implemented")
 }
 
 func (c *HubConnObjectManager) GetObject(m map[string]string) (module.ControllerObject, error) {
-    return c.CreateEmptyObject(), pkgerrors.New("Not implemented")
+	return c.CreateEmptyObject(), pkgerrors.New("Not implemented")
 }
 
 func (c *HubConnObjectManager) GetObjects(m map[string]string) ([]module.ControllerObject, error) {
-    overlay_name := m[OverlayResource]
-    hub_name := m[HubResource]
+	overlay_name := m[OverlayResource]
+	hub_name := m[HubResource]
 
-    return GetConnectionManager().GetObjects(overlay_name, module.CreateEndName("Hub", hub_name))
+	return GetConnectionManager().GetObjects(overlay_name, module.CreateEndName("Hub", hub_name))
 }
 
 func (c *HubConnObjectManager) UpdateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
-    return c.CreateEmptyObject(), pkgerrors.New("Not implemented")
+	return c.CreateEmptyObject(), pkgerrors.New("Not implemented")
 }
 
 func (c *HubConnObjectManager) DeleteObject(m map[string]string) error {
-    return pkgerrors.New("Not implemented")
+	return pkgerrors.New("Not implemented")
 }

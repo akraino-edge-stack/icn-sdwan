@@ -24,7 +24,6 @@ func InvokeContextUpdate(controllerName, intentName, appContextId string) error 
 	defer cancel()
 
 	conn := rpc.GetRpcConn(controllerName)
-
 	if conn != nil {
 		rpcClient = contextpb.NewContextupdateClient(conn)
 		updateReq := new(contextpb.ContextUpdateRequest)

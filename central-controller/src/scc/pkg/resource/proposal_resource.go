@@ -16,32 +16,32 @@
 
 package resource
 
-import (
-)
+import ()
 
 type ProposalResource struct {
-    Name string
-    Encryption string
-    Hash string
-    DhGroup string
+	Name       string
+	Encryption string
+	Hash       string
+	DhGroup    string
 }
 
 func (c *ProposalResource) GetName() string {
-    return c.Name
+	return c.Name
 }
 
 func (c *ProposalResource) GetType() string {
-    return "Proposal"
+	return "Proposal"
 }
 
-func (c *ProposalResource) ToYaml() string {
-    return `apiVersion: ` + SdewanApiVersion + `
+func (c *ProposalResource) ToYaml(target string) string {
+	return `apiVersion: ` + SdewanApiVersion + `
 kind: IpsecProposal
 metadata:
   name: ` + c.Name + `
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   encryption_algorithm: ` + c.Encryption + `
   hash_algorithm: ` + c.Hash + `
@@ -49,5 +49,5 @@ spec:
 }
 
 func init() {
-  GetResourceBuilder().Register("Proposal", &ProposalResource{})
+	GetResourceBuilder().Register("Proposal", &ProposalResource{})
 }

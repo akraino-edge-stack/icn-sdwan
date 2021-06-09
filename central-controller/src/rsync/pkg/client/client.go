@@ -1,26 +1,22 @@
-/*
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// SPDX-License-Identifier: Apache-2.0
 // Based on Code: https://github.com/johandry/klient
+
 package client
 
 import (
 	"bytes"
 	"fmt"
 	"io"
+	"strings"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/cli-runtime/pkg/resource"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/kubectl/pkg/validation"
+
+	resapi "k8s.io/apimachinery/pkg/api/resource"
 )
 
 // DefaultValidation default action to validate. If `true` all resources by
@@ -29,7 +25,9 @@ const DefaultValidation = false
 
 // Client is a kubernetes client, like `kubectl`
 type Client struct {
-	Clientset        *kubernetes.Clientset
+	Clientset        kubernetes.Interface
+	DynamicClient    dynamic.Interface
+	RestMapper       meta.RESTMapper
 	factory          *factory
 	validator        validation.Schema
 	namespace        string
@@ -82,6 +80,7 @@ func NewE(context, kubeconfig string, ns string) (*Client, error) {
 		namespace = ns
 		enforceNamespace = false
 	}
+
 	clientset, err := factory.KubernetesClientSet()
 	if err != nil {
 		return nil, err
@@ -90,9 +89,27 @@ func NewE(context, kubeconfig string, ns string) (*Client, error) {
 		return nil, fmt.Errorf("cannot create a clientset from given context and kubeconfig")
 	}
 
+	dynamicClient, err := factory.DynamicClient()
+	if err != nil {
+		return nil, err
+	}
+	if dynamicClient == nil {
+		return nil, fmt.Errorf("cannot create a dynamic client from given context and kubeconfig")
+	}
+
+	restMapper, err := factory.ToRESTMapper()
+	if err != nil {
+		return nil, err
+	}
+	if restMapper == nil {
+		return nil, fmt.Errorf("cannot create a restMapper from given context and kubeconfig")
+	}
+
 	return &Client{
 		factory:          factory,
 		Clientset:        clientset,
+		DynamicClient:    dynamicClient,
+		RestMapper:       restMapper,
 		validator:        validator,
 		namespace:        namespace,
 		enforceNamespace: enforceNamespace,
@@ -181,10 +198,38 @@ func failedTo(action string, info *resource.Info, err error) error {
 
 // IsReachable tests connectivity to the cluster
 func (c *Client) IsReachable() error {
-	client, _ := c.factory.KubernetesClientSet()
-	_, err := client.ServerVersion()
+	client, err := c.factory.KubernetesClientSet()
+	if err != nil {
+		return fmt.Errorf("Kubernetes cluster unreachable")
+	}
+	_, err = client.ServerVersion()
 	if err != nil {
 		return fmt.Errorf("Kubernetes cluster unreachable")
 	}
 	return nil
+}
+
+// PopulateResourceListV1WithDefValues takes strings of form <resourceName1>=<value1>,<resourceName1>=<value2>
+// and returns ResourceList.
+func PopulateResourceListV1WithDefValues(spec string) (v1.ResourceList, error) {
+	// empty input gets a nil response to preserve generator test expected behaviors
+	if spec == "" {
+		return nil, nil
+	}
+
+	result := v1.ResourceList{}
+	resourceStatements := strings.Split(spec, ",")
+	for _, resourceStatement := range resourceStatements {
+		parts := strings.Split(resourceStatement, "=")
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("PopulateResourceListV1WithDefValues .. Invalid argument syntax %v, expected <resource>=<value>", resourceStatement)
+		}
+		resourceName := v1.ResourceName(parts[0])
+		resourceQuantity, err := resapi.ParseQuantity(parts[1])
+		if err != nil {
+			return nil, err
+		}
+		result[resourceName] = resourceQuantity
+	}
+	return result, nil
 }
