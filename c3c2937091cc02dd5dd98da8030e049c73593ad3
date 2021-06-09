@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0dc6fcf2_ff3571f5",
+        "filename": "central-controller/src/scc/api/api.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-06-09T13:41:03Z",
+      "side": 1,
+      "message": "This line is required for get device CNF information.",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 189,
+        "endChar": 64
+      },
+      "revId": "c3c2937091cc02dd5dd98da8030e049c73593ad3",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7bae4a31_cffa45c1",
+        "filename": "central-controller/src/scc/pkg/manager/cnf_objectmanager.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-06-09T13:41:03Z",
+      "side": 1,
+      "message": "Please remove the unused lines (similar comments for below)",
+      "range": {
+        "startLine": 159,
+        "startChar": 0,
+        "endLine": 161,
+        "endChar": 59
+      },
+      "revId": "c3c2937091cc02dd5dd98da8030e049c73593ad3",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
