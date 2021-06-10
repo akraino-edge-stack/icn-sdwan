@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "c5fa3191_7122177a",
+        "filename": "central-controller/src/scc/api/api.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-06-10T00:55:04Z",
+      "side": 1,
+      "message": "please help clean the extra tab",
+      "range": {
+        "startLine": 102,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 9
+      },
+      "revId": "c3c2937091cc02dd5dd98da8030e049c73593ad3",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0dc6fcf2_ff3571f5",
         "filename": "central-controller/src/scc/api/api.go",
         "patchSetId": 1
@@ -41,6 +64,29 @@
         "startChar": 0,
         "endLine": 161,
         "endChar": 59
+      },
+      "revId": "c3c2937091cc02dd5dd98da8030e049c73593ad3",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dce60b15_42612a24",
+        "filename": "central-controller/src/scc/pkg/manager/overlay_objectmanager.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-06-10T00:55:04Z",
+      "side": 1,
+      "message": "Are these needed?",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 15
       },
       "revId": "c3c2937091cc02dd5dd98da8030e049c73593ad3",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
