@@ -18,7 +18,7 @@ package module
 
 // App contains metadata for Apps
 type HubDeviceObject struct {
-	Metadata ObjectMetaData `json:"metadata"`
+	Metadata      ObjectMetaData      `json:"metadata"`
 	Specification HubDeviceObjectSpec `json:"spec"`
 }
 

@@ -22,7 +22,7 @@ type ControllerObject interface {
 	GetType() string
 }
 
-// ObjectMetaData contains the parameters 
+// ObjectMetaData contains the parameters
 type ObjectMetaData struct {
 	Name        string `json:"name" validate:"required,hostname_rfc1123"`
 	Description string `json:"description"`

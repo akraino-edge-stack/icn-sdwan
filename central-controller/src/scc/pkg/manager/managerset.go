@@ -17,22 +17,22 @@
 package manager
 
 type Managerset struct {
-    Overlay *OverlayObjectManager
-    Proposal *ProposalObjectManager
-    Hub *HubObjectManager
-    HubConn *HubConnObjectManager
-    HubDevice *HubDeviceObjectManager
-    HubCNF *CNFObjectManager
-    Device *DeviceObjectManager
-    DeviceConn *DeviceConnObjectManager
-    DeviceCNF *CNFObjectManager
-    ProviderIPRange *IPRangeObjectManager
-    IPRange *IPRangeObjectManager
-    Cert *CertificateObjectManager
+	Overlay         *OverlayObjectManager
+	Proposal        *ProposalObjectManager
+	Hub             *HubObjectManager
+	HubConn         *HubConnObjectManager
+	HubDevice       *HubDeviceObjectManager
+	HubCNF          *CNFObjectManager
+	Device          *DeviceObjectManager
+	DeviceConn      *DeviceConnObjectManager
+	DeviceCNF       *CNFObjectManager
+	ProviderIPRange *IPRangeObjectManager
+	IPRange         *IPRangeObjectManager
+	Cert            *CertificateObjectManager
 }
 
 var mgrset = Managerset{}
 
 func GetManagerset() *Managerset {
-    return &mgrset
+	return &mgrset
 }

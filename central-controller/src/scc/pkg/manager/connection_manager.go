@@ -17,239 +17,238 @@
 package manager
 
 import (
-    "log"
-    "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
-    "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-    "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"    
-    pkgerrors "github.com/pkg/errors"
+	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
+	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
+	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	pkgerrors "github.com/pkg/errors"
+	"log"
 )
 
 type ConnectionManager struct {
-    storeName           string
-    tagMeta             string
+	storeName string
+	tagMeta   string
 }
 
 type ConnectionKey struct {
-    OverlayName string `json:"overlay-name"`
-    End1 string `json:"end1-name"`
-    End2 string `json:"end2-name"`
+	OverlayName string `json:"overlay-name"`
+	End1        string `json:"end1-name"`
+	End2        string `json:"end2-name"`
 }
 
 var connutil = ConnectionManager{
-            storeName:  StoreName,
-            tagMeta:    "connection",
-        }
+	storeName: StoreName,
+	tagMeta:   "connection",
+}
 
 func GetConnectionManager() *ConnectionManager {
-    return &connutil
+	return &connutil
 }
 
 func (c *ConnectionManager) CreateEmptyObject() module.ControllerObject {
-    return &module.ConnectionObject{}
+	return &module.ConnectionObject{}
 }
 
 func (c *ConnectionManager) GetStoreName() string {
-    return c.storeName
+	return c.storeName
 }
 
 func (c *ConnectionManager) GetStoreMeta() string {
-    return c.tagMeta
+	return c.tagMeta
 }
 
-
 func (c *ConnectionManager) Deploy(overlay string, cm module.ConnectionObject) error {
-    resutil := NewResUtil()
+	resutil := NewResUtil()
 
-    // add resource for End1
-    co1, _ := module.GetObjectBuilder().ToObject(cm.Info.End1.ConnObject)
-    for _, r_str := range cm.Info.End1.Resources {
-        r, _ := resource.GetResourceBuilder().ToObject(r_str)
-        resutil.AddResource(co1, "create", r)
-    }
-    for _, r_str := range cm.Info.End1.ReservedRes {
-        r, _ := resource.GetResourceBuilder().ToObject(r_str)
-        resutil.AddResource(co1, "create", r)
-    }
+	// add resource for End1
+	co1, _ := module.GetObjectBuilder().ToObject(cm.Info.End1.ConnObject)
+	for _, r_str := range cm.Info.End1.Resources {
+		r, _ := resource.GetResourceBuilder().ToObject(r_str)
+		resutil.AddResource(co1, "create", r)
+	}
+	for _, r_str := range cm.Info.End1.ReservedRes {
+		r, _ := resource.GetResourceBuilder().ToObject(r_str)
+		resutil.AddResource(co1, "create", r)
+	}
 
-    // add resource for End2
-    co2, _ := module.GetObjectBuilder().ToObject(cm.Info.End2.ConnObject)
-    for _, r_str := range cm.Info.End2.Resources {
-        r, _ := resource.GetResourceBuilder().ToObject(r_str)
-        resutil.AddResource(co2, "create", r)
-    }
-    for _, r_str := range cm.Info.End2.ReservedRes {
-        r, _ := resource.GetResourceBuilder().ToObject(r_str)
-        resutil.AddResource(co2, "create", r)
-    }
+	// add resource for End2
+	co2, _ := module.GetObjectBuilder().ToObject(cm.Info.End2.ConnObject)
+	for _, r_str := range cm.Info.End2.Resources {
+		r, _ := resource.GetResourceBuilder().ToObject(r_str)
+		resutil.AddResource(co2, "create", r)
+	}
+	for _, r_str := range cm.Info.End2.ReservedRes {
+		r, _ := resource.GetResourceBuilder().ToObject(r_str)
+		resutil.AddResource(co2, "create", r)
+	}
 
-    // Deploy resources
-    cid, err := resutil.Deploy(cm.Metadata.Name, "YAML")
-    if cm.Info.ContextId == "" {
-        cm.Info.ContextId = cid
-    } else {
-        cm.Info.ContextId = cm.Info.ContextId + "," + cid
-    }
+	// Deploy resources
+	cid, err := resutil.Deploy(cm.Metadata.Name, "YAML")
+	if cm.Info.ContextId == "" {
+		cm.Info.ContextId = cid
+	} else {
+		cm.Info.ContextId = cm.Info.ContextId + "," + cid
+	}
 
-    if err != nil {
-	log.Println(err)
-        cm.Info.State = module.StateEnum.Error
-        cm.Info.ErrorMessage = err.Error()
-    } else {
-        cm.Info.State = module.StateEnum.Deployed
-    }
+	if err != nil {
+		log.Println(err)
+		cm.Info.State = module.StateEnum.Error
+		cm.Info.ErrorMessage = err.Error()
+	} else {
+		cm.Info.State = module.StateEnum.Deployed
+	}
 
-    // Save to DB
-    _, err = c.UpdateObject(overlay, cm)
+	// Save to DB
+	_, err = c.UpdateObject(overlay, cm)
 
-    return err
+	return err
 }
 
 func (c *ConnectionManager) Undeploy(overlay string, cm module.ConnectionObject) error {
-    resutil := NewResUtil()
+	resutil := NewResUtil()
 
-    // add resource for End1 (reservedRes will be kept)
-    co1, _ := module.GetObjectBuilder().ToObject(cm.Info.End1.ConnObject)
-    for _, r_str := range cm.Info.End1.Resources {
-        r, _ := resource.GetResourceBuilder().ToObject(r_str)
-        resutil.AddResource(co1, "create", r)
-    }
+	// add resource for End1 (reservedRes will be kept)
+	co1, _ := module.GetObjectBuilder().ToObject(cm.Info.End1.ConnObject)
+	for _, r_str := range cm.Info.End1.Resources {
+		r, _ := resource.GetResourceBuilder().ToObject(r_str)
+		resutil.AddResource(co1, "create", r)
+	}
 
-    // add resource for End2 (reservedRes will be kept)
-    co2, _ := module.GetObjectBuilder().ToObject(cm.Info.End2.ConnObject)
-    for _, r_str := range cm.Info.End2.Resources {
-        r, _ := resource.GetResourceBuilder().ToObject(r_str)
-        resutil.AddResource(co2, "create", r)
-    }
+	// add resource for End2 (reservedRes will be kept)
+	co2, _ := module.GetObjectBuilder().ToObject(cm.Info.End2.ConnObject)
+	for _, r_str := range cm.Info.End2.Resources {
+		r, _ := resource.GetResourceBuilder().ToObject(r_str)
+		resutil.AddResource(co2, "create", r)
+	}
 
-    // Undeploy resources
-    cid, err := resutil.Undeploy(cm.Metadata.Name, "YAML")
-    if cm.Info.ContextId == "" {
-        cm.Info.ContextId = cid
-    } else {
-        cm.Info.ContextId = cm.Info.ContextId + "," + cid
-    }
+	// Undeploy resources
+	cid, err := resutil.Undeploy(cm.Metadata.Name, "YAML")
+	if cm.Info.ContextId == "" {
+		cm.Info.ContextId = cid
+	} else {
+		cm.Info.ContextId = cm.Info.ContextId + "," + cid
+	}
 
-    if err != nil {
-        log.Println(err)
-        cm.Info.State = module.StateEnum.Error
-        cm.Info.ErrorMessage = err.Error()
-    } else {
-        cm.Info.State = module.StateEnum.Undeployed
-    }
+	if err != nil {
+		log.Println(err)
+		cm.Info.State = module.StateEnum.Error
+		cm.Info.ErrorMessage = err.Error()
+	} else {
+		cm.Info.State = module.StateEnum.Undeployed
+	}
 
-    // Delete connection object
-    err = c.DeleteObject(overlay, cm.Info.End1.Name, cm.Info.End2.Name)
+	// Delete connection object
+	err = c.DeleteObject(overlay, cm.Info.End1.Name, cm.Info.End2.Name)
 
-    return err
+	return err
 }
 
 func (c *ConnectionManager) UpdateObject(overlay string, cm module.ConnectionObject) (module.ControllerObject, error) {
-    key := ConnectionKey{
-        OverlayName: overlay,
-        End1: cm.Info.End1.Name,
-        End2: cm.Info.End2.Name,
-    }
+	key := ConnectionKey{
+		OverlayName: overlay,
+		End1:        cm.Info.End1.Name,
+		End2:        cm.Info.End2.Name,
+	}
 
-    err := db.DBconn.Insert(c.GetStoreName(), key, nil, c.GetStoreMeta(), cm)
-    if err != nil {
-        return c.CreateEmptyObject(), pkgerrors.Wrap(err, "Unable to create the object")
-    }
-    return &cm, err
+	err := db.DBconn.Insert(c.GetStoreName(), key, nil, c.GetStoreMeta(), cm)
+	if err != nil {
+		return c.CreateEmptyObject(), pkgerrors.Wrap(err, "Unable to create the object")
+	}
+	return &cm, err
 }
 
 func (c *ConnectionManager) GetObject(overlay string, key1 string, key2 string) (module.ControllerObject, error) {
-    key := ConnectionKey{
-        OverlayName: overlay,
-        End1: key1,
-        End2: key2,
-    }
-    value, err := db.DBconn.Find(c.GetStoreName(), key, c.GetStoreMeta())
-    if err != nil {
-        return c.CreateEmptyObject(), err
-    }
+	key := ConnectionKey{
+		OverlayName: overlay,
+		End1:        key1,
+		End2:        key2,
+	}
+	value, err := db.DBconn.Find(c.GetStoreName(), key, c.GetStoreMeta())
+	if err != nil {
+		return c.CreateEmptyObject(), err
+	}
 
-    if value == nil {
-        key = ConnectionKey{
-            OverlayName: overlay,
-            End1: key2,
-            End2: key1,
-        }
-        value, err = db.DBconn.Find(c.GetStoreName(), key, c.GetStoreMeta())
-        if err != nil {
-            return c.CreateEmptyObject(), err
-        }
-    }
+	if value == nil {
+		key = ConnectionKey{
+			OverlayName: overlay,
+			End1:        key2,
+			End2:        key1,
+		}
+		value, err = db.DBconn.Find(c.GetStoreName(), key, c.GetStoreMeta())
+		if err != nil {
+			return c.CreateEmptyObject(), err
+		}
+	}
 
-    if value != nil {
-        r := c.CreateEmptyObject()
-        err = db.DBconn.Unmarshal(value[0], r)
-        if err != nil {
-            return c.CreateEmptyObject(), pkgerrors.Wrap(err, "Unmarshaling value")
-        }
-        return r, nil
-    }
+	if value != nil {
+		r := c.CreateEmptyObject()
+		err = db.DBconn.Unmarshal(value[0], r)
+		if err != nil {
+			return c.CreateEmptyObject(), pkgerrors.Wrap(err, "Unmarshaling value")
+		}
+		return r, nil
+	}
 
-    return c.CreateEmptyObject(), pkgerrors.New("No Object")
+	return c.CreateEmptyObject(), pkgerrors.New("No Object")
 }
 
 func (c *ConnectionManager) GetObjects(overlay string, key string) ([]module.ControllerObject, error) {
-    key1 := ConnectionKey{
-        OverlayName: overlay,
-        End1: key,
-        End2: "",
-    }
-    key2 := ConnectionKey{
-        OverlayName: overlay,
-        End1: "",
-        End2: key,
-    }
-    
-    var resp []module.ControllerObject
+	key1 := ConnectionKey{
+		OverlayName: overlay,
+		End1:        key,
+		End2:        "",
+	}
+	key2 := ConnectionKey{
+		OverlayName: overlay,
+		End1:        "",
+		End2:        key,
+	}
 
-    // find objects with end1=key
-    values, err := db.DBconn.Find(c.GetStoreName(), key1, c.GetStoreMeta())
-    if err != nil {
-        return []module.ControllerObject{}, pkgerrors.Wrap(err, "Get Overlay Objects")
-    }
+	var resp []module.ControllerObject
 
-    for _, value := range values {
-        t := c.CreateEmptyObject()
-        err = db.DBconn.Unmarshal(value, t)
-        if err != nil {
-            return []module.ControllerObject{}, pkgerrors.Wrap(err, "Unmarshaling values")
-        }
-        resp = append(resp, t)
-    }
+	// find objects with end1=key
+	values, err := db.DBconn.Find(c.GetStoreName(), key1, c.GetStoreMeta())
+	if err != nil {
+		return []module.ControllerObject{}, pkgerrors.Wrap(err, "Get Overlay Objects")
+	}
 
-    // find objects with end2=key
-    values, err = db.DBconn.Find(c.GetStoreName(), key2, c.GetStoreMeta())
-    if err != nil {
-        return []module.ControllerObject{}, pkgerrors.Wrap(err, "Get Overlay Objects")
-    }
+	for _, value := range values {
+		t := c.CreateEmptyObject()
+		err = db.DBconn.Unmarshal(value, t)
+		if err != nil {
+			return []module.ControllerObject{}, pkgerrors.Wrap(err, "Unmarshaling values")
+		}
+		resp = append(resp, t)
+	}
 
-    for _, value := range values {
-        t := c.CreateEmptyObject()
-        err = db.DBconn.Unmarshal(value, t)
-        if err != nil {
-            return []module.ControllerObject{}, pkgerrors.Wrap(err, "Unmarshaling values")
-        }
-        resp = append(resp, t)
-    }
+	// find objects with end2=key
+	values, err = db.DBconn.Find(c.GetStoreName(), key2, c.GetStoreMeta())
+	if err != nil {
+		return []module.ControllerObject{}, pkgerrors.Wrap(err, "Get Overlay Objects")
+	}
 
-    return resp, nil
+	for _, value := range values {
+		t := c.CreateEmptyObject()
+		err = db.DBconn.Unmarshal(value, t)
+		if err != nil {
+			return []module.ControllerObject{}, pkgerrors.Wrap(err, "Unmarshaling values")
+		}
+		resp = append(resp, t)
+	}
+
+	return resp, nil
 }
 
 func (c *ConnectionManager) DeleteObject(overlay string, key1 string, key2 string) error {
-    key := ConnectionKey{
-        OverlayName: overlay,
-        End1: key1,
-        End2: key2,
-    }
+	key := ConnectionKey{
+		OverlayName: overlay,
+		End1:        key1,
+		End2:        key2,
+	}
 
-    err := db.DBconn.Remove(c.GetStoreName(), key)
-    if err != nil {
-        return pkgerrors.Wrap(err, "Delete Object")
-    }
+	err := db.DBconn.Remove(c.GetStoreName(), key)
+	if err != nil {
+		return pkgerrors.Wrap(err, "Delete Object")
+	}
 
-    return err
+	return err
 }

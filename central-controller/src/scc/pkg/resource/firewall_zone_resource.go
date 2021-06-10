@@ -21,25 +21,25 @@ import (
 )
 
 type FirewallZoneResource struct {
-    Name string
-    Network []string
-    Input string
-    Output string
-    Forward string
-    MASQ string
-    MTU_FIX string
+	Name    string
+	Network []string
+	Input   string
+	Output  string
+	Forward string
+	MASQ    string
+	MTU_FIX string
 }
 
 func (c *FirewallZoneResource) GetName() string {
-    return c.Name
+	return c.Name
 }
 
 func (c *FirewallZoneResource) GetType() string {
-    return "FirewallZone"
+	return "FirewallZone"
 }
 
 func (c *FirewallZoneResource) ToYaml(target string) string {
-    basic := `apiVersion: ` + SdewanApiVersion + `
+	basic := `apiVersion: ` + SdewanApiVersion + `
 kind: FirewallZone
 metadata:
   name: ` + c.Name + `
@@ -53,16 +53,16 @@ spec:
   output: ` + c.Output + `
   forward: ` + c.Forward
 
-    if (c.MASQ != "" && c.MTU_FIX != "") {
-      optional := `
+	if c.MASQ != "" && c.MTU_FIX != "" {
+		optional := `
   masq: ` + c.MASQ + `
   mtu_fix: ` + c.MTU_FIX
-      basic += optional
-    }
+		basic += optional
+	}
 
-    return basic
+	return basic
 }
 
 func init() {
-  GetResourceBuilder().Register("FirewallZone", &FirewallZoneResource{})
+	GetResourceBuilder().Register("FirewallZone", &FirewallZoneResource{})
 }

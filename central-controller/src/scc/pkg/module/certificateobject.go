@@ -18,9 +18,9 @@ package module
 
 // App contains metadata for Apps
 type CertificateObject struct {
-	Metadata ObjectMetaData `json:"metadata"`
+	Metadata      ObjectMetaData        `json:"metadata"`
 	Specification CertificateObjectSpec `json:"spec"`
-	Data CertificateObjectData `json:"data"`
+	Data          CertificateObjectData `json:"data"`
 }
 
 // CertificateObjectSpec contains the parameters
@@ -28,9 +28,9 @@ type CertificateObjectSpec struct {
 }
 
 type CertificateObjectData struct {
-	RootCA  string `json:"rootca"`
-	Ca string `json:"ca"`
-    Key string `json:"key"`
+	RootCA string `json:"rootca"`
+	Ca     string `json:"ca"`
+	Key    string `json:"key"`
 }
 
 func (c *CertificateObject) GetMetadata() ObjectMetaData {
@@ -38,5 +38,5 @@ func (c *CertificateObject) GetMetadata() ObjectMetaData {
 }
 
 func (c *CertificateObject) GetType() string {
-    return "Certificate"
+	return "Certificate"
 }

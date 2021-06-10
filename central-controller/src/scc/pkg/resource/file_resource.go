@@ -21,8 +21,8 @@ import (
 )
 
 type FileResource struct {
-	Name string
-	Type string
+	Name     string
+	Type     string
 	FileName string
 }
 

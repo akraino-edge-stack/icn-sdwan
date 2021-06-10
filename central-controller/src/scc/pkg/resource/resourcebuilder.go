@@ -17,10 +17,10 @@
 package resource
 
 import (
-	"strings"
-	"reflect"
 	"encoding/json"
 	pkgerrors "github.com/pkg/errors"
+	"reflect"
+	"strings"
 )
 
 type ResourceBuilder struct {
@@ -32,7 +32,7 @@ var res_builder = ResourceBuilder{
 }
 
 func GetResourceBuilder() *ResourceBuilder {
-    return &res_builder
+	return &res_builder
 }
 
 func (c *ResourceBuilder) Register(name string, r interface{}) {
@@ -62,6 +62,6 @@ func (c *ResourceBuilder) ToObject(obj_str string) (ISdewanResource, error) {
 		err := json.Unmarshal([]byte(strs[1]), retObj)
 		return retObj.(ISdewanResource), err
 	} else {
-	    return &EmptyResource{}, pkgerrors.New("Not a valid object")
+		return &EmptyResource{}, pkgerrors.New("Not a valid object")
 	}
 }

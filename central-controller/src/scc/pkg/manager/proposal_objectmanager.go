@@ -17,116 +17,116 @@
 package manager
 
 import (
-    "io"
-    "encoding/json"
-    "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
-    "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-    pkgerrors "github.com/pkg/errors"
+	"encoding/json"
+	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
+	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	pkgerrors "github.com/pkg/errors"
+	"io"
 )
 
 type ProposalObjectKey struct {
-    OverlayName  string `json:"overlay-name"`
-    ProposalName string `json:"proposal-name"`
+	OverlayName  string `json:"overlay-name"`
+	ProposalName string `json:"proposal-name"`
 }
 
 // ProposalObjectManager implements the ControllerObjectManager
 type ProposalObjectManager struct {
-    BaseObjectManager
+	BaseObjectManager
 }
 
 func NewProposalObjectManager() *ProposalObjectManager {
-    return &ProposalObjectManager{
-        BaseObjectManager {
-            storeName:  StoreName,
-            tagMeta:    "proposal",
-            depResManagers: []ControllerObjectManager {},
-            ownResManagers: []ControllerObjectManager {},
-        },
-    }
+	return &ProposalObjectManager{
+		BaseObjectManager{
+			storeName:      StoreName,
+			tagMeta:        "proposal",
+			depResManagers: []ControllerObjectManager{},
+			ownResManagers: []ControllerObjectManager{},
+		},
+	}
 }
 
 func (c *ProposalObjectManager) GetResourceName() string {
-    return ProposalResource
+	return ProposalResource
 }
 
 func (c *ProposalObjectManager) IsOperationSupported(oper string) bool {
-    return true
+	return true
 }
 
 func (c *ProposalObjectManager) CreateEmptyObject() module.ControllerObject {
-    return &module.ProposalObject{}
+	return &module.ProposalObject{}
 }
 
 func (c *ProposalObjectManager) GetStoreKey(m map[string]string, t module.ControllerObject, isCollection bool) (db.Key, error) {
-    overlay_name := m[OverlayResource]
-    key := ProposalObjectKey{
-        OverlayName: overlay_name,
-        ProposalName: "",
-    }
+	overlay_name := m[OverlayResource]
+	key := ProposalObjectKey{
+		OverlayName:  overlay_name,
+		ProposalName: "",
+	}
 
-    if isCollection == true {
-        return key, nil
-    }
+	if isCollection == true {
+		return key, nil
+	}
 
-    to := t.(*module.ProposalObject)
-    meta_name := to.Metadata.Name
-    res_name := m[ProposalResource]
+	to := t.(*module.ProposalObject)
+	meta_name := to.Metadata.Name
+	res_name := m[ProposalResource]
 
-    if res_name != "" {
-        if meta_name != "" && res_name != meta_name {
-            return key, pkgerrors.New("Resource name unmatched metadata name")
-        } 
+	if res_name != "" {
+		if meta_name != "" && res_name != meta_name {
+			return key, pkgerrors.New("Resource name unmatched metadata name")
+		}
 
-        key.ProposalName = res_name
-    } else {
-        if meta_name == "" {
-            return key, pkgerrors.New("Unable to find resource name")  
-        }
+		key.ProposalName = res_name
+	} else {
+		if meta_name == "" {
+			return key, pkgerrors.New("Unable to find resource name")
+		}
 
-        key.ProposalName = meta_name
-    }
+		key.ProposalName = meta_name
+	}
 
-    return key, nil;
+	return key, nil
 }
 
 func (c *ProposalObjectManager) ParseObject(r io.Reader) (module.ControllerObject, error) {
-    var v module.ProposalObject
-    err := json.NewDecoder(r).Decode(&v)
+	var v module.ProposalObject
+	err := json.NewDecoder(r).Decode(&v)
 
-    return &v, err
+	return &v, err
 }
 
 func (c *ProposalObjectManager) CreateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
-    // DB Operation
-    t, err := GetDBUtils().CreateObject(c, m, t)
+	// DB Operation
+	t, err := GetDBUtils().CreateObject(c, m, t)
 
-    return t, err
+	return t, err
 }
 
 func (c *ProposalObjectManager) GetObject(m map[string]string) (module.ControllerObject, error) {
-    // DB Operation
-    t, err := GetDBUtils().GetObject(c, m)
+	// DB Operation
+	t, err := GetDBUtils().GetObject(c, m)
 
-    return t, err
+	return t, err
 }
 
 func (c *ProposalObjectManager) GetObjects(m map[string]string) ([]module.ControllerObject, error) {
-    // DB Operation
-    t, err := GetDBUtils().GetObjects(c, m)
+	// DB Operation
+	t, err := GetDBUtils().GetObjects(c, m)
 
-    return t, err
+	return t, err
 }
 
 func (c *ProposalObjectManager) UpdateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
-    // DB Operation
-    t, err := GetDBUtils().UpdateObject(c, m, t)
+	// DB Operation
+	t, err := GetDBUtils().UpdateObject(c, m, t)
 
-    return t, err
+	return t, err
 }
 
 func (c *ProposalObjectManager) DeleteObject(m map[string]string) error {
-    // DB Operation
-    err := GetDBUtils().DeleteObject(c, m)
+	// DB Operation
+	err := GetDBUtils().DeleteObject(c, m)
 
-    return err
+	return err
 }

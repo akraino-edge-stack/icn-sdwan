@@ -16,12 +16,11 @@
 
 package resource
 
-import (
-)
+import ()
 
 const (
-    SdewanApiVersion = "batch.sdewan.akraino.org/v1alpha1"
-    SdewanPurpose = "base"
+	SdewanApiVersion = "batch.sdewan.akraino.org/v1alpha1"
+	SdewanPurpose    = "base"
 )
 
 type ISdewanResource interface {

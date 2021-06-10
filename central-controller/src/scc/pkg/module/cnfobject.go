@@ -19,7 +19,7 @@ package module
 // App contains metadata for Apps
 type CNFObject struct {
 	Metadata ObjectMetaData `json:"metadata"`
-	Status string `json:"status"`
+	Status   string         `json:"status"`
 }
 
 func (c *CNFObject) GetMetadata() ObjectMetaData {
@@ -27,5 +27,5 @@ func (c *CNFObject) GetMetadata() ObjectMetaData {
 }
 
 func (c *CNFObject) GetType() string {
-    return "CNF"
+	return "CNF"
 }

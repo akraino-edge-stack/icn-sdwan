@@ -16,8 +16,7 @@
 
 package resource
 
-import (
-)
+import ()
 
 type EmptyResource struct {
 }
