@@ -110,13 +110,14 @@ func (c *DeviceObjectManager) ParseObject(r io.Reader) (module.ControllerObject,
 
 	// initial Status
 	v.Status.Data = make(map[string]string)
+	v.Status.DataIps = make(map[string]string)
 	return &v, err
 }
 
 func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.ControllerObject) error {
 	to := t.(*module.DeviceObject)
 
-	ipr_manager := GetManagerset().IPRange
+	ipr_manager := GetManagerset().ProviderIPRange
 	kubeutil := GetKubeConfigUtil()
 
 	local_public_ips := to.Specification.PublicIps
@@ -149,7 +150,7 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 
 		// allocate OIP for device
 		overlay_name := m[OverlayResource]
-		oip, err := ipr_manager.Allocate(overlay_name, to.Metadata.Name)
+		oip, err := ipr_manager.Allocate("", to.Metadata.Name)
 		if err != nil {
 			return pkgerrors.Wrap(err, "Fail to allocate overlay ip for "+to.Metadata.Name)
 		}
@@ -187,7 +188,7 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 
 		// Build up ipsec resource
 		scc_conn := resource.Connection{
-			Name:           DEFAULT_CONN,
+			Name:           DEFAULT_CONN + format_resource_name(to.Metadata.Name, ""),
 			ConnectionType: CONN_TYPE,
 			Mode:           MODE,
 			Mark:           DEFAULT_MARK,
@@ -296,10 +297,9 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 		}
 	}
 
-	//overlay_manager := GetManagerset().Overlay
-	ipr_manager := GetManagerset().IPRange
+	overlay_manager := GetManagerset().Overlay
+	ipr_manager := GetManagerset().ProviderIPRange
 
-	overlay_name := m[OverlayResource]
 	device_name := m[DeviceResource]
 
 	to := t.(*module.DeviceObject)
@@ -309,7 +309,7 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 	// * Remove ipsec configuration on SCC
 	if to.Status.Mode == 2 {
 		// Free OIP
-		ipr_manager.Free(overlay_name, to.Status.Ip)
+		ipr_manager.Free("", to.Status.Ip)
 
 		scc := module.EmptyObject{
 			Metadata: module.ObjectMetaData{"local", "", "", ""}}
@@ -319,6 +319,12 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 		r, _ := resource.GetResourceBuilder().ToObject(r_str)
 		resutils.AddResource(&scc, "create", r)
 		resutils.Undeploy("localto"+device_name, "YAML")
+	}
+
+	log.Println("Delete device...")
+	err = overlay_manager.DeleteConnections(m, t)
+	if err != nil {
+		log.Println(err)
 	}
 
 	// DB Operation
@@ -390,6 +396,47 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 			}
 		}
 	}
+
+	c.UpdateObject(m, t)
+	return nil
+}
+
+//Function allocate ip and update
+func (c *DeviceObjectManager) AllocateIP(m map[string]string, t module.ControllerObject, name string) (string, error) {
+	to := t.(*module.DeviceObject)
+	overlay_name := m[OverlayResource]
+	ipr_manager := GetManagerset().IPRange
+
+	// Allocate OIP for the device
+	oip, err := ipr_manager.Allocate(overlay_name, to.Metadata.Name)
+	if err != nil {
+		return "", pkgerrors.Wrap(err, "Fail to allocate overlay ip for "+to.Metadata.Name)
+	}
+	// Record the OIP allocated in the 'Status'
+	to.Status.DataIps[name] = oip
+	log.Println("Allocate DataIp name:" + name)
+
+	c.UpdateObject(m, t)
+	return oip, nil
+}
+
+//Function free ip and update
+func (c *DeviceObjectManager) FreeIP(m map[string]string, t module.ControllerObject, name string) error {
+	to := t.(*module.DeviceObject)
+	overlay_name := m[OverlayResource]
+	ipr_manager := GetManagerset().IPRange
+
+	log.Println(to.Status.DataIps)
+	oip := to.Status.DataIps[name]
+	log.Println("Free DataIp name:" + name + " with ip" + oip)
+
+	//Free the OIP
+	err := ipr_manager.Free(overlay_name, oip)
+	if err != nil {
+		return pkgerrors.Wrap(err, "Failed to free overlay ip for connection with"+to.Metadata.Name)
+	}
+	log.Println("Delete ip from dataips...")
+	delete(to.Status.DataIps, name)
 
 	c.UpdateObject(m, t)
 	return nil

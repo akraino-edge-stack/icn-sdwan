@@ -162,7 +162,7 @@ func (h ControllerHandler) updateHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	validate := validation.GetValidator(h.client.GetStoreName())
+	validate := validation.GetValidator(h.client.GetStoreMeta())
 	isValid, msg := validate.Validate(v)
 	if isValid == false {
 		http.Error(w, msg, http.StatusUnprocessableEntity)

@@ -197,23 +197,11 @@ func (c *HubObjectManager) DeleteObject(m map[string]string) error {
 	}
 
 	overlay_manager := GetManagerset().Overlay
-	conn_manager := GetConnectionManager()
-
-	overlay_name := m[OverlayResource]
-	hub_name := m[HubResource]
 
 	// Reset all IpSec connection setup by this device
-	conns, err := conn_manager.GetObjects(overlay_name, module.CreateEndName(t.GetType(), hub_name))
+	err = overlay_manager.DeleteConnections(m, t)
 	if err != nil {
 		log.Println(err)
-	} else {
-		for i := 0; i < len(conns); i++ {
-			conn := conns[i].(*module.ConnectionObject)
-			err = conn_manager.Undeploy(overlay_name, *conn)
-			if err != nil {
-				log.Println(err)
-			}
-		}
 	}
 
 	to := t.(*module.HubObject)

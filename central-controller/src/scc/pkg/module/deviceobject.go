@@ -20,7 +20,7 @@ package module
 type DeviceObject struct {
 	Metadata      ObjectMetaData     `json:"metadata"`
 	Specification DeviceObjectSpec   `json:"spec"`
-	Status        DeviceObjectStatus `json:"-"`
+	Status        DeviceObjectStatus `json:"status"`
 }
 
 // DeviceObjectSpec contains the parameters
@@ -43,6 +43,8 @@ type DeviceObjectStatus struct {
 	// if Mode=1, ip is one of public ip
 	// if Mode=2, ip is the OIP allocated by SCC
 	Ip string
+	// DataIps saves the overlay ips assigned for different traffic tunnel
+	DataIps map[string]string
 	// Status Data
 	Data map[string]string
 }

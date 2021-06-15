@@ -101,12 +101,12 @@ func (c *IPRangeObjectManager) GetStoreKey(m map[string]string, t module.Control
 	var key db.Key
 
 	if c.provider {
-		key = ProviderIPRangeObjectKey{
+		key = &ProviderIPRangeObjectKey{
 			IPRangeName: "",
 		}
 	} else {
 		overlay_name := m[OverlayResource]
-		key = IPRangeObjectKey{
+		key = &IPRangeObjectKey{
 			OverlayName: overlay_name,
 			IPRangeName: "",
 		}

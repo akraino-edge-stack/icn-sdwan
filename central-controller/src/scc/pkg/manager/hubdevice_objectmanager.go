@@ -148,6 +148,7 @@ func (c *HubDeviceObjectManager) DeleteObject(m map[string]string) error {
 
 	hub_manager := GetManagerset().Hub
 	dev_manager := GetManagerset().Device
+	overlay_manager := GetManagerset().Overlay
 	conn_manager := GetConnectionManager()
 
 	hub, err := hub_manager.GetObject(m)
@@ -167,7 +168,7 @@ func (c *HubDeviceObjectManager) DeleteObject(m map[string]string) error {
 		log.Println(err)
 	} else {
 		conn_obj := conn.(*module.ConnectionObject)
-		err = conn_manager.Undeploy(overlay_name, *conn_obj)
+		err = overlay_manager.DeleteConnection(m, *conn_obj)
 		if err != nil {
 			log.Println(err)
 		}

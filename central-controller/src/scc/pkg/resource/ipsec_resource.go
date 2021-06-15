@@ -123,13 +123,14 @@ spec:
 
 	}
 
-	base := `apiVersion: ` + SdewanApiVersion + ` 
+	base := `apiVersion: ` + SdewanApiVersion + `
 kind: IpsecHost
 metadata:
   name: ` + c.Name + `
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   type: ` + c.Type + `
   remote: '` + c.Remote + `'
@@ -139,7 +140,7 @@ spec:
 
 	if c.Connections.LocalSourceIp != "" {
 		connection = `
-  connections: 
+  connections:
   - name: ` + c.Connections.Name + `
     conn_type: ` + c.Connections.ConnectionType + `
     mode: ` + c.Connections.Mode + `

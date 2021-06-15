@@ -263,6 +263,8 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		proposalresources = append(proposalresources, pr)
 	}
 
+	device_mgr := GetManagerset().Device
+
 	//Get the overlay cert
 	var root_ca string
 	root_ca = GetRootCA(m[OverlayResource])
@@ -333,7 +335,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		obj2 := m2.(*module.DeviceObject)
 
 		obj1_ip := obj1.Status.Ip
-		obj2_ip := obj2.Status.Ip
+		obj2_ip, _ := device_mgr.AllocateIP(m, m2, module.CreateEndName(obj1.GetType(), obj1.Metadata.Name))
 
 		//Keypair
 		obj1_crt, obj1_key, err := GetHubCertificate(obj1.GetCertName(), namespace)
@@ -472,5 +474,55 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		return pkgerrors.Wrap(err, "Unable to create the object: fail to deploy resource")
 	}
 
+	return nil
+}
+
+func (c *OverlayObjectManager) DeleteConnection(m map[string]string, conn module.ConnectionObject) error {
+	// use connection object to get connection ends
+	// check if one of the ends is device object
+	// if end1 yes, free ip with end2's name
+	co1, _ := module.GetObjectBuilder().ToObject(conn.Info.End1.ConnObject)
+	co2, _ := module.GetObjectBuilder().ToObject(conn.Info.End2.ConnObject)
+
+	//Error: the re-constructed obj doesn't obtain the status
+	if co1.GetType() == "Device" {
+		log.Println("Enter Delete Connection with device on co1...")
+		device_mgr := GetManagerset().Device
+		device_mgr.FreeIP(m, co1, module.CreateEndName(co2.GetType(), co2.GetMetadata().Name))
+	}
+
+	if co2.GetType() == "Device" {
+		log.Println("Enter Delete Connection with device on co2...")
+		device_mgr := GetManagerset().Device
+		device_mgr.FreeIP(m, co2, module.CreateEndName(co1.GetType(), co1.GetMetadata().Name))
+	}
+
+	conn_manager := GetConnectionManager()
+	err := conn_manager.Undeploy(m[OverlayResource], conn)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (c *OverlayObjectManager) DeleteConnections(m map[string]string, m1 module.ControllerObject) error {
+	//Get all connections related to the ControllerObject and do deletion^M
+	conn_manager := GetConnectionManager()
+	overlay_name := m[OverlayResource]
+	conns, err := conn_manager.GetObjects(overlay_name, module.CreateEndName(m1.GetType(), m1.GetMetadata().Name))
+	if err != nil {
+		log.Println(err)
+		return err
+	} else {
+		for i := 0; i < len(conns); i++ {
+			conn := conns[i].(*module.ConnectionObject)
+			err = c.DeleteConnection(m, *conn)
+			if err != nil {
+				log.Println("Failed to delete connection" + conn.GetMetadata().Name)
+			}
+		}
+	}
 	return nil
 }
