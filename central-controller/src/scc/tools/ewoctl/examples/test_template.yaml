@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Intel Corporation
+
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Intel Corporation
+
+# creating overlay1
+version: ewo/v1
+resourceContext:
+  anchor: overlays
+metadata:
+  name: {{.OverlayName}}
+  description: 
+  userData1: 
+  userData2: 
+
+---
+# creating proposal
+version: ewo/v1
+resourceContext:
+  anchor: overlays/{{.OverlayName}}/proposals
+metadata:
+  name: {{.ProposalName}}
+  description: 
+  userData1: 
+  userData2: 
+spec:
+  encryption: aes256
+  hash: sha256
+  dhGroup: modp4096
+
+---
+# creating iprange
+version: ewo/v1
+resourceContext:
+  anchor: overlays/{{.OverlayName}}/ipranges
+metadata:
+  name: {{.IPRangelName}}
+  description: 
+  userData1: 
+  userData2: 
+spec:
+  subnet: 192.168.0.2
+  minIp: 10
+  maxIp: 100
+
+---
+# creating certificate
+version: ewo/v1
+resourceContext:
+  anchor: overlays/{{.OverlayName}}/certificates
+metadata:
+  name: {{.DeviceName}}
+  description: 
+  userData1: 
+  userData2: 
