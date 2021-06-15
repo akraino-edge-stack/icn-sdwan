@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Intel Corporation
+
+OverlayName: overlay1
+ProposalName: proposal1
+IPRangelName: iprange1
+DeviceName: device1

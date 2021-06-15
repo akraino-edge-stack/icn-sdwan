@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Intel Corporation
+
+# creating overlay1
+version: ewo/v1
+resourceContext:
+  anchor: overlays
+metadata:
+  name: overlay1
+  description: 
+  userData1: 
+  userData2: 
+
+---
+# creating overlay2
+version: ewo/v1
+resourceContext:
+  anchor: overlays
+metadata:
+  name: overlay2
+  description: 
+  userData1: 
+  userData2: 
