@@ -130,6 +130,7 @@ metadata:
   namespace: default
   labels:
     sdewanPurpose: ` + SdewanPurpose + `
+    targetCluster: ` + target + `
 spec:
   type: ` + c.Type + `
   remote: '` + c.Remote + `'
