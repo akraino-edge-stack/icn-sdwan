@@ -22,6 +22,30 @@
       "revId": "c548fc7b7e5db1c73d05eb8067a065f34f57dd8d",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7949753_221f3391",
+        "filename": "central-controller/src/scc/tools/ewoctl/cmd/utils.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-06-17T01:43:54Z",
+      "side": 1,
+      "message": "The field is a placeholder for potential customized data, it is not used now.",
+      "parentUuid": "1a03ce3c_8df1585c",
+      "range": {
+        "startLine": 35,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 10
+      },
+      "revId": "c548fc7b7e5db1c73d05eb8067a065f34f57dd8d",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
     }
   ]
 }
