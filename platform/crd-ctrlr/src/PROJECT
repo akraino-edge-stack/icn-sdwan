@@ -43,4 +43,7 @@ resources:
 - group: batch
   kind: CNFRoute
   version: v1alpha1
+- group: batch
+  kind: CNFRouteRule
+  version: v1alpha1
 version: "2"

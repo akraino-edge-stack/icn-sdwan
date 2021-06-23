@@ -1,31 +1,18 @@
-/*
- * Copyright 2020 Intel Corporation, Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 
 package controllers
 
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/go-logr/logr"
 	errs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"log"
 	"reflect"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
@@ -76,7 +63,10 @@ func GetToRequestsFunc(r client.Client, crliststruct runtime.Object) func(h hand
 		var enqueueRequest []reconcile.Request
 		cnfName := h.Meta.GetLabels()["sdewanPurpose"]
 		ctx := context.Background()
-		r.List(ctx, crliststruct, client.MatchingLabels{"sdewanPurpose": cnfName})
+		err := r.List(ctx, crliststruct, client.MatchingLabels{"sdewanPurpose": cnfName})
+		if err != nil {
+			log.Println(err)
+		}
 		value := reflect.ValueOf(crliststruct)
 		items := reflect.Indirect(value).FieldByName("Items")
 		for i := 0; i < items.Len(); i++ {
@@ -114,7 +104,10 @@ func GetServiceToRequestsFunc(r client.Client) func(h handler.MapObject) []recon
 		deploymentList := &appsv1.DeploymentList{}
 		podList := &corev1.PodList{}
 		ctx := context.Background()
-		r.List(ctx, deploymentList)
+		err := r.List(ctx, deploymentList)
+		if err != nil {
+			log.Println(err)
+		}
 		for _, deployment := range deploymentList.Items {
 			if _, ok := deployment.ObjectMeta.GetLabels()["sdewanPurpose"]; !ok {
 				continue
@@ -124,12 +117,18 @@ func GetServiceToRequestsFunc(r client.Client) func(h handler.MapObject) []recon
 			// TODO: For multi-namespace deployments with different sdewanPurpose label, a cnfName list is needed to hold them.
 			break
 		}
-		r.List(ctx, podList, client.MatchingLabels{"sdewanPurpose": cnfName})
+		err = r.List(ctx, podList, client.MatchingLabels{"sdewanPurpose": cnfName})
+		if err != nil {
+			log.Println(err)
+		}
 		for _, pod := range podList.Items {
-			clientInfo := &openwrt.OpenwrtClientInfo{Ip: pod.Status.PodIP, User: "root", Password: ""}
+			clientInfo := cnfprovider.CreateOpenwrtClient(pod, r)
 			openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
 			service := openwrt.ServiceClient{OpenwrtClient: openwrtClient}
-			service.ExecuteService("firewall", "restart")
+			_, err := service.ExecuteService("firewall", "restart")
+			if err != nil {
+				log.Println(err)
+			}
 		}
 		return []reconcile.Request{}
 	}
@@ -226,7 +225,7 @@ func net2iface(net string, deployment appsv1.Deployment) (string, error) {
 			return iface.Interface, nil
 		}
 	}
-	return "", errors.New(fmt.Sprintf("No matched network in annotation: %s", net))
+	return "", fmt.Errorf("No matched network in annotation: %s", net)
 }
 
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch
@@ -280,12 +279,17 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 		if err != nil {
 			log.Error(err, "Failed to add/update "+handler.GetType())
 			setStatus(instance, batchv1alpha1.SdewanStatus{State: batchv1alpha1.Applying, Message: err.Error()})
+			_, ok := err.(*openwrt.OpenwrtError)
 			err = r.Status().Update(ctx, instance)
 			if err != nil {
 				log.Error(err, "Failed to update status for "+handler.GetType())
 				return ctrl.Result{}, err
 			}
-			return ctrl.Result{RequeueAfter: during}, nil
+			if ok {
+				return ctrl.Result{}, err
+			} else {
+				return ctrl.Result{RequeueAfter: during}, nil
+			}
 		}
 		finalizers := getFinalizers(instance)
 		if !containsString(finalizers, finalizerName) {
@@ -305,7 +309,7 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 			}
 		}
 	} else {
-		// deletin CR
+		// deleting CR
 		if cnf == nil {
 			// no cnf exists
 			finalizers := getFinalizers(instance)

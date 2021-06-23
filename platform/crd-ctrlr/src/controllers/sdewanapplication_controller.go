@@ -1,23 +1,11 @@
-/*
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 package controllers
 
 import (
 	"context"
 	"fmt"
+	"log"
 	"reflect"
 
 	"github.com/go-logr/logr"
@@ -72,7 +60,10 @@ func (m *SdewanApplicationHandler) GetInstance(r client.Client, ctx context.Cont
 		ps := instance.Spec.PodSelector.MatchLabels
 		ns := instance.Spec.AppNamespace
 		podList := &corev1.PodList{}
-		r.List(ctx, podList, client.MatchingLabels(ps), client.InNamespace(ns))
+		err = r.List(ctx, podList, client.MatchingLabels(ps), client.InNamespace(ns))
+		if err != nil {
+			log.Println(err)
+		}
 		ips := ""
 		for _, item := range podList.Items {
 			if ips == "" {
@@ -137,10 +128,7 @@ var appFilter = builder.WithPredicates(predicate.Funcs{
 	CreateFunc: func(e event.CreateEvent) bool {
 		podPhase := reflect.ValueOf(e.Object).Interface().(*corev1.Pod).Status.Phase
 
-		if podPhase == "Running" {
-			return true
-		}
-		return false
+		return podPhase == "Running"
 	},
 	UpdateFunc: func(e event.UpdateEvent) bool {
 		podOldPhase := reflect.ValueOf(e.ObjectOld).Interface().(*corev1.Pod).Status.Phase
@@ -165,7 +153,10 @@ func GetAppToRequestsFunc(r client.Client) func(h handler.MapObject) []reconcile
 		appCRList := &batchv1alpha1.SdewanApplicationList{}
 		cr := &batchv1alpha1.SdewanApplication{}
 		ctx := context.Background()
-		r.List(ctx, appCRList)
+		err := r.List(ctx, appCRList)
+		if err != nil {
+			log.Println(err)
+		}
 		crIsFound := false
 		for _, appCR := range appCRList.Items {
 			ps := appCR.Spec.PodSelector.MatchLabels

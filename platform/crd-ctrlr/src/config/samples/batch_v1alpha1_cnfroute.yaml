@@ -1,9 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0 
+# Copyright (c) 2021 Intel Corporation
 apiVersion: batch.sdewan.akraino.org/v1alpha1
 kind: CNFRoute
 metadata:
   name: cnfroute-sample
   labels:
-    sdewanPurpose: cnf1
+    sdewanPurpose: cnf3
 spec:
     dst: "192.167.23.0/24"
     gw: "172.16.44.11"

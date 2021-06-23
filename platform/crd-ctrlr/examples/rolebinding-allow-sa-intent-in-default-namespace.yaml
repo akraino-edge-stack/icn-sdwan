@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0 
+# Copyright (c) 2021 Intel Corporation
 apiVersion: rbac.authorization.k8s.io/v1
 # This role binding allows "jane" to read pods in the "default" namespace.
 # You need to already have a Role named "pod-reader" in that namespace.

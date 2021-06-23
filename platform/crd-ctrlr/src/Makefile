@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
 
 # Image URL to use all building/pushing image targets
 IMG ?= integratedcloudnative/sdewan-controller:dev
@@ -28,13 +30,13 @@ run: generate fmt vet manifests
 # Install CRDs into a cluster
 install: manifests
 	kustomize build config/crd | kubectl apply -f -
-	kubectl apply -f config/local/webhook_config.yaml
-	cp -r ../examples/tmp/k8s-webhook-server /tmp/
+#	kubectl apply -f config/local/webhook_config.yaml
+#	cp -r ../examples/tmp/k8s-webhook-server /tmp/
 
 # Uninstall CRDs from a cluster
 uninstall: manifests
 	kustomize build config/crd | kubectl delete -f -
-	kubectl delete -f config/local/webhook_config.yaml
+#	kubectl delete -f config/local/webhook_config.yaml
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests uninstall
@@ -57,6 +59,10 @@ fmt:
 # Run go vet against code
 vet:
 	go vet ./...
+
+# Run go race against code
+race:
+	go build -race -o bin/manager_race main.go
 
 # Generate code
 generate: controller-gen

@@ -1,18 +1,5 @@
-/*
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 package v1alpha1
 
 import (
@@ -30,7 +17,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
@@ -45,7 +32,7 @@ func SetupBucketPermissionWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfservice;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
+// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfservice;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
 
 // bucketPermissionValidator validates Pods
 type bucketPermissionValidator struct {
@@ -105,12 +92,14 @@ func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Re
 		obj = &IpsecSite{}
 	case "CNFService":
 		obj = &CNFService{}
+	case "CNFStatus":
+		obj = &CNFStatus{}
 	case "SdewanApplication":
 		obj = &SdewanApplication{}
 	default:
 		return admission.Errored(
 			http.StatusBadRequest,
-			errors.New(fmt.Sprintf("Kind is not supported: %v", req.Kind)))
+			fmt.Errorf("Kind is not supported: %v", req.Kind))
 	}
 
 	if req.Operation == "CREATE" || req.Operation == "UPDATE" {
