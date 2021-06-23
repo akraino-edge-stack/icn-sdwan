@@ -1,18 +1,5 @@
-/*
- * Copyright 2020 Intel Corporation, Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 
 package cnfprovider
 
@@ -27,6 +14,7 @@ import (
 	"sdewan.akraino.org/sdewan/openwrt"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	"strings"
 )
 
 var log = logf.Log.WithName("OpenWrtProvider")
@@ -36,6 +24,43 @@ type OpenWrtProvider struct {
 	SdewanPurpose string
 	Deployment    appsv1.Deployment
 	K8sClient     client.Client
+}
+
+func getDataFromSecret(r client.Client, ns string, name string, key string) []byte {
+	instance := &corev1.Secret{}
+	err := r.Get(context.Background(), client.ObjectKey{
+		Namespace: ns,
+		Name:      name,
+	}, instance)
+
+	if err != nil {
+		log.Error(err, "Get Data from secret")
+		return []byte{}
+	}
+
+	return instance.Data[key]
+}
+
+func CreateOpenwrtClient(pod corev1.Pod, r client.Client) *openwrt.OpenwrtClientInfo {
+	user := "root"
+	pass := ""
+	ip := pod.Status.PodIP
+	cert := []byte{}
+	if account_secret, ok := pod.ObjectMeta.Labels["cnf-account-secret"]; ok {
+		pass = string(getDataFromSecret(r, pod.ObjectMeta.Namespace, account_secret, "password"))
+	}
+
+	if cert_secret, ok := pod.ObjectMeta.Labels["cnf-cert-secret"]; ok {
+		ip = strings.Replace(ip, ".", "-", -1) + "." + pod.ObjectMeta.Namespace + ".pod.cluster.local"
+		cert = getDataFromSecret(r, pod.ObjectMeta.Namespace, cert_secret, "ca.crt")
+	}
+
+	return &openwrt.OpenwrtClientInfo{
+		Ip:       ip,
+		User:     user,
+		Password: string(pass),
+		RootCA:   cert,
+	}
 }
 
 func NewOpenWrt(namespace string, sdewanPurpose string, k8sClient client.Client) (*OpenWrtProvider, error) {
@@ -64,7 +89,7 @@ func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, 
 		return false, err
 	}
 	if len(ReplicaSetList.Items) != 1 {
-		return false, errors.New(fmt.Sprintf("More than one of repicaset exist with label: sdewanPurpose=%s", p.SdewanPurpose))
+		return false, fmt.Errorf("More than one of repicaset exist with label: sdewanPurpose=%s", p.SdewanPurpose)
 	}
 	podList := &corev1.PodList{}
 	err = p.K8sClient.List(ctx, podList, client.MatchingFields{"OwnBy": ReplicaSetList.Items[0].ObjectMeta.Name})
@@ -80,7 +105,7 @@ func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, 
 		if pod.Status.PodIP == "" {
 			return false, errors.New("The target pod doesn't have an IP address")
 		}
-		clientInfo := &openwrt.OpenwrtClientInfo{Ip: pod.Status.PodIP, User: "root", Password: ""}
+		clientInfo := CreateOpenwrtClient(pod, p.K8sClient)
 		runtime_instance, err := handler.GetObject(clientInfo, new_instance.GetName())
 		changed := false
 
@@ -127,7 +152,7 @@ func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, insta
 	}
 	cnfChanged := false
 	for _, pod := range podList.Items {
-		clientInfo := &openwrt.OpenwrtClientInfo{Ip: pod.Status.PodIP, User: "root", Password: ""}
+		clientInfo := CreateOpenwrtClient(pod, p.K8sClient)
 		runtime_instance, err := handler.GetObject(clientInfo, handler.GetName(instance))
 		if err != nil {
 			err2, ok := err.(*openwrt.OpenwrtError)

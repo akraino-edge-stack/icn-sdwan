@@ -1,5 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
 # Build the manager binary
-FROM golang:1.13 as builder
+FROM golang:1.16 as builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests

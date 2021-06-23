@@ -1,18 +1,5 @@
-/*
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 package v1alpha1
 
 import (
@@ -27,13 +14,13 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"
+	//logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
 // log is for logging in this package.
-var label_check_log = logf.Log.WithName("label-validator")
+//var label_check_log = logf.Log.WithName("label-validator")
 
 func SetupLabelValidateWebhookWithManager(mgr ctrl.Manager) error {
 	mgr.GetWebhookServer().Register(
@@ -42,7 +29,7 @@ func SetupLabelValidateWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-label,mutating=false,failurePolicy=fail,groups=apps;batch.sdewan.akraino.org,resources=deployments;mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfservice;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=update,versions=v1;v1alpha1,name=validate-label.akraino.org
+// +kubebuilder:webhook:path=/validate-label,mutating=false,failurePolicy=fail,groups=apps;batch.sdewan.akraino.org,resources=deployments;mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfservice;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=update,versions=v1;v1alpha1,name=validate-label.akraino.org
 
 type labelValidator struct {
 	Client  client.Client
@@ -76,12 +63,14 @@ func (v *labelValidator) Handle(ctx context.Context, req admission.Request) admi
 		obj = &IpsecSite{}
 	case "CNFService":
 		obj = &CNFService{}
+	case "CNFStatus":
+		obj = &CNFStatus{}
 	case "SdewanApplication":
 		obj = &SdewanApplication{}
 	default:
 		return admission.Errored(
 			http.StatusBadRequest,
-			errors.New(fmt.Sprintf("Kind is not supported: %v", req.Kind)))
+			fmt.Errorf("Kind is not supported: %v", req.Kind))
 	}
 
 	if req.Operation != "UPDATE" {
@@ -96,7 +85,7 @@ func (v *labelValidator) Handle(ctx context.Context, req admission.Request) admi
 			return admission.Errored(http.StatusBadRequest, errors.New("object Decode error"))
 		}
 		if old_value != new_value {
-			return admission.Denied(fmt.Sprintf("Label 'sdewanPurpose' is immutable"))
+			return admission.Denied("Label 'sdewanPurpose' is immutable")
 		}
 		return admission.Allowed("")
 	}
