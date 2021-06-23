@@ -1,18 +1,5 @@
-/*
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 package controllers
 
 import (
@@ -25,7 +12,9 @@ import (
 	errs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
+
 	batchv1alpha1 "sdewan.akraino.org/sdewan/api/v1alpha1"
+	"sdewan.akraino.org/sdewan/cnfprovider"
 	"sdewan.akraino.org/sdewan/openwrt"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sync"
@@ -35,18 +24,67 @@ var cnfCRNameSpace = "sdewan-system"
 var cnfCRName = "cnf-status"
 var inQueryStatus = false
 
+// IStatusAction: defines the action to be executed based on CNF status
+type IStatusAction interface {
+	Execute(clientInfo *openwrt.OpenwrtClientInfo, status interface{}) error
+}
+
+// IpsecStatusAction: restart ipsec service if inactive
+type IpsecStatusAction struct {
+	client.Client
+	Log logr.Logger
+}
+
+func (r *IpsecStatusAction) Execute(clientInfo *openwrt.OpenwrtClientInfo, status interface{}) error {
+	stat := status.(map[string]interface{})
+	val, ok := stat["InitConnection"]
+	if !ok {
+		return nil
+	}
+
+	if s := val.(string); s == "fail" {
+		r.Log.Info("Restart IPSec service for " + clientInfo.Ip)
+		openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
+		service := openwrt.ServiceClient{OpenwrtClient: openwrtClient}
+		_, err := service.ExecuteService("ipsec", "restart")
+		if err != nil {
+			r.Log.Info(err.Error())
+			return err
+		}
+	}
+
+	return nil
+}
+
 // SdewanCNFStatusController: query CNF status periodically
 type SdewanCNFStatusController struct {
 	client.Client
 	Log           logr.Logger
 	CheckInterval time.Duration
+	actions       map[string]IStatusAction
 	mux           sync.Mutex
 }
 
+// +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfstatuses,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfstatuses/status,verbs=get;update;patch
+
 func (r *SdewanCNFStatusController) SetupWithManager() error {
+	r.actions = make(map[string]IStatusAction)
+	r.RegisterAction("ipsec", &IpsecStatusAction{r.Client, r.Log})
+
 	go wait.Until(r.SafeQuery, r.CheckInterval, wait.NeverStop)
 
 	return nil
+}
+
+func (r *SdewanCNFStatusController) RegisterAction(module string, action IStatusAction) {
+	r.mux.Lock()
+	defer r.mux.Unlock()
+
+	r.Log.Info("Register Action: " + module)
+	if r.actions[module] == nil {
+		r.actions[module] = action
+	}
 }
 
 func (r *SdewanCNFStatusController) GetInstance(ctx context.Context) (*batchv1alpha1.CNFStatus, error) {
@@ -80,7 +118,7 @@ func (r *SdewanCNFStatusController) GetInstance(ctx context.Context) (*batchv1al
 func (r *SdewanCNFStatusController) SafeQuery() {
 	doQuery := true
 	r.mux.Lock()
-	if inQueryStatus == false {
+	if !inQueryStatus {
 		inQueryStatus = true
 	} else {
 		doQuery = false
@@ -127,13 +165,27 @@ func (r *SdewanCNFStatusController) query() {
 		info.IP = cnfPod.Status.PodIP
 
 		// Get CNF Status
-		clientInfo := &openwrt.OpenwrtClientInfo{Ip: info.IP, User: "root", Password: ""}
+		clientInfo := cnfprovider.CreateOpenwrtClient(cnfPod, r)
 		openwrtClient := openwrt.GetOpenwrtClient(*clientInfo)
 		status_client := openwrt.StatusClient{OpenwrtClient: openwrtClient}
 		cnf_status, err := status_client.GetStatus()
 		if err != nil {
 			info.Status = "Not Available"
 		} else {
+			// ececute registered actions
+			r.mux.Lock()
+			for _, cs := range *cnf_status {
+				if r.actions[cs.Name] != nil {
+					go func() {
+						err := r.actions[cs.Name].Execute(clientInfo, cs.Status)
+						if err != nil {
+							r.Log.Info(err.Error())
+						}
+					}()
+				}
+			}
+			r.mux.Unlock()
+
 			p_data, _ := json.Marshal(cnf_status)
 			info.Status = string(p_data)
 		}

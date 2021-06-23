@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0 
+# Copyright (c) 2021 Intel Corporation
 ---
 apiVersion: batch.sdewan.akraino.org/v1alpha1
 kind: Mwan3Rule

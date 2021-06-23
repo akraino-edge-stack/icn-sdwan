@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: Apache-2.0 
+# Copyright (c) 2021 Intel Corporation
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: CNFRouteRule
+metadata:
+  name: cnfrouterule-sample1
+  labels:
+    sdewanPurpose: cnf1
+spec:
+  # ip rule add prio ${prio} from ${src} to ${dst} lookup %{table} fwmark %{fwmark}
+  # ip rule add not prio ${prio} from ${src} to ${dst} lookup %{table} fwmark %{fwmark}
+  # src and dst can not be empty meanwhile
+  src: "192.167.24.0/24"
+  # true | false, default is false
+  not: true
+  # a priority number, can be enpty
+  prio: "888"
+  # main | default | local | number ID, can be empty
+  table: "40"
+  # from 0x0 to 0xffffffff, can be empty
+  fwmark: "0x110"

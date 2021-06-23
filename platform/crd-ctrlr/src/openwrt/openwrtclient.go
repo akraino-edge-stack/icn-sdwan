@@ -1,25 +1,15 @@
-/*
- * Copyright 2020 Intel Corporation, Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
 
 package openwrt
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"runtime"
 	"strings"
@@ -43,11 +33,13 @@ type OpenwrtClientInfo struct {
 	Ip       string
 	User     string
 	Password string
+	RootCA   []byte
 }
 
 type openwrtClient struct {
 	OpenwrtClientInfo
-	token string
+	caCertPool *x509.CertPool
+	token      string
 }
 
 type safeOpenwrtClient struct {
@@ -58,27 +50,38 @@ type safeOpenwrtClient struct {
 var gclients = safeOpenwrtClient{clients: make(map[string]*openwrtClient)}
 
 func CloseClient(o *openwrtClient) {
-	o.logout()
+	err := o.logout()
+	if err != nil {
+		log.Println(err)
+	}
 	runtime.SetFinalizer(o, nil)
 }
 
 func GetOpenwrtClient(clientInfo OpenwrtClientInfo) *openwrtClient {
-	return gclients.GetClient(clientInfo.Ip, clientInfo.User, clientInfo.Password)
+	return gclients.GetClient(clientInfo.Ip, clientInfo.User, clientInfo.Password, clientInfo.RootCA)
 }
 
 // SafeOpenwrtClients
-func (s *safeOpenwrtClient) GetClient(ip string, user string, password string) *openwrtClient {
+func (s *safeOpenwrtClient) GetClient(ip string, user string, password string, rootCA []byte) *openwrtClient {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 	key := ip + "-" + user + "-" + password
 	if s.clients[key] == nil {
+		caCertPool := x509.NewCertPool()
+		ok := caCertPool.AppendCertsFromPEM(rootCA)
+		if !ok {
+			log.Println("Error to create rootCA")
+		}
+
 		s.clients[key] = &openwrtClient{
 			OpenwrtClientInfo: OpenwrtClientInfo{
 				Ip:       ip,
 				User:     user,
 				Password: password,
+				RootCA:   rootCA,
 			},
-			token: "",
+			caCertPool: caCertPool,
+			token:      "",
 		}
 	}
 
@@ -87,15 +90,23 @@ func (s *safeOpenwrtClient) GetClient(ip string, user string, password string) *
 
 // openwrt base URL
 func (o *openwrtClient) getBaseURL() string {
-	return "http://" + o.Ip + "/cgi-bin/luci/"
+	return "https://" + o.Ip + "/cgi-bin/luci/"
 }
 
 // login to openwrt http server
 func (o *openwrtClient) login() error {
+	if o.Password == "" {
+		return &OpenwrtError{Code: 403, Message: "Unauthorized"}
+	}
 	client := &http.Client{
 		// block redirect
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
+		},
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: o.caCertPool,
+			},
 		},
 	}
 
@@ -160,7 +171,14 @@ func (o *openwrtClient) call(method string, url string, request string) (string,
 			}
 		}
 
-		client := &http.Client{}
+		client := &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					RootCAs: o.caCertPool,
+				},
+			},
+		}
+
 		req_body := bytes.NewBuffer([]byte(request))
 		req, _ := http.NewRequest(method, o.getBaseURL()+url, req_body)
 		req.Header.Add("Cookie", "sysauth="+o.token)

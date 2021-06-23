@@ -1,3 +1,8 @@
+```
+SPDX-License-Identifier: Apache-2.0
+Copyright (c) 2021 Intel Corporation
+```
+
 # Sdewan operator
 
 The sdewan operator is developed under kubebuilder framework
@@ -14,7 +19,7 @@ After clone the repo, please change into directory `platform/crd-ctrlr`.
 We are going to run command from this directory in the deployment guide.
 
 The installation steps for Sdewan operator:
-1. kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml --validate=false
+1. kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
 2. kubectl apply -f examples/sdewan-controller.yaml
 
 Sample deployment of CNF:
@@ -118,6 +123,11 @@ make gen-yaml IMG="integratedcloudnative/sdewan-controller:dev"
   - IpsecProposal
   - IpsecHost
   - IpsecSite
+  - SdewanApplication
+  - CNFService
+  - CNFRoute
+  - CNFRouteRule
+  - CNFStatus
 
 
 ### NOTEs
