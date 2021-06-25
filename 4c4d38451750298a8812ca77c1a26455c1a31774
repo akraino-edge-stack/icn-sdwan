@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f9d218a_cfd4d556",
+        "filename": "platform/cnf-openwrt/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-06-25T09:53:14Z",
+      "side": 1,
+      "message": "Please remove \"OpenNESS \"",
+      "range": {
+        "startLine": 8,
+        "startChar": 28,
+        "endLine": 8,
+        "endChar": 37
+      },
+      "revId": "4c4d38451750298a8812ca77c1a26455c1a31774",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
