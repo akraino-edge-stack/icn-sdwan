@@ -174,16 +174,20 @@ func (r *SdewanCNFStatusController) query() {
 		} else {
 			// ececute registered actions
 			r.mux.Lock()
-			for _, cs := range *cnf_status {
-				if r.actions[cs.Name] != nil {
-					go func() {
-						err := r.actions[cs.Name].Execute(clientInfo, cs.Status)
+			var wg sync.WaitGroup
+			for i, _ := range *cnf_status {
+				if r.actions[(*cnf_status)[i].Name] != nil {
+					wg.Add(1)
+					go func(index int) {
+						defer wg.Done()
+						err := r.actions[(*cnf_status)[index].Name].Execute(clientInfo, (*cnf_status)[index].Status)
 						if err != nil {
 							r.Log.Info(err.Error())
 						}
-					}()
+					}(i)
 				}
 			}
+			wg.Wait()
 			r.mux.Unlock()
 
 			p_data, _ := json.Marshal(cnf_status)
