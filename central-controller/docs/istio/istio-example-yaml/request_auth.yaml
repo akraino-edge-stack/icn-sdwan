@@ -1,0 +1,9 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: request-keycloak-auth
+  namespace: istio-system
+spec:
+  jwtRules:
+    - issuer: "http://10.98.226.39:8080/auth/realms/enterprise1"
+      jwksUri: "http://10.98.226.39:8080/auth/realms/enterprise1/protocol/openid-connect/certs"
