@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "31ef7c46_2ddb5d9c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "Let\u0027s remove personal github information from the notes.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 70
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71716964_900f8a23",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "point to the file directly",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 16
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f4a9ead_4803f8ce",
+        "filename": "central-controller/docs/istio/istio-example-yaml/request_auth.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "suggest to put this as placeholder, ask in readme, tell the user what\u0027t the step can be used to get the ip",
+      "range": {
+        "startLine": 8,
+        "startChar": 22,
+        "endLine": 8,
+        "endChar": 34
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c4cab04_d6f61e8d",
+        "filename": "central-controller/docs/istio/istio-example-yaml/v2.crt",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "Please remove this file, just show the steps of how to generate the cert file.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 25
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "104ad4f5_3f076d48",
+        "filename": "central-controller/docs/istio/istio-example-yaml/v2.key",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "Please remove this file and show how to generate this file in readme",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 29
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a474ded_0024f1e5",
+        "filename": "central-controller/docs/istio/keycloak/keycloak.crt",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "similar comments for cert.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 25
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b417398_1c89f99f",
+        "filename": "central-controller/docs/istio/keycloak/keycloak.key",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-07-29T06:54:44Z",
+      "side": 1,
+      "message": "similar comments for cert.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 29
+      },
+      "revId": "5c782fbc1891f06044f7aa0f4f552687eb11024b",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
