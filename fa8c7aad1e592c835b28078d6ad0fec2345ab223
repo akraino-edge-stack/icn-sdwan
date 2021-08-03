@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ad78147f_11fc6aed",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "SDEWAN",
+      "range": {
+        "startLine": 11,
+        "startChar": 76,
+        "endLine": 11,
+        "endChar": 82
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80682c13_8d91a1a0",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "node port ip of the related service?",
+      "range": {
+        "startLine": 15,
+        "startChar": 77,
+        "endLine": 15,
+        "endChar": 91
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e362d098_a891f495",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "are created in previous step",
+      "range": {
+        "startLine": 70,
+        "startChar": 45,
+        "endLine": 70,
+        "endChar": 64
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6928ed10_bcc79f18",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "may need remove this as the cert/key is not put in repo",
+      "range": {
+        "startLine": 70,
+        "startChar": 65,
+        "endLine": 70,
+        "endChar": 83
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f88d60a_522a18c5",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "\u003cistio-ingress-url\u003e",
+      "range": {
+        "startLine": 248,
+        "startChar": 109,
+        "endLine": 248,
+        "endChar": 126
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6aa3b68_18b98308",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "controller",
+      "range": {
+        "startLine": 248,
+        "startChar": 29,
+        "endLine": 248,
+        "endChar": 39
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c73c4cb6_e58f6f23",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 6
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-03T13:19:43Z",
+      "side": 1,
+      "message": "please remove space",
+      "range": {
+        "startLine": 257,
+        "startChar": 68,
+        "endLine": 257,
+        "endChar": 69
+      },
+      "revId": "fa8c7aad1e592c835b28078d6ad0fec2345ab223",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
