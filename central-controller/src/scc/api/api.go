@@ -182,7 +182,6 @@ func NewRouter(
 	ipRangeObjectClient.AddDepResManager(overlayObjectClient)
 	certificateObjectClient.AddDepResManager(overlayObjectClient)
 	hubDeviceObjectClient.AddDepResManager(hubObjectClient)
-	hubDeviceObjectClient.AddDepResManager(deviceObjectClient)
 	hubConnObjectClient.AddDepResManager(hubObjectClient)
 	deviceConnObjectClient.AddDepResManager(deviceObjectClient)
 	hubCNFObjectClient.AddDepResManager(hubObjectClient)

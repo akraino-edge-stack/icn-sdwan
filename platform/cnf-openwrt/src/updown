@@ -12,8 +12,8 @@ VTI_IF="vti_${NET_IF}"
 
 case "${PLUTO_VERB}" in
     up-host)
-        #ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote "${PLUTO_PEER}" mode vti \
-        ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote 0.0.0.0 mode vti \
+        #ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote 0.0.0.0 mode vti \
+        ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote "${PLUTO_PEER}" mode vti \
             key "${PLUTO_MARK_OUT%%/*}"
         ip link set "${VTI_IF}" up
         ip route add "${PLUTO_PEER_SOURCEIP}" dev "${VTI_IF}" src "${PLUTO_ME}"

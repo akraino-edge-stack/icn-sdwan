@@ -140,7 +140,7 @@ function is_vti_enabled(value)
     end
     uci:save(uci_conf)
     uci:commit(uci_conf)
-    return true, value
+    return true, mode
 end
 
 function save_cert(content, path)
