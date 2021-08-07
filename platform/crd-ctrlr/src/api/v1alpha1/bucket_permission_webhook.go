@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/minio/minio/pkg/wildcard"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -30,6 +29,41 @@ func SetupBucketPermissionWebhookWithManager(mgr ctrl.Manager) error {
 		"/validate-sdewan-bucket-permission",
 		&webhook.Admission{Handler: &bucketPermissionValidator{Client: mgr.GetClient()}})
 	return nil
+}
+
+func wildMatch(pattern string, value string) bool {
+	return wildMatchArray([]rune(pattern), 0, []rune(value), 0)
+}
+
+func wildMatchArray(p []rune, pindex int, v []rune, vindex int) bool {
+	for pindex < len(p) {
+		if p[pindex] == '*' {
+			r := wildMatchArray(p, pindex+1, v, vindex)
+			if !r {
+				if vindex >= len(v) {
+					return false
+				}
+				return wildMatchArray(p, pindex, v, vindex+1)
+			}
+			return true
+		} else {
+			if vindex >= len(v) {
+				return false
+			}
+
+			if p[pindex] != '?' && p[pindex] != v[vindex] {
+				return false
+			}
+			pindex++
+			vindex++
+		}
+	}
+
+	if vindex < len(v) {
+		return false
+	}
+
+	return true
 }
 
 // +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfservice;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
@@ -143,9 +177,9 @@ func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Re
 			}
 			if role.Namespace == meta.Namespace {
 				for res, resPerm := range perm {
-					if wildcard.Match(res, req.Resource.Resource) {
+					if wildMatch(res, req.Resource.Resource) {
 						for _, p := range resPerm {
-							if wildcard.Match(p, bucketType) {
+							if wildMatch(p, bucketType) {
 								return admission.Allowed("")
 							}
 						}
@@ -177,9 +211,9 @@ func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Re
 				continue
 			}
 			for res, resPerm := range perm {
-				if wildcard.Match(res, req.Resource.Resource) {
+				if wildMatch(res, req.Resource.Resource) {
 					for _, p := range resPerm {
-						if wildcard.Match(p, bucketType) {
+						if wildMatch(p, bucketType) {
 							return admission.Allowed("")
 						}
 					}
