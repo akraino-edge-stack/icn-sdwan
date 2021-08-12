@@ -1,0 +1,303 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "44866fcd_fe698a7c",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "KeyCloak Services",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 21
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12e6cff7_aa47755c",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "services to do authentication on same overlay controller.",
+      "range": {
+        "startLine": 3,
+        "startChar": 196,
+        "endLine": 3,
+        "endChar": 203
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a0c3283_05ec0690",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "services",
+      "range": {
+        "startLine": 30,
+        "startChar": 30,
+        "endLine": 30,
+        "endChar": 38
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6f32031_1cd0c098",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "namespaces",
+      "range": {
+        "startLine": 30,
+        "startChar": 53,
+        "endLine": 30,
+        "endChar": 63
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b472716_f44465f0",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "Web GUI.",
+      "range": {
+        "startLine": 37,
+        "startChar": 33,
+        "endLine": 37,
+        "endChar": 36
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c08cf0f6_2f1aafdc",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "password - ex: \"test\"",
+      "range": {
+        "startLine": 42,
+        "startChar": 85,
+        "endLine": 42,
+        "endChar": 93
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57f2ece9_6066d986",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "\"users\"",
+      "range": {
+        "startLine": 42,
+        "startChar": 48,
+        "endLine": 42,
+        "endChar": 54
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54750a6_7e9a4603",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "\"sdewan\"",
+      "range": {
+        "startLine": 43,
+        "startChar": 45,
+        "endLine": 43,
+        "endChar": 51
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ece653f_ab7d9562",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "\u003cistio-ingress-url\u003e",
+      "range": {
+        "startLine": 47,
+        "startChar": 47,
+        "endLine": 47,
+        "endChar": 64
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "739bf1e7_bb8d084d",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "get",
+      "range": {
+        "startLine": 101,
+        "startChar": 25,
+        "endLine": 101,
+        "endChar": 30
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed85c80b_84a9182b",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "scc service",
+      "range": {
+        "startLine": 101,
+        "startChar": 12,
+        "endLine": 101,
+        "endChar": 16
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c742c86_0b6e98b8",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "accessed",
+      "range": {
+        "startLine": 172,
+        "startChar": 87,
+        "endLine": 172,
+        "endChar": 94
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74a4cc19_e04a9bee",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-08-12T04:39:37Z",
+      "side": 1,
+      "message": "accessed",
+      "range": {
+        "startLine": 172,
+        "startChar": 199,
+        "endLine": 172,
+        "endChar": 205
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
