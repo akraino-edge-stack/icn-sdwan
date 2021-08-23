@@ -1,0 +1,280 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6647b846_1490adf1",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "use",
+      "range": {
+        "startLine": 3,
+        "startChar": 8,
+        "endLine": 3,
+        "endChar": 12
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4644294e_177a2819",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "authentication framework/service",
+      "range": {
+        "startLine": 3,
+        "startChar": 120,
+        "endLine": 3,
+        "endChar": 134
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55660b5b_c870f93a",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "install",
+      "range": {
+        "startLine": 62,
+        "startChar": 99,
+        "endLine": 62,
+        "endChar": 106
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ebe594d_5903ab30",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "to access xxxx",
+      "range": {
+        "startLine": 82,
+        "startChar": 94,
+        "endLine": 82,
+        "endChar": 100
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc7dc1f8_a7c26466",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "typo here",
+      "range": {
+        "startLine": 5,
+        "startChar": 165,
+        "endLine": 5,
+        "endChar": 170
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd1c199f_8c56620f",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "remove \u0027to\u0027",
+      "range": {
+        "startLine": 7,
+        "startChar": 141,
+        "endLine": 7,
+        "endChar": 143
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a7ede29_a3dea806",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 11,
+        "startChar": 76,
+        "endLine": 11,
+        "endChar": 82
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "193e3fad_cbf2efd2",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "change to \u0027are\u0027",
+      "range": {
+        "startLine": 11,
+        "startChar": 128,
+        "endLine": 11,
+        "endChar": 130
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5579ed42_140b82d4",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 248,
+        "startChar": 29,
+        "endLine": 248,
+        "endChar": 39
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81e241d6_957d1a5f",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "remove space",
+      "range": {
+        "startLine": 257,
+        "startChar": 68,
+        "endLine": 257,
+        "endChar": 69
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc79102c_6bfbd334",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "allowed to access xxx.",
+      "range": {
+        "startLine": 277,
+        "startChar": 86,
+        "endLine": 277,
+        "endChar": 100
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e53766ea_e6adf8fd",
+        "filename": "central-controller/docs/istio/README.md",
+        "patchSetId": 9
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-08-23T14:17:18Z",
+      "side": 1,
+      "message": "to apply",
+      "range": {
+        "startLine": 307,
+        "startChar": 154,
+        "endLine": 307,
+        "endChar": 159
+      },
+      "revId": "f70280c14bd44b7bd12d75e2abc5fe637f79bb58",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
