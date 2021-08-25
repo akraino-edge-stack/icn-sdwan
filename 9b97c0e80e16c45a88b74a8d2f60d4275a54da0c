@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fbed5ede_66e9ad79",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "44866fcd_fe698a7c",
+      "range": {
+        "startLine": 1,
+        "startChar": 12,
+        "endLine": 1,
+        "endChar": 21
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "12e6cff7_aa47755c",
         "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
         "patchSetId": 8
@@ -45,6 +69,30 @@
       "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d71ea56a_87f93a05",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12e6cff7_aa47755c",
+      "range": {
+        "startLine": 3,
+        "startChar": 196,
+        "endLine": 3,
+        "endChar": 203
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -94,6 +142,54 @@
     },
     {
       "key": {
+        "uuid": "418c1aa5_a93ae7de",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a0c3283_05ec0690",
+      "range": {
+        "startLine": 30,
+        "startChar": 30,
+        "endLine": 30,
+        "endChar": 38
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e997b577_1971c9c3",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6f32031_1cd0c098",
+      "range": {
+        "startLine": 30,
+        "startChar": 53,
+        "endLine": 30,
+        "endChar": 63
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1b472716_f44465f0",
         "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
         "patchSetId": 8
@@ -114,6 +210,30 @@
       "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24184a75_dcbf7b6a",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1b472716_f44465f0",
+      "range": {
+        "startLine": 37,
+        "startChar": 33,
+        "endLine": 37,
+        "endChar": 36
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -163,6 +283,54 @@
     },
     {
       "key": {
+        "uuid": "1ed0fa60_ed8bd5a5",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c08cf0f6_2f1aafdc",
+      "range": {
+        "startLine": 42,
+        "startChar": 85,
+        "endLine": 42,
+        "endChar": 93
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b78ae003_563814a3",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57f2ece9_6066d986",
+      "range": {
+        "startLine": 42,
+        "startChar": 48,
+        "endLine": 42,
+        "endChar": 54
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b54750a6_7e9a4603",
         "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
         "patchSetId": 8
@@ -186,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "1ba0c2cd_66d0a8bf",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b54750a6_7e9a4603",
+      "range": {
+        "startLine": 43,
+        "startChar": 45,
+        "endLine": 43,
+        "endChar": 51
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ece653f_ab7d9562",
         "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
         "patchSetId": 8
@@ -206,6 +398,30 @@
       "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75e57374_27f53a36",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ece653f_ab7d9562",
+      "range": {
+        "startLine": 47,
+        "startChar": 47,
+        "endLine": 47,
+        "endChar": 64
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -255,6 +471,54 @@
     },
     {
       "key": {
+        "uuid": "ff667516_abfc0470",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed85c80b_84a9182b",
+      "range": {
+        "startLine": 101,
+        "startChar": 12,
+        "endLine": 101,
+        "endChar": 16
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a2a4eac5_e2d56651",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "739bf1e7_bb8d084d",
+      "range": {
+        "startLine": 101,
+        "startChar": 25,
+        "endLine": 101,
+        "endChar": 30
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6c742c86_0b6e98b8",
         "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
         "patchSetId": 8
@@ -298,6 +562,54 @@
       "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2f66baf_7cfd8e6e",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74a4cc19_e04a9bee",
+      "range": {
+        "startLine": 172,
+        "startChar": 199,
+        "endLine": 172,
+        "endChar": 205
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f7103c5_77e298a0",
+        "filename": "central-controller/docs/istio/Multiple KeyCloak Configuration.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-08-25T01:30:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c742c86_0b6e98b8",
+      "range": {
+        "startLine": 172,
+        "startChar": 87,
+        "endLine": 172,
+        "endChar": 94
+      },
+      "revId": "9b97c0e80e16c45a88b74a8d2f60d4275a54da0c",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
