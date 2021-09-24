@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "186fcf2a_bc248854",
+        "filename": "platform/cnf-openwrt/src/build_image.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-09-24T02:16:52Z",
+      "side": 1,
+      "message": "Let\u0027s change it to Dockerfile_sdewan",
+      "range": {
+        "startLine": 9,
+        "startChar": 12,
+        "endLine": 9,
+        "endChar": 33
+      },
+      "revId": "e95c315804e6d5808160e10a448bf2526f51a790",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c00828db_9f0d5a6c",
+        "filename": "platform/cnf-openwrt/src/build_image.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-09-24T02:16:52Z",
+      "side": 1,
+      "message": "Let\u0027s change it to openwrt-sdewan",
+      "range": {
+        "startLine": 10,
+        "startChar": 10,
+        "endLine": 10,
+        "endChar": 28
+      },
+      "revId": "e95c315804e6d5808160e10a448bf2526f51a790",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
