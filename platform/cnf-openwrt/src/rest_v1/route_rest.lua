@@ -9,6 +9,24 @@ json = require "luci.jsonc"
 io = require "io"
 sys = require "luci.sys"
 utils = require "luci.controller.rest_v1.utils"
+ifutil = require "luci.controller.rest_v1.ifutil"
+
+uci_conf = "route-cnf"
+
+route_validator = {
+    create_section_name=false,
+    {name="name"},
+    {name="dst", required=true, validator=function(value) return (value == "default") or utils.is_valid_ip(value) end, message="Invalid Destination IP Address"},
+    {name="src", validator=function(value) return utils.is_valid_ip_address(value) end, message="Invalid Source IP Address"},
+    {name="gw", validator=function(value) return utils.is_valid_ip_address(value) end, message="Invalid Gateway IP Address"},
+    {name="dev", required=true, validator=function(value) return (value == "#default") or ifutil.is_interface_available(value) end, message="Invalid interface", code="428"},
+    {name="table", validator=function(value) return utils.in_array(value, {"default", "cnf"}) end, message="Bad route table"},
+}
+
+route_processor = {
+    route={create="create_route", delete="delete_route", validator=route_validator},
+    configuration=uci_conf
+}
 
 function index()
     ver = "v1"
@@ -18,230 +36,92 @@ end
 
 -- Request Handler
 function handle_request()
-    local method = utils.get_req_method()
-    if method == "PUT" then
-        return update_route()
-    elseif method == "POST" then
-        return create_route()
-    elseif method == "DELETE" then
-        return delete_route()
-    elseif method == "GET" then
-        return get_route()
-    else
+    local conf = io.open("/etc/config/" .. uci_conf, "r")
+    if conf == nil then
+        conf = io.open("/etc/config/" .. uci_conf, "w")
+    end
+    conf:close()
+
+    local handler = utils.handles_table[utils.get_req_method()]
+    if handler == nil then
         utils.response_error(405, "Method Not Allowed")
-    end
-end
-
--- Post
-function create_route()
-    local obj = utils.get_request_body_object()
-    if obj == nil then
-        utils.response_error(400, "No Route Data")
-        return
-    end
-    if is_duplicated(obj.name, obj.dst) then
-        utils.response_error(409, "Duplicated Route Configuration")
-        return
-    end
-    if not utils.is_valid_ip(obj.dst) then
-        utils.response_error(400, "Invalid Destination IP Address")
-        return
-    end
-    if not utils.is_valid_ip_address(obj.gw) then
-        utils.response_error(400, "Invalid gateway IP Address")
-        return
-    end
-
-    local iface = get_dev_name(obj.dev)
-    if obj.table == "default" then
-        local comm = "ip route add "..obj.dst.." via "..obj.gw.." dev "..iface
-        os.execute(comm)
-    elseif obj.table == "cnf" then
-        local comm = "ip route add table 40 "..obj.dst.." via "..obj.gw.." dev "..iface
-        os.execute(comm)
     else
-        utils.response_error(400, "Bad route table")
-        return
+        return utils[handler](_M, route_processor)
     end
-    local file = io.open("/etc/route_cr.info", "a+")
-    file:write(obj.name, " ", obj.dst, " ", obj.gw, " ", obj.dev, " ", obj.table, "\n")
-    file:close()
-    luci.http.prepare_content("application/json")
-    luci.http.write_json(obj)
 end
 
--- Delete
-function delete_route()
-    local uri_list = utils.get_URI_list(7)
-    if uri_list == nil then
-        return
-    end
-    local name = uri_list[#uri_list]
-    local file = io.open("/etc/route_cr.info", "r")
-    content = {}
-    for line in file:lines() do
-        local message = split(line, ' ')
-        if name ~= message[1] then
-            content[#content+1] = line
-        else
-	    local iface = get_dev_name(message[4])
-            if message[5] == "cnf" then
-                local comm = "ip route del table 40 "..message[2].." via "..message[3].." dev "..iface
-                os.execute(comm)
-            else
-                local comm = "ip route del "..message[2].." via "..message[3].." dev "..iface
-                os.execute(comm)
-            end
-        end
-    end
-    file:close()
-    local file = io.open("/etc/route_cr.info", "w+")
-    for i = 1, #content do
-        file:write(content[i])
-    end
-    file:close()
-end
-
--- Update
-function update_route()
-    local uri_list = utils.get_URI_list(7)
-    if uri_list == nil then
-        return
-    end
-    local name = uri_list[#uri_list]
-    local obj = utils.get_request_body_object()
-    if obj == nil then
-        utils.response_error(400, "Route CR not found")
-        return
-    end
-    if obj.name ~= name then
-        utils.response_error(400, "Route CR name mismatch")
-        return
-    end
-    if not utils.is_valid_ip(obj.dst) then
-        utils.response_error(400, "Invalid Destination IP Address")
-        return
-    end
-    if not utils.is_valid_ip_address(obj.gw) then
-        utils.response_error(400, "Invalid gateway IP Address")
-        return
+-- generate command for route
+function route_command(route, op)
+    local dst = route["dst"]
+    local src = route["src"]
+    local gw = route["gw"]
+    local dev = route["dev"]
+    local t = route["table"]
+    if dev == "#default" then
+        dev = ifutil.get_default_ifname()
     end
 
-    local file = io.open("/etc/route_cr.info", "r")
-    content = {}
-    for line in file:lines() do
-        local message = split(line, ' ')
-        if name ~= message[1] then
-            content[#content+1] = line
-        else
-            if obj.dst ~= message[2] or obj.table ~= message[5] then
-                utils.response_error(400, "Route CR mismatch")
-		file:close()
-                return
-            end
-	    local iface = get_dev_name(obj.dev)
-            if obj.table == "default" then
-                local comm = "ip route replace "..obj.dst.." via "..obj.gw.." dev "..iface
-                os.execute(comm)
-            elseif obj.table == "cnf" then
-                local comm = "ip route replace table 40 "..obj.dst.." via "..obj.gw.." dev "..iface
-                os.execute(comm)
-            else
-                utils.response_error(400, "Bad route table")
-                return
-            end
-            content[#content+1] = obj.name.." "..obj.dst.." "..obj.gw.." "..obj.dev.." "..obj.table.."\n"
-        end
-    end
-    file:close()
-    local file = io.open("/etc/route_cr.info", "w+")
-    for i = 1, #content do
-        file:write(content[i])
-    end
-    file:close()
-    luci.http.prepare_content("application/json")
-    luci.http.write_json(obj)
-end
-
--- Get
-function get_route()
-    local uri_list = utils.get_URI_list()
-    local file = io.open("/etc/route_cr.info", "r")
-    if #uri_list == 6 then
-        local objs = {}
-        objs["routes"] = {}
-        for line in file:lines() do
-            local message = split(line, ' ')
-            local obj = {}
-            obj["name"] = message[1]
-            obj["dst"] = message[2]
-            obj["gw"] = message[3]
-            obj["dev"] = message[4]
-            obj["table"] = message[5]
-            table.insert(objs["routes"], obj)
-        end
-        luci.http.prepare_content("application/json")
-        luci.http.write_json(objs)
-    elseif #uri_list == 7 then
-        local name = uri_list[#uri_list]
-        local no = true
-        for line in file:lines() do
-            local message = split(line, ' ')
-            if name == message[1] then
-                no = false
-                local obj = {}
-                obj["name"] = message[1]
-                obj["dst"] = message[2]
-                obj["gw"] = message[3]
-                obj["dev"] = message[4]
-                obj["table"] = message[5]
-                luci.http.prepare_content("application/json")
-                luci.http.write_json(obj)
-                break
-            end
-        end
-        if no then
-            utils.response_error(404, "Cannot find ".."Route CR ".."[".. name.."]" )
-        end
+    local comm = "ip route"
+    if op == "create" then
+        comm = comm .. " add"
     else
-        utils.response_error(400, "Bad request URI")
+        comm = comm .. " del"
     end
-    file:close()
-end
 
--- Sync and validate
-function split(str,reps)
-    local arr = {}
-    string.gsub(str,'[^'..reps..']+',function(w)
-        table.insert(arr, w)
-    end)
-    return arr
-end
-
-function is_duplicated(name, dst)
-    local file = io.open("/etc/route_cr.info", "r")
-    local judge = false
-    for line in file:lines() do
-        local message = split(line, ' ')
-        if name == message[1] then
-            judge = true
-            break
-        end
-        if dst == message[2] then
-            judge = true
-            break
-        end
+    if t == "cnf" then
+        comm = comm .. " table 40"
     end
-    file:close()
-    return judge
+    comm = comm .. " " .. dst
+    if gw ~= nil and gw ~= "" then
+        comm = comm .. " via " .. gw
+    end
+    comm = comm .. " dev " .. dev
+    if src ~= nil and src ~= "" then
+        comm = comm .. " src " .. src
+    end
+
+    utils.log(comm)
+    return comm
 end
 
-function get_dev_name(name)
-    --TODO
-    return name
+-- create a route
+function create_route(route)
+    local name = route.name
+    local res, code, msg = utils.create_uci_section(uci_conf, route_validator, "route", route)
+
+    if res == false then
+        uci:revert(uci_conf)
+        return res, code, msg
+    end
+
+    -- create route rule
+    local comm = route_command(route, "create")
+    os.execute(comm)
+
+    -- commit change
+    uci:save(uci_conf)
+    uci:commit(uci_conf)
+
+    return true
 end
 
-function strict_subnet(ip)
-    --TODO
+-- delete a route
+function delete_route(name)
+    -- check whether route is defined
+    local route = utils.get_object(_M, route_processor, "route", name)
+    if route == nil then
+        return false, 404, "route " .. name .. " is not defined"
+    end
+
+    -- delete route rule
+    local comm = route_command(route, "delete")
+    os.execute(comm)
+
+    utils.delete_uci_section(uci_conf, route_validator, route, "route")
+
+    -- commit change
+    uci:save(uci_conf)
+    uci:commit(uci_conf)
+
     return true
 end

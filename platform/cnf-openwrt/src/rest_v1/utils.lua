@@ -446,9 +446,12 @@ function create_uci_section(configuration, validator, object_type, obj)
                     end
                     local obj_value = obj[name]
                     if v["save_func"] ~= nil and type(v["save_func"]) == "function" then
-                        res, obj_value = v["save_func"](obj)
+                        res, obj_value, code = v["save_func"](obj)
+                        if code == nil then
+                            code = 400
+                        end
                         if res == false then
-                            return res, obj_value
+                            return res, code, obj_value
                         end
                     end
                     if type(obj_value) == "table" then
@@ -464,9 +467,9 @@ function create_uci_section(configuration, validator, object_type, obj)
                                 local sub_obj_names = {}
                                 for k=1, #section_obj do
                                     sub_obj_names[k] = section_obj[k].name
-                                    local res, msg = create_uci_section(configuration, v["item_validator"], option_name, section_obj[k])
+                                    local res, code, msg = create_uci_section(configuration, v["item_validator"], option_name, section_obj[k])
                                     if res == false then
-                                        return res, msg
+                                        return res, code, msg
                                     end
                                 end
                                 uci:set_list(configuration, obj_section, option_name, sub_obj_names)
@@ -476,9 +479,9 @@ function create_uci_section(configuration, validator, object_type, obj)
                         end
                     else
                         if v["validator"] ~= nil and type(v["validator"]) == "table" then
-                            local res, msg = create_uci_section(configuration, v["validator"], target_name, obj_value)
+                            local res, code, msg = create_uci_section(configuration, v["validator"], target_name, obj_value)
                             if res == false then
-                                return res, msg
+                                return res, code, msg
                             end
                             uci:set(configuration, obj_section, target_name, obj_value.name)
                         else
@@ -501,11 +504,11 @@ function create_object(module_table, processors, object_type, obj)
        and module_table[processors[object_type]["create"]] ~= nil then
             return module_table[processors[object_type]["create"]](obj)
     else
-        local res, msg = create_uci_section(processors["configuration"], processors[object_type].validator, object_type, obj)
+        local res, code, msg = create_uci_section(processors["configuration"], processors[object_type].validator, object_type, obj)
 
         if res == false then
             uci:revert(processors["configuration"])
-            return res, msg
+            return res, code, msg
         end
 
         -- commit change
@@ -680,6 +683,7 @@ function validate_and_set_data(validator, src)
             local val_func = v["validator"]
             local item_val_func = v["item_validator"]
             local error_message = v["message"]
+            local error_code = v["code"]
             local required = v["required"]
             local default = v["default"]
             local target_name = name
@@ -690,6 +694,12 @@ function validate_and_set_data(validator, src)
 
             if error_message == nil then
                 error_message = ""
+            end
+
+            if error_code == nil then
+                error_code = ""
+            else
+                error_code = error_code .. ":"
             end
 
             local value = src[name]
@@ -714,9 +724,9 @@ function validate_and_set_data(validator, src)
 
                 if res == false then
                     if ret_obj ~= nil and ret_obj ~= "" then
-                        return false, "Field[" .. name .. "] checked failed: " .. error_message .. " [" .. ret_obj .. "]"
+                        return false, error_code .. "Field[" .. name .. "] checked failed: " .. error_message .. " [" .. ret_obj .. "]"
                     else
-                        return false, "Field[" .. name .. "] checked failed: " .. error_message
+                        return false, error_code .. "Field[" .. name .. "] checked failed: " .. error_message
                     end
                 else
                     if ret_obj ~= nil then
@@ -779,7 +789,17 @@ function get_and_validate_body_object(validator)
 
     local res, res_obj = validate_and_set_data(validator, body_obj)
     if not res then
-        response_error(400, res_obj)
+        local code = 400
+        local message = res_obj
+        local i,j = string.find(res_obj, ":")
+        if i ~= nil then
+            local co = string.sub(res_obj, 1, i-1)
+            if tonumber(co) ~= nil then
+                code = co
+                message = string.sub(res_obj, j+1, string.len(res_obj))
+            end
+        end
+        response_error(code, message)
         return nil
     end
 

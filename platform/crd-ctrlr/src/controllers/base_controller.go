@@ -279,15 +279,16 @@ func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, han
 		if err != nil {
 			log.Error(err, "Failed to add/update "+handler.GetType())
 			setStatus(instance, batchv1alpha1.SdewanStatus{State: batchv1alpha1.Applying, Message: err.Error()})
-			_, ok := err.(*openwrt.OpenwrtError)
+			err2, ok := err.(*openwrt.OpenwrtError)
 			err = r.Status().Update(ctx, instance)
 			if err != nil {
 				log.Error(err, "Failed to update status for "+handler.GetType())
 				return ctrl.Result{}, err
 			}
-			if ok {
+			if ok && err2.Code != 428 {
 				return ctrl.Result{}, err
 			} else {
+				// retry if network error or operation failed due to pre-condition is not satisfied (e.g. Code == 428)
 				return ctrl.Result{RequeueAfter: during}, nil
 			}
 		}

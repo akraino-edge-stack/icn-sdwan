@@ -13,6 +13,7 @@ function index()
     entry({"sdewan", "application", ver}, call("help")).dependent = false
     entry({"sdewan", "route", ver}, call("help")).dependent = false
     entry({"sdewan", "rule", ver}, call("help")).dependent = false
+    entry({"sdewan", "nat", ver}, call("help")).dependent = false
 
 end
 
