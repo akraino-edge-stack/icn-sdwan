@@ -43,7 +43,7 @@ func main() {
 	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
 		"Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
 	flag.IntVar(&checkInterval, "check-interval", 30,
-		"The check interval for query of CNF Status (seconds)")
+		"The check interval of CRD Controller (seconds)")
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(func(o *zap.Options) {
@@ -124,6 +124,14 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Mwan3Rule")
+		os.Exit(1)
+	}
+	if err = (&controllers.CNFNATReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("CNFNAT"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "CNFNAT")
 		os.Exit(1)
 	}
 	if err = (&controllers.FirewallZoneReconciler{
@@ -230,6 +238,15 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "CNFRouteRule")
+		os.Exit(1)
+	}
+	if err = (&controllers.CNFLocalServiceReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("CNFLocalService"),
+		CheckInterval: time.Duration(checkInterval) * time.Second,
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "CNFLocalService")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+---
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: CNFNAT
+metadata:
+  name: nat-sample
+  namespace: default
+  labels:
+    sdewanPurpose: cnf1
+spec:
+  src: iface1
+  src_ip: 192.168.1.2
+  src_dip: 1.2.3.4
+  dest: iface2
+  proto: tcp
+  target: DNAT
+...

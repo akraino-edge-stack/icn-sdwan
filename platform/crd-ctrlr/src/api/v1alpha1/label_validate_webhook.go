@@ -29,7 +29,7 @@ func SetupLabelValidateWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-label,mutating=false,failurePolicy=fail,groups=apps;batch.sdewan.akraino.org,resources=deployments;mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfservice;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=update,versions=v1;v1alpha1,name=validate-label.akraino.org
+// +kubebuilder:webhook:path=/validate-label,mutating=false,failurePolicy=fail,groups=apps;batch.sdewan.akraino.org,resources=deployments;mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfservices;cnfroutes;cnfrouterules;cnflocalservices;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=update,versions=v1;v1alpha1,name=validate-label.akraino.org
 
 type labelValidator struct {
 	Client  client.Client
@@ -51,6 +51,12 @@ func (v *labelValidator) Handle(ctx context.Context, req admission.Request) admi
 		obj = &FirewallZone{}
 	case "FirewallRule":
 		obj = &FirewallRule{}
+	case "CNFNAT":
+		obj = &CNFNAT{}
+	case "CNFRoute":
+		obj = &CNFRoute{}
+	case "CNFRouteRule":
+		obj = &CNFRouteRule{}
 	case "FirewallDNAT":
 		obj = &FirewallDNAT{}
 	case "FirewallSNAT":
@@ -63,6 +69,8 @@ func (v *labelValidator) Handle(ctx context.Context, req admission.Request) admi
 		obj = &IpsecSite{}
 	case "CNFService":
 		obj = &CNFService{}
+	case "CNFLocalService":
+		obj = &CNFLocalService{}
 	case "CNFStatus":
 		obj = &CNFStatus{}
 	case "SdewanApplication":
