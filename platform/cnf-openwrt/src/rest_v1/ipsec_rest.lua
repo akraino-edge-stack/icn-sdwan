@@ -40,7 +40,7 @@ config_type=function(value) return value["conn_type"] end,
     {name="remote_sourceip"},
     {name="remote_updown"},
     {name="remote_firewall", validator=function(value) return utils.in_array(value, {"yes", "no"}) end},
-    {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal"},
+    {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal", code="428"},
     {name="mark"},
 
 }
@@ -56,7 +56,7 @@ remote_validator = {
     {name="pre_shared_key"},
     {name="local_identifier"},
     {name="remote_identifier"},
-    {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal"},
+    {name="crypto_proposal", is_list=true, item_validator=function(value) return is_proposal_available(value) end, message="invalid crypto_proposal", code="428"},
     {name="force_crypto_proposal", validator=function(value) return utils.in_array(value, {"0", "1"}) end, message="invalid input for ForceCryptoProposal"},
     {name="local_public_cert",
         load_func=function(value) return load_cert(value["local_public_cert"]) end,
