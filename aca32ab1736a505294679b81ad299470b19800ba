@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "16a2b94d_13f944ee",
+        "filename": "platform/cnf-openwrt/src/rest_v1/ifutil.lua",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-01T02:03:52Z",
+      "side": 1,
+      "message": "Not sure is this necessary in the code even if it is empty?",
+      "range": {
+        "startLine": 19,
+        "startChar": 9,
+        "endLine": 19,
+        "endChar": 14
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad7d8504_efc54d06",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-01T02:03:52Z",
+      "side": 1,
+      "message": "Maybe cnfservices.",
+      "range": {
+        "startLine": 69,
+        "startChar": 251,
+        "endLine": 69,
+        "endChar": 261
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9e9e6bf_51b2eea6",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/label_validate_webhook.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-01T02:03:52Z",
+      "side": 1,
+      "message": "Maybe cnfservices? It seems I set the wrong comment which lack of \u0027s\u0027?",
+      "range": {
+        "startLine": 32,
+        "startChar": 247,
+        "endLine": 32,
+        "endChar": 257
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b6b41ab_dfff4fc7",
+        "filename": "platform/crd-ctrlr/src/config/crd/patches/cainjection_in_cnfnats.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-01T02:03:52Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 1,
+        "startChar": 37,
+        "endLine": 1,
+        "endChar": 39
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e16cd9d3_beb282c4",
+        "filename": "platform/crd-ctrlr/src/config/crd/patches/webhook_in_cnfnats.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-01T02:03:52Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 1,
+        "startChar": 37,
+        "endLine": 1,
+        "endChar": 39
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a456f85_ed57d44a",
+        "filename": "platform/crd-ctrlr/src/config/samples/batch_v1alpha1_cnfnat.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-01T02:03:52Z",
+      "side": 1,
+      "message": "whitespace?",
+      "range": {
+        "startLine": 1,
+        "startChar": 37,
+        "endLine": 1,
+        "endChar": 39
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
