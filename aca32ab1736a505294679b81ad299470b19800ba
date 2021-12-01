@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "13e64963_841fd8ee",
+        "filename": "platform/cnf-openwrt/src/rest_v1/route_rest.lua",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-01T02:18:41Z",
+      "side": 1,
+      "message": "May be still need another to find the default interface for providernetwork.",
+      "range": {
+        "startLine": 22,
+        "startChar": 65,
+        "endLine": 22,
+        "endChar": 86
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ad7d8504_efc54d06",
         "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
         "patchSetId": 2
@@ -48,6 +71,29 @@
     },
     {
       "key": {
+        "uuid": "d5975e7e_0857e0d4",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/bucket_permission_webhook.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-01T02:18:41Z",
+      "side": 1,
+      "message": "Why there\u0027s no kind for CNFRoute?",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 105
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f9e9e6bf_51b2eea6",
         "filename": "platform/crd-ctrlr/src/api/v1alpha1/label_validate_webhook.go",
         "patchSetId": 2
@@ -64,6 +110,29 @@
         "startChar": 247,
         "endLine": 32,
         "endChar": 257
+      },
+      "revId": "aca32ab1736a505294679b81ad299470b19800ba",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9707c27_e839c43b",
+        "filename": "platform/crd-ctrlr/src/api/v1alpha1/label_validate_webhook.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-01T02:18:41Z",
+      "side": 1,
+      "message": "Also, there\u0027s not handle for CNFRoute",
+      "range": {
+        "startLine": 39,
+        "startChar": 25,
+        "endLine": 39,
+        "endChar": 31
       },
       "revId": "aca32ab1736a505294679b81ad299470b19800ba",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
