@@ -31,7 +31,12 @@ webhooks:
     - firewallrules
     - firewallsnats
     - firewalldnats
-    - cnfservice
+    - cnfnats
+    - cnfroutes
+    - cnfrouterules
+    - cnfservices
+    - cnflocalservices
+    - cnfstatuses
     - sdewanapplication
     - ipsecproposals
     - ipsechosts
@@ -62,7 +67,12 @@ webhooks:
     - firewallrules
     - firewallsnats
     - firewalldnats
-    - cnfservice
+    - cnfnats
+    - cnfservices
+    - cnfroutes
+    - cnfrouterules
+    - cnflocalservices
+    - cnfstatuses
     - sdewanapplication
     - ipsecproposals
     - ipsechosts

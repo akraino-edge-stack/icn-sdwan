@@ -14,28 +14,28 @@ type CNFLocalServiceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// +optional
-	LocalIP      string `json:"localip,omitempty"`
+	LocalIP string `json:"localip,omitempty"`
 	// +optional
-	LocalPort     string `json:"localport,omitempty"`
+	LocalPort string `json:"localport,omitempty"`
 	// +optional
-	RemoteIPs    []string `json:"remoteips,omitempty"`
+	RemoteIPs []string `json:"remoteips,omitempty"`
 	// +optional
-	RemotePort    string `json:"remoteport,omitempty"`
+	RemotePort string `json:"remoteport,omitempty"`
 	// +optional
-	Message      string `json:"message,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 func (c *CNFLocalServiceStatus) IsEqual(s *CNFLocalServiceStatus) bool {
 	if c.LocalIP != s.LocalIP ||
-	   c.LocalPort != s.LocalPort ||
-	   c.RemotePort != s.RemotePort {
-	   	return false
-	   }
+		c.LocalPort != s.LocalPort ||
+		c.RemotePort != s.RemotePort {
+		return false
+	}
 	if len(c.RemoteIPs) != len(s.RemoteIPs) {
 		return false
 	}
 
-	for i:=0; i<len(c.RemoteIPs); i++ {
+	for i := 0; i < len(c.RemoteIPs); i++ {
 		if c.RemoteIPs[i] != s.RemoteIPs[i] {
 			return false
 		}
@@ -46,7 +46,7 @@ func (c *CNFLocalServiceStatus) IsEqual(s *CNFLocalServiceStatus) bool {
 
 // CNFLocalServiceSpec defines the desired state of CNFService
 type CNFLocalServiceSpec struct {
-	LocalService string `json:"localservice,omitempty"`
+	LocalService  string `json:"localservice,omitempty"`
 	LocalPort     string `json:"localport,omitempty"`
 	RemoteService string `json:"remoteservice,omitempty"`
 	RemotePort    string `json:"remoteport,omitempty"`
@@ -60,8 +60,8 @@ type CNFLocalService struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   CNFLocalServiceSpec `json:"spec,omitempty"`
-	Status CNFLocalServiceStatus   `json:"status,omitempty"`
+	Spec   CNFLocalServiceSpec   `json:"spec,omitempty"`
+	Status CNFLocalServiceStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

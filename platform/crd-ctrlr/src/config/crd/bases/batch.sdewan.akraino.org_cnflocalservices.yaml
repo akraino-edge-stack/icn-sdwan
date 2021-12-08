@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.5
   creationTimestamp: null
-  name: cnfstatuses.batch.sdewan.akraino.org
+  name: cnflocalservices.batch.sdewan.akraino.org
 spec:
   group: batch.sdewan.akraino.org
   names:
-    kind: CNFStatus
-    listKind: CNFStatusList
-    plural: cnfstatuses
-    singular: cnfstatus
+    kind: CNFLocalService
+    listKind: CNFLocalServiceList
+    plural: cnflocalservices
+    singular: cnflocalservice
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: CNFStatus is the Schema for the cnfstatuses API
+      description: CNFLocalService is the Schema for the cnflocalservices API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -34,41 +34,35 @@ spec:
         metadata:
           type: object
         spec:
-          description: CNFStatusSpec defines the desired state of CNFStatus
+          description: CNFLocalServiceSpec defines the desired state of CNFService
+          properties:
+            localport:
+              type: string
+            localservice:
+              type: string
+            remoteport:
+              type: string
+            remoteservice:
+              type: string
           type: object
         status:
-          description: CNFStatusStatus defines the observed state of CNFStatus
+          description: CNFLocalServiceStatus defines the observed state of CNFLocalServiceStatus
           properties:
-            appliedGeneration:
+            localip:
               description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
                 of cluster Important: Run "make" to regenerate code after modifying
                 this file'
-              format: int64
-              type: integer
-            appliedTime:
-              format: date-time
               type: string
-            information:
+            localport:
+              type: string
+            message:
+              type: string
+            remoteips:
               items:
-                description: CNFStatusInformation defines the runtime information
-                  of a CNF
-                properties:
-                  ip:
-                    type: string
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                  node:
-                    type: string
-                  purpose:
-                    type: string
-                  status:
-                    type: string
-                required:
-                - name
-                type: object
+                type: string
               type: array
+            remoteport:
+              type: string
           type: object
       type: object
   version: v1alpha1

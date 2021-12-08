@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.5
   creationTimestamp: null
-  name: cnfstatuses.batch.sdewan.akraino.org
+  name: cnfrouterules.batch.sdewan.akraino.org
 spec:
   group: batch.sdewan.akraino.org
   names:
-    kind: CNFStatus
-    listKind: CNFStatusList
-    plural: cnfstatuses
-    singular: cnfstatus
+    kind: CNFRouteRule
+    listKind: CNFRouteRuleList
+    plural: cnfrouterules
+    singular: cnfrouterule
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: CNFStatus is the Schema for the cnfstatuses API
+      description: CNFRouteRule is the Schema for the cnfrouterules API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -34,41 +34,36 @@ spec:
         metadata:
           type: object
         spec:
-          description: CNFStatusSpec defines the desired state of CNFStatus
+          description: CNFRouteRuleSpec defines the desired state of CNFRouteRule
+          properties:
+            dst:
+              type: string
+            fwmark:
+              type: string
+            not:
+              type: boolean
+            prio:
+              type: string
+            src:
+              type: string
+            table:
+              type: string
           type: object
         status:
-          description: CNFStatusStatus defines the observed state of CNFStatus
+          description: status subsource used for Sdewan rule CRDs
           properties:
             appliedGeneration:
-              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
-                of cluster Important: Run "make" to regenerate code after modifying
-                this file'
               format: int64
               type: integer
             appliedTime:
               format: date-time
               type: string
-            information:
-              items:
-                description: CNFStatusInformation defines the runtime information
-                  of a CNF
-                properties:
-                  ip:
-                    type: string
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                  node:
-                    type: string
-                  purpose:
-                    type: string
-                  status:
-                    type: string
-                required:
-                - name
-                type: object
-              type: array
+            message:
+              type: string
+            state:
+              type: string
+          required:
+          - state
           type: object
       type: object
   version: v1alpha1

@@ -241,10 +241,10 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&controllers.CNFLocalServiceReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("CNFLocalService"),
+		Client:        mgr.GetClient(),
+		Log:           ctrl.Log.WithName("controllers").WithName("CNFLocalService"),
 		CheckInterval: time.Duration(checkInterval) * time.Second,
-		Scheme: mgr.GetScheme(),
+		Scheme:        mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "CNFLocalService")
 		os.Exit(1)

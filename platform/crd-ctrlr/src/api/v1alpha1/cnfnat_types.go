@@ -24,7 +24,7 @@ type CNFNATSpec struct {
 	DestIp   string `json:"dest_ip,omitempty"`
 	DestPort string `json:"dest_port,omitempty"`
 	Target   string `json:"target,omitempty"`
-	Index   string `json:"index,omitempty"`
+	Index    string `json:"index,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -35,8 +35,8 @@ type CNFNAT struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   CNFNATSpec `json:"spec,omitempty"`
-	Status SdewanStatus     `json:"status,omitempty"`
+	Spec   CNFNATSpec   `json:"spec,omitempty"`
+	Status SdewanStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

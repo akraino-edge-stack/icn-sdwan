@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/go-logr/logr"
-	"k8s.io/apimachinery/pkg/runtime"
 	errs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
@@ -29,10 +29,10 @@ var inLSQueryStatus = false
 // CNFLocalServiceReconciler reconciles a CNFLocalService object
 type CNFLocalServiceReconciler struct {
 	client.Client
-	Log    logr.Logger
+	Log           logr.Logger
 	CheckInterval time.Duration
-	Scheme *runtime.Scheme
-	mux    sync.Mutex
+	Scheme        *runtime.Scheme
+	mux           sync.Mutex
 }
 
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnflocalservices,verbs=get;list;watch;create;update;patch;delete
@@ -160,12 +160,12 @@ func (r *CNFLocalServiceReconciler) processInstance(instance *batchv1alpha1.CNFL
 		}
 	}
 
-	var curStatus = batchv1alpha1.CNFLocalServiceStatus {
-		LocalIP: lips[0],
-		LocalPort: lp,
-		RemoteIPs: rips,
+	var curStatus = batchv1alpha1.CNFLocalServiceStatus{
+		LocalIP:    lips[0],
+		LocalPort:  lp,
+		RemoteIPs:  rips,
 		RemotePort: rp,
-		Message: "",
+		Message:    "",
 	}
 
 	if !curStatus.IsEqual(&instance.Status) {
@@ -187,21 +187,21 @@ func (r *CNFLocalServiceReconciler) addNats(instance *batchv1alpha1.CNFLocalServ
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      nat_name,
 				Namespace: instance.Namespace,
-				Labels: instance.Labels,
+				Labels:    instance.Labels,
 			},
 			Spec: batchv1alpha1.CNFNATSpec{
-				SrcDIp: rip,
+				SrcDIp:   rip,
 				SrcDPort: status.RemotePort,
-				DestIp: status.LocalIP,
+				DestIp:   status.LocalIP,
 				DestPort: status.LocalPort,
-				Proto: "tcp",
-				Target: "DNAT",
+				Proto:    "tcp",
+				Target:   "DNAT",
 			},
 		}
 
 		err := r.Create(context.Background(), nat_instance)
 		if err != nil {
-			r.Log.Error(err, "Creating NAT CR : " + nat_name)
+			r.Log.Error(err, "Creating NAT CR : "+nat_name)
 		}
 	}
 	return nil
@@ -222,14 +222,14 @@ func (r *CNFLocalServiceReconciler) removeNats(instance *batchv1alpha1.CNFLocalS
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      nat_name,
 				Namespace: instance.Namespace,
-				Labels: instance.Labels,
+				Labels:    instance.Labels,
 			},
 			Spec: batchv1alpha1.CNFNATSpec{},
 		}
 
 		err := r.Delete(context.Background(), nat_instance)
 		if err != nil {
-			r.Log.Error(err, "Deleting NAT CR : " + nat_name)
+			r.Log.Error(err, "Deleting NAT CR : "+nat_name)
 		}
 
 		// check resource
@@ -250,7 +250,7 @@ func (r *CNFLocalServiceReconciler) removeNats(instance *batchv1alpha1.CNFLocalS
 		)
 
 		if err != nil {
-			r.Log.Error(err, "Failed to delete CR : " + nat_name)
+			r.Log.Error(err, "Failed to delete CR : "+nat_name)
 		}
 	}
 
@@ -296,17 +296,17 @@ func (r *CNFLocalServiceReconciler) SafeCheck() {
 func (r *CNFLocalServiceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	// Start the loop to check ip address change of local/remote services
 	go func() {
-			interval := time.After(r.CheckInterval)
-			for {
-				select {
-				case <-interval:
-					r.SafeCheck()
-					interval = time.After(r.CheckInterval)
-				case <-context.Background().Done():
-					return
-				}
+		interval := time.After(r.CheckInterval)
+		for {
+			select {
+			case <-interval:
+				r.SafeCheck()
+				interval = time.After(r.CheckInterval)
+			case <-context.Background().Done():
+				return
 			}
-		}()
+		}
+	}()
 
 	ps := builder.WithPredicates(predicate.GenerationChangedPredicate{})
 	return ctrl.NewControllerManagedBy(mgr).

@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.5
   creationTimestamp: null
-  name: cnfstatuses.batch.sdewan.akraino.org
+  name: cnfnats.batch.sdewan.akraino.org
 spec:
   group: batch.sdewan.akraino.org
   names:
-    kind: CNFStatus
-    listKind: CNFStatusList
-    plural: cnfstatuses
-    singular: cnfstatus
+    kind: CNFNAT
+    listKind: CNFNATList
+    plural: cnfnats
+    singular: cnfnat
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: CNFStatus is the Schema for the cnfstatuses API
+      description: CNFNAT is the Schema for the cnfnats API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -34,41 +34,50 @@ spec:
         metadata:
           type: object
         spec:
-          description: CNFStatusSpec defines the desired state of CNFStatus
+          description: CNFNATSpec defines the desired state of CNFNAT
+          properties:
+            dest:
+              type: string
+            dest_ip:
+              type: string
+            dest_port:
+              type: string
+            index:
+              type: string
+            name:
+              description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                Important: Run "make" to regenerate code after modifying this file'
+              type: string
+            proto:
+              type: string
+            src:
+              type: string
+            src_dip:
+              type: string
+            src_dport:
+              type: string
+            src_ip:
+              type: string
+            src_port:
+              type: string
+            target:
+              type: string
           type: object
         status:
-          description: CNFStatusStatus defines the observed state of CNFStatus
+          description: status subsource used for Sdewan rule CRDs
           properties:
             appliedGeneration:
-              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
-                of cluster Important: Run "make" to regenerate code after modifying
-                this file'
               format: int64
               type: integer
             appliedTime:
               format: date-time
               type: string
-            information:
-              items:
-                description: CNFStatusInformation defines the runtime information
-                  of a CNF
-                properties:
-                  ip:
-                    type: string
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                  node:
-                    type: string
-                  purpose:
-                    type: string
-                  status:
-                    type: string
-                required:
-                - name
-                type: object
-              type: array
+            message:
+              type: string
+            state:
+              type: string
+          required:
+          - state
           type: object
       type: object
   version: v1alpha1
