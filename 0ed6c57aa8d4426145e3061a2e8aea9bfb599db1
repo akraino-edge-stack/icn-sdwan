@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "821701a2_51a6d439",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "Intel@ QAT",
+      "range": {
+        "startLine": 1,
+        "startChar": 39,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cae0e561_54b14c71",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "Intel@   similar comments below.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 5
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7b44e4c_fbab014c",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "Intel@",
+      "range": {
+        "startLine": 12,
+        "startChar": 30,
+        "endLine": 12,
+        "endChar": 35
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "448a6be8_99f7854d",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "remove space, also apply for some following lines",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 1
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83b9300c_1aa84eb3",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "Let\u0027s upstream the helm chart in ICN and use it as link here.",
+      "range": {
+        "startLine": 434,
+        "startChar": 97,
+        "endLine": 434,
+        "endChar": 152
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6247e00_6f56dac8",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "Is there any way to do configuration instead of removing other options?",
+      "range": {
+        "startLine": 450,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 63
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4ac7905_15a12619",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "Add script on how to start an iperf3 server pod,",
+      "range": {
+        "startLine": 485,
+        "startChar": 17,
+        "endLine": 485,
+        "endChar": 40
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e447680_15385c0f",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-14T09:53:54Z",
+      "side": 1,
+      "message": "iperf3 may be an app pod instead of CNF",
+      "range": {
+        "startLine": 485,
+        "startChar": 2,
+        "endLine": 485,
+        "endChar": 12
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
