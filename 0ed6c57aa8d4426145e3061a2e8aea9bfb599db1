@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a1cc3f5f_c804bcf8",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:25:43Z",
+      "side": 1,
+      "message": "Do you mean Intel®",
+      "parentUuid": "821701a2_51a6d439",
+      "range": {
+        "startLine": 1,
+        "startChar": 39,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cae0e561_54b14c71",
         "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
         "patchSetId": 1
@@ -179,6 +203,30 @@
         "startChar": 2,
         "endLine": 485,
         "endChar": 12
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40636a91_00441ff9",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:25:43Z",
+      "side": 1,
+      "message": "Here, we setup two CNF pods and a IPSec tunnel between them, so the iperf3 server is one of the two CNF pods. Not an app pod.",
+      "parentUuid": "f4ac7905_15a12619",
+      "range": {
+        "startLine": 485,
+        "startChar": 17,
+        "endLine": 485,
+        "endChar": 40
       },
       "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
