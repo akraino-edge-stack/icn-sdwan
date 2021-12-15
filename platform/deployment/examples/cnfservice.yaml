@@ -1,0 +1,11 @@
+apiVersion: batch.sdewan.akraino.org/v1alpha1
+kind: CNFService
+metadata:
+  name: cnfservice-sample
+  labels:
+    sdewanPurpose: sdewan-safe
+spec:
+    fullname: nginx.default.svc.cluster.local
+    port: "8866"
+    dport: "80"
+
