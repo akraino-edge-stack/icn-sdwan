@@ -1,0 +1,49 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cnf-root-issuer
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cnf-root-cert
+  namespace: default
+spec:
+  commonName: "sdwan"
+  duration: 17520h
+  isCA: true
+  issuerRef:
+    kind: ClusterIssuer
+    name: cnf-root-issuer
+  secretName: cnf-root-cert
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cnf-default-issuer
+  namespace: default
+spec:
+  ca: 
+    secretName: cnf-root-cert
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cnf-default-cert
+  namespace: default
+spec:
+  commonName: "*.default.pod.cluster.local"
+  duration: 17520h
+  isCA: false
+  issuerRef:
+    kind: Issuer
+    name: cnf-default-issuer
+  secretName: cnf-default-cert
+  commonName: "*.default.pod.cluster.local"
+  dnsNames:
+  - "*.default.pod.cluster.local"
