@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "1c7cd6b5_4b5e2e2a",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-15T05:29:35Z",
+      "side": 1,
+      "message": "Yes, you are right.",
+      "parentUuid": "a1cc3f5f_c804bcf8",
+      "range": {
+        "startLine": 1,
+        "startChar": 39,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cae0e561_54b14c71",
         "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
         "patchSetId": 1
@@ -231,6 +255,30 @@
       "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05ec8d70_51e4f098",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-15T05:29:35Z",
+      "side": 1,
+      "message": "Thanks for clarification.",
+      "parentUuid": "40636a91_00441ff9",
+      "range": {
+        "startLine": 485,
+        "startChar": 17,
+        "endLine": 485,
+        "endChar": 40
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
