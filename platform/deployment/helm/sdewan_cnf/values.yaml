@@ -1,0 +1,59 @@
+#/* Copyright (c) 2021 Intel Corporation, Inc
+# *
+# * Licensed under the Apache License, Version 2.0 (the "License");
+# * you may not use this file except in compliance with the License.
+# * You may obtain a copy of the License at
+# *
+# *     http://www.apache.org/licenses/LICENSE-2.0
+# *
+# * Unless required by applicable law or agreed to in writing, software
+# * distributed under the License is distributed on an "AS IS" BASIS,
+# * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# * See the License for the specific language governing permissions and
+# * limitations under the License.
+# */
+#
+# Default values for cnf.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: sdewan-safe
+  namespace: default
+  labels: base
+  passwdSecret: sdewan-safe-pass
+  passwd: root1
+  cert: cnf-default-cert
+
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+
+strategy:
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+nfn:
+  - defaultGateway: false
+    interface: net2
+    ipAddress: 10.10.70.39
+    name: pnetwork
+    separate: ","
+  - defaultGateway: false
+    interface: net0
+    ipAddress: 172.16.70.39
+    name: ovn-network
+    separate: ""
+
+containers:
+  image: integratedcloudnative/sdewan-cnf:openwrt1907
+  imagePullPolicy: IfNotPresent
+  name: sdewan
+
+nodeSelector: ""
+
+publicIpAddress: "10.10.70.39"
+defaultCIDR: "10.233.84.0/24"
+providerCIDR: "10.10.70.0/24"
+
+restartPolicy: Always
