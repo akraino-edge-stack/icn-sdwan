@@ -1,0 +1,44 @@
+# Default values for cnf.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: sdewan-safe 
+  namespace: default
+  labels: base
+  passwdSecret: sdewan-safe-pass 
+  passwd: root1
+  cert: cnf-default-cert
+
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+
+strategy:
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+nfn:
+  - defaultGateway: false
+    interface: net2
+    ipAddress: 10.10.70.39
+    name: pnetwork
+    separate: ","
+  - defaultGateway: false
+    interface: net0
+    ipAddress: 172.16.70.39
+    name: ovn-network
+    separate: ""
+
+containers:
+  image: integratedcloudnative/sdewan-cnf:openwrt1907
+  imagePullPolicy: IfNotPresent
+  name: sdewan
+
+nodeSelector: ""
+
+publicIpAddress: "10.10.70.39"
+defaultCIDR: "10.233.84.0/24"
+providerCIDR: "10.10.70.0/24"
+
+restartPolicy: Always
