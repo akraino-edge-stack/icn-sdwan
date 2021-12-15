@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "e07edc34_9a196f1f",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:41:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c7cd6b5_4b5e2e2a",
+      "range": {
+        "startLine": 1,
+        "startChar": 39,
+        "endLine": 1,
+        "endChar": 48
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cae0e561_54b14c71",
         "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
         "patchSetId": 1
@@ -119,6 +143,54 @@
     },
     {
       "key": {
+        "uuid": "146980d4_63bc7949",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:41:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cae0e561_54b14c71",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 5
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dbd59b4b_d19d5a08",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:41:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7b44e4c_fbab014c",
+      "range": {
+        "startLine": 12,
+        "startChar": 30,
+        "endLine": 12,
+        "endChar": 35
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "448a6be8_99f7854d",
         "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
         "patchSetId": 1
@@ -139,6 +211,30 @@
       "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54607a59_089ce8e1",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:41:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "448a6be8_99f7854d",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 75,
+        "endChar": 1
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -176,6 +272,30 @@
       "writtenOn": "2021-12-14T09:53:54Z",
       "side": 1,
       "message": "Is there any way to do configuration instead of removing other options?",
+      "range": {
+        "startLine": 450,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 63
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9eedbf7_82418450",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:41:44Z",
+      "side": 1,
+      "message": "I will replace the strongswan.conf in the docker image build file, and here is a manual guide based on default openwrt image, so I think we don\u0027t need remove these here.",
+      "parentUuid": "f6247e00_6f56dac8",
       "range": {
         "startLine": 450,
         "startChar": 0,
@@ -275,6 +395,30 @@
         "startChar": 17,
         "endLine": 485,
         "endChar": 40
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0765f5f1_5c80a867",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-15T05:41:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e447680_15385c0f",
+      "range": {
+        "startLine": 485,
+        "startChar": 2,
+        "endLine": 485,
+        "endChar": 12
       },
       "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
