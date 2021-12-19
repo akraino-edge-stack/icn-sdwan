@@ -1,0 +1,441 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46b59e7f_cedcd4e6",
+        "filename": "platform/deployment/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Is there any instruction to generate this tgz file?",
+      "range": {
+        "startLine": 84,
+        "startChar": 15,
+        "endLine": 84,
+        "endChar": 28
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "964b286f_86f2ec07",
+        "filename": "platform/deployment/examples/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "test your SDEWAN deployment environment.",
+      "range": {
+        "startLine": 2,
+        "startChar": 33,
+        "endLine": 2,
+        "endChar": 78
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "674b68b6_8d2d31a4",
+        "filename": "platform/deployment/examples/nginx-dp-svc.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "1 pod 03 3 pods? or remove this comment.",
+      "range": {
+        "startLine": 12,
+        "startChar": 14,
+        "endLine": 12,
+        "endChar": 68
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3abe5738_b1294943",
+        "filename": "platform/deployment/helm/cert/cnf_cert.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Remove space",
+      "range": {
+        "startLine": 30,
+        "startChar": 5,
+        "endLine": 30,
+        "endChar": 6
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1afe3187_9788d731",
+        "filename": "platform/deployment/helm/sdewan_cnf/Chart.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright (c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 4,
+        "endLine": 2,
+        "endChar": 41
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5b19927_e24d1567",
+        "filename": "platform/deployment/helm/sdewan_cnf/templates/cm.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright (c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 1,
+        "startChar": 4,
+        "endLine": 1,
+        "endChar": 41
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aec316e4_ce907291",
+        "filename": "platform/deployment/helm/sdewan_cnf/templates/deployment.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Licensed under the Apache License, Version 2.0",
+      "range": {
+        "startLine": 1,
+        "startChar": 4,
+        "endLine": 1,
+        "endChar": 41
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fd062c7_3cf954d9",
+        "filename": "platform/deployment/helm/sdewan_cnf/templates/secret.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Licensed under the Apache License, Version 2.0",
+      "range": {
+        "startLine": 1,
+        "startChar": 4,
+        "endLine": 1,
+        "endChar": 41
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0153136_338736d3",
+        "filename": "platform/deployment/helm/sdewan_cnf/values.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Add license header?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 25
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f975dde0_13f5ec00",
+        "filename": "platform/deployment/helm/sdewan_cnf/values.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Remove space",
+      "range": {
+        "startLine": 6,
+        "startChar": 19,
+        "endLine": 6,
+        "endChar": 20
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa7dc99f_6388dc55",
+        "filename": "platform/deployment/helm/sdewan_controllers/Chart.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 4,
+        "endLine": 2,
+        "endChar": 41
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cddd53f_3973a859",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/certificate.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24088120_cb7a88d8",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/crd.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2780ae21_221bf5c7",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/deployment.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70e78b9d_d4a75219",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/issuer.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28efc169_ae94587e",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/role.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28a097e7_5f45e6cc",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/service.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38c4208e_69533778",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/webhook.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Copyright(c) 2021 Intel Corporation",
+      "range": {
+        "startLine": 2,
+        "startChar": 2,
+        "endLine": 2,
+        "endChar": 38
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c802592c_fe1562d5",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/webhook.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-19T08:20:35Z",
+      "side": 1,
+      "message": "Not latest one? \"cnfservices\" and missing \"cnfnats\", \"cnfrouterules\", \"cnfroutes\", \"cnflocalservices\"",
+      "range": {
+        "startLine": 69,
+        "startChar": 6,
+        "endLine": 69,
+        "endChar": 16
+      },
+      "revId": "f433d6f595c72727527cd9d7bbd2c030dae712f5",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
