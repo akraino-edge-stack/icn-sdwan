@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34190f7f_3f08f7f3",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/crd.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-20T07:56:15Z",
+      "side": 1,
+      "message": "I think we are missing CNFNAT CRD?",
+      "revId": "67230a934d2863d59da7540e2c937974a18f7549",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
