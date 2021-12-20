@@ -16,6 +16,24 @@
       "revId": "67230a934d2863d59da7540e2c937974a18f7549",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c673970b_1cda57e1",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/crd.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-20T07:59:57Z",
+      "side": 1,
+      "message": "The missing CRDs will be updated on another patch. When this patch is submitted, I will change the QAT patch to point to this helm address in icn and then I would update the cnf/crd helm chart.",
+      "parentUuid": "34190f7f_3f08f7f3",
+      "revId": "67230a934d2863d59da7540e2c937974a18f7549",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
