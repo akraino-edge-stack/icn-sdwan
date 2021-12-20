@@ -688,7 +688,7 @@ function validate_and_set_data(validator, src)
             local default = v["default"]
             local target_name = name
 
-            if required == nil then
+            if required_lenth == nil then
                 required = false
             end
 

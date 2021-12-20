@@ -7,19 +7,48 @@
 set -o nounset
 set -o errexit
 
-NET_IF=`ip a | grep ${PLUTO_ME} | grep inet | cut -d' ' -f 11`
-VTI_IF="vti_${NET_IF}"
+if [ ! -z "${PLUTO_PEER_SOURCEIP:-}" ]
+then 
+  VTI_IF="vti_${PLUTO_PEER_SOURCEIP}"
+else
+  VTI_IF="vti_${PLUTO_PEER}"
+fi
+DEFAULT_PREFIX="localto"
 
 case "${PLUTO_VERB}" in
     up-host)
-        #ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote 0.0.0.0 mode vti \
         ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote "${PLUTO_PEER}" mode vti \
             key "${PLUTO_MARK_OUT%%/*}"
         ip link set "${VTI_IF}" up
         ip route add "${PLUTO_PEER_SOURCEIP}" dev "${VTI_IF}" src "${PLUTO_ME}"
         sysctl -w "net.ipv4.conf.${VTI_IF}.disable_policy=1"
+	if [ "${PLUTO_CONNECTION#*$DEFAULT_PREFIX}" != "$PLUTO_CONNECTION" ]
+        then
+          iptables -t nat -C POSTROUTING -o eth0 -j MASQUERADE
+	  if [ $? == 1 ]
+	  then
+		iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+	  fi
+        fi
+        iptables -t nat -A POSTROUTING -o "${VTI_IF}" -j SNAT --to-source "${PLUTO_MY_CLIENT%%/*}"
+	bash /etc/cnfroute check "${VTI_IF}"
         ;;
     down-host)
+        ip tunnel del "${VTI_IF}"
+        iptables -t nat -D POSTROUTING -o "${VTI_IF}" -j SNAT --to-source "${PLUTO_MY_CLIENT%%/*}"
+        ;;
+    up-client)
+        ip tunnel add "${VTI_IF}" local "${PLUTO_ME}" remote "${PLUTO_PEER}" mode vti \
+            key "${PLUTO_MARK_OUT%%/*}"
+        ip link set "${VTI_IF}" up
+	if [ "${PLUTO_PEER_CLIENT}" != "0.0.0.0/0" ]
+        then
+          ip route add "${PLUTO_PEER_SOURCEIP}" dev "${VTI_IF}" src "${PLUTO_ME}"
+        fi
+        sysctl -w "net.ipv4.conf.${VTI_IF}.disable_policy=1"
+        bash /etc/cnfroute check "${VTI_IF}"
+        ;;
+    down-client)
         ip tunnel del "${VTI_IF}"
         ;;
 esac
