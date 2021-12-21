@@ -50,11 +50,11 @@ func (c *ResourceBuilder) ToString(obj ISdewanResource) (string, error) {
 
 func (c *ResourceBuilder) ToObject(obj_str string) (ISdewanResource, error) {
 	if !strings.Contains(obj_str, "-") {
-		return &EmptyResource{}, pkgerrors.New("Not a valid object")
+		return &EmptyResource{"", ""}, pkgerrors.New("Not a valid object")
 	}
 	strs := strings.SplitN(obj_str, "-", 2)
 	if len(strs) != 2 {
-		return &EmptyResource{}, pkgerrors.New("Not a valid object")
+		return &EmptyResource{"", ""}, pkgerrors.New("Not a valid object")
 	}
 
 	if v, ok := c.omap[strs[0]]; ok {
@@ -62,6 +62,6 @@ func (c *ResourceBuilder) ToObject(obj_str string) (ISdewanResource, error) {
 		err := json.Unmarshal([]byte(strs[1]), retObj)
 		return retObj.(ISdewanResource), err
 	} else {
-		return &EmptyResource{}, pkgerrors.New("Not a valid object")
+		return &EmptyResource{"", ""}, pkgerrors.New("Not a valid object")
 	}
 }

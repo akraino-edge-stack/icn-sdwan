@@ -91,6 +91,7 @@ func (c *HubDeviceObjectManager) CreateObject(m map[string]string, t module.Cont
 	to := t.(*module.HubDeviceObject)
 	device_name := to.Specification.Device
 	m[DeviceResource] = device_name
+	is_delegated_connection := to.Specification.IsDelegateHub
 
 	hub_manager := GetManagerset().Hub
 	dev_manager := GetManagerset().Device
@@ -113,6 +114,10 @@ func (c *HubDeviceObjectManager) CreateObject(m map[string]string, t module.Cont
 		return c.CreateEmptyObject(), pkgerrors.Wrap(err, "Device "+device_name+" registration is not ready")
 	}
 
+	if device.Status.DelegatedHub != "" {
+		is_delegated_connection = false
+	}
+
 	_, err = conn_manager.GetObject(overlay_name,
 		module.CreateEndName(hub.GetType(), hub.GetMetadata().Name),
 		module.CreateEndName(dev.GetType(), dev.GetMetadata().Name))
@@ -120,10 +125,19 @@ func (c *HubDeviceObjectManager) CreateObject(m map[string]string, t module.Cont
 		return c.CreateEmptyObject(), pkgerrors.New("The connection between Hub " + hub_name + " and Device " + device_name + " is already created")
 	}
 
-	err = overlay_namager.SetupConnection(m, hub, dev, HUBTODEVICE, NameSpaceName)
+	err = overlay_namager.SetupConnection(m, hub, dev, HUBTODEVICE, NameSpaceName, is_delegated_connection)
 	if err != nil {
 		return c.CreateEmptyObject(), pkgerrors.Wrap(err, "Fail to setup connection between "+hub_name+" and "+device_name)
 	}
+
+	if is_delegated_connection {
+		hub_obj := hub.(*module.HubObject)
+		hub_obj.Status.DelegateDevices = append(hub_obj.Status.DelegateDevices, device_name)
+		hub_manager.UpdateObject(m, hub_obj)
+
+		device.Status.DelegatedHub = hub_name
+		dev_manager.UpdateObject(m, device)
+        }
 
 	return c.CreateEmptyObject(), nil
 }
@@ -159,6 +173,19 @@ func (c *HubDeviceObjectManager) DeleteObject(m map[string]string) error {
 	dev, err := dev_manager.GetObject(m)
 	if err != nil {
 		return pkgerrors.Wrap(err, "Device "+device_name+" is not defined")
+	}
+
+	dev_obj := dev.(*module.DeviceObject)
+	hub_obj := hub.(*module.HubObject)
+
+	if dev_obj.Status.DelegatedHub == hub_obj.Metadata.Name {
+		dev_obj.Status.DelegatedHub = ""
+		for i, item := range hub_obj.Status.DelegateDevices {
+			if item == dev_obj.Metadata.Name {
+				hub_obj.Status.DelegateDevices = append(hub_obj.Status.DelegateDevices[:i], hub_obj.Status.DelegateDevices[i+1:]...)
+				break
+			}
+		}
 	}
 
 	conn, err := conn_manager.GetObject(overlay_name,

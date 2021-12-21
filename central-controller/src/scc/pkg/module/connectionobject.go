@@ -17,7 +17,6 @@
 package module
 
 import (
-	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
 	"log"
 )
 
@@ -35,6 +34,12 @@ var StateEnum = &states{
 	Error:      "Error",
 }
 
+type ConnectionResource struct {
+	ConnObject  string  `json:"-"`
+	Name	    string  `json:"-"`
+	Type        string  `json:"-"`
+}
+
 type ConnectionObject struct {
 	Metadata ObjectMetaData `json:"metadata"`
 	Info     ConnectionInfo `json:"information"`
@@ -44,7 +49,7 @@ type ConnectionObject struct {
 type ConnectionInfo struct {
 	End1         ConnectionEnd `json:"end1"`
 	End2         ConnectionEnd `json:"end2"`
-	ContextId    string        `json:"-"`
+	Resources    []ConnectionResource `json:"-"`
 	State        string        `json:"state"`
 	ErrorMessage string        `json:"message"`
 }
@@ -54,8 +59,6 @@ type ConnectionEnd struct {
 	Type        string   `json:"type"`
 	IP          string   `json:"ip"`
 	ConnObject  string   `json:"-"`
-	Resources   []string `json:"-"`
-	ReservedRes []string `json:"-"`
 }
 
 func (c *ConnectionObject) GetMetadata() ObjectMetaData {
@@ -64,6 +67,20 @@ func (c *ConnectionObject) GetMetadata() ObjectMetaData {
 
 func (c *ConnectionObject) GetType() string {
 	return "Connection"
+}
+
+func (c *ConnectionObject) GetPeer(t string, n string) (string, string, string) {
+	e1 := c.Info.End1
+	e2 := c.Info.End2
+	if e1.Type == t && e1.Name == CreateEndName(t, n) {
+		return e2.Type, e2.Name, e2.IP
+	} else {
+		if e2.Type == t && e2.Name == CreateEndName(t, n) {
+			return e1.Type, e1.Name, e1.IP
+		}
+	}
+
+	return "", "", ""
 }
 
 func CreateEndName(t string, n string) string {
@@ -82,8 +99,6 @@ func NewConnectionEnd(conn_obj ControllerObject, ip string) ConnectionEnd {
 			Type:        conn_obj.GetType(),
 			IP:          ip,
 			ConnObject:  obj_str,
-			Resources:   []string{},
-			ReservedRes: []string{},
 		}
 	} else {
 		log.Println(err)
@@ -97,50 +112,18 @@ func NewConnectionObject(end1 ConnectionEnd, end2 ConnectionEnd) ConnectionObjec
 		Info: ConnectionInfo{
 			End1:         end1,
 			End2:         end2,
-			ContextId:    "",
+			Resources:    []ConnectionResource{},
 			State:        StateEnum.Created,
 			ErrorMessage: "",
 		},
 	}
 }
 
-func (c *ConnectionEnd) contains(res resource.ISdewanResource, isReserved bool) bool {
-	if isReserved {
-		for _, r_str := range c.ReservedRes {
-			r, err := resource.GetResourceBuilder().ToObject(r_str)
-			if err == nil {
-				if r.GetName() == res.GetName() &&
-					r.GetType() == res.GetType() {
-					return true
-				}
-			}
-		}
+func (c *ConnectionInfo) AddResource(device ControllerObject, resource string, res_type string) {
+	dev_str, err := GetObjectBuilder().ToString(device)
+	if err == nil {
+		c.Resources = append(c.Resources, ConnectionResource{dev_str, resource, res_type})
 	} else {
-		for _, r_str := range c.Resources {
-			r, err := resource.GetResourceBuilder().ToObject(r_str)
-			if err == nil {
-				if r.GetName() == res.GetName() &&
-					r.GetType() == res.GetType() {
-					return true
-				}
-			}
-		}
+		log.Println(err)
 	}
-
-	return false
-}
-
-func (c *ConnectionEnd) AddResource(res resource.ISdewanResource, isReserved bool) error {
-	if !c.contains(res, isReserved) {
-		res_str, err := resource.GetResourceBuilder().ToString(res)
-		if err == nil {
-			if isReserved {
-				c.ReservedRes = append(c.ReservedRes, res_str)
-			} else {
-				c.Resources = append(c.Resources, res_str)
-			}
-		}
-	}
-
-	return nil
 }

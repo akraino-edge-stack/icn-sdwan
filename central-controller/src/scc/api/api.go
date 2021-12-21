@@ -167,6 +167,9 @@ func NewRouter(
 	mgrset.Cert = certificateObjectClient.(*manager.CertificateObjectManager)
 	createHandlerMapping(certificateObjectClient, olRouter, manager.CertCollection, manager.CertResource)
 
+	// create resource object manager
+	mgrset.Resource = manager.NewResourceObjectManager()
+
 	// Add depedency
 	overlayObjectClient.AddOwnResManager(proposalObjectClient)
 	overlayObjectClient.AddOwnResManager(hubObjectClient)
