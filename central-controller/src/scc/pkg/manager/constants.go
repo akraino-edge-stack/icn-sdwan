@@ -39,4 +39,8 @@ const (
 	IPRangeResource      = "iprange-name"
 	CertCollection       = "certificates"
 	CertResource         = "certificate-name"
+	Resource             = "resource"
+
+	Resource_Status_NotDeployed = "NotDeployed"
+	Resource_Status_Deployed = "Deployed"
 )

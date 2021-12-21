@@ -47,6 +47,7 @@ type DeviceObjectStatus struct {
 	DataIps map[string]string
 	// Status Data
 	Data map[string]string
+	DelegatedHub string
 }
 
 func (c *DeviceObject) GetMetadata() ObjectMetaData {

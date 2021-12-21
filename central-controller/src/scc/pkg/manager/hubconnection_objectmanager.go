@@ -124,3 +124,26 @@ func (c *HubConnObjectManager) UpdateObject(m map[string]string, t module.Contro
 func (c *HubConnObjectManager) DeleteObject(m map[string]string) error {
 	return pkgerrors.New("Not implemented")
 }
+
+func (c *HubConnObjectManager) GetConnectedDevices(overlay_name string, hub_name string) ([]string, error) {
+	m := make(map[string]string)
+	m[OverlayResource] = overlay_name
+	m[HubResource] = hub_name
+
+	// get all connections
+	cs, err := c.GetObjects(m)
+	if err != nil {
+		return []string{}, err
+	}
+
+	var device_names []string
+	for _, c := range cs {
+		co := c.(*module.ConnectionObject)
+		// get peer end's type and name
+		t, n, ip := co.GetPeer("Hub", hub_name)
+		if t == "Device" {
+			device_names = append(device_names, n + ".." + ip)
+		}
+	}
+	return device_names, nil
+}
