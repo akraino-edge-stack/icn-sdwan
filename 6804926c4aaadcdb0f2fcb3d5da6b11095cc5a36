@@ -65,6 +65,29 @@
     },
     {
       "key": {
+        "uuid": "c2804dd3_ece77c58",
+        "filename": "central-controller/src/scc/pkg/manager/device_objectmanager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T09:44:12Z",
+      "side": 1,
+      "message": "// need Register Device here\nto.Status.Data[RegStatus] \u003d \"success\"\nerr \u003d GetDBUtils().RegisterDevice(to.Metadata.Name, to.Specification.KubeConfig)\nif err !\u003d nil {\n\tlog.Println(err)\n\treturn err\n}",
+      "range": {
+        "startLine": 377,
+        "startChar": 2,
+        "endLine": 377,
+        "endChar": 39
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cab2ae02_ad734c29",
         "filename": "central-controller/src/scc/pkg/manager/resource_objectmanager.go",
         "patchSetId": 2
