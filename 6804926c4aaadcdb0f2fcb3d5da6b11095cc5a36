@@ -48,6 +48,40 @@
     },
     {
       "key": {
+        "uuid": "f2a0eb59_0ac9629f",
+        "filename": "central-controller/src/scc/pkg/manager/constants.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-21T09:39:39Z",
+      "side": 1,
+      "message": "Not sure if this is formatted?",
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cab2ae02_ad734c29",
+        "filename": "central-controller/src/scc/pkg/manager/resource_objectmanager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-21T09:39:39Z",
+      "side": 1,
+      "message": "Can `go fmt` fix the white line?",
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7e090a47_3c34aa6e",
         "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
         "patchSetId": 2
