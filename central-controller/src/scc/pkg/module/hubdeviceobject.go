@@ -24,7 +24,8 @@ type HubDeviceObject struct {
 
 //HubDeviceObjectSpec contains the parameters
 type HubDeviceObjectSpec struct {
-	Device string `json:"device"`
+	Device        string `json:"device"`
+	IsDelegateHub bool `json:"isDelegateHub"`
 }
 
 func (c *HubDeviceObject) GetMetadata() ObjectMetaData {

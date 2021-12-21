@@ -29,6 +29,7 @@ type Managerset struct {
 	ProviderIPRange *IPRangeObjectManager
 	IPRange         *IPRangeObjectManager
 	Cert            *CertificateObjectManager
+	Resource		*ResourceObjectManager
 }
 
 var mgrset = Managerset{}

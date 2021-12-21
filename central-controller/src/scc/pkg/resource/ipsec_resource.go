@@ -84,7 +84,7 @@ spec:
   type: ` + c.Type + `
   remote: '` + c.Remote + `'
   authentication_method: ` + c.AuthenticationMethod + `
-  force_crypto_proposal: "` + c.ForceCryptoProposal + `
+  force_crypto_proposal: "` + c.ForceCryptoProposal + `"
   crypto_proposal: [` + p + `]`
 
 		connection = `
@@ -99,8 +99,14 @@ spec:
 
 		if c.Connections.RemoteSourceIp != "" {
 			remote_source_ip := `
-    remote_source_ip: '` + c.Connections.RemoteSourceIp + `'`
+    remote_sourceip: '` + c.Connections.RemoteSourceIp + `'`
 			connection += remote_source_ip
+		}
+
+		if c.Connections.RemoteSubnet != "" {
+			remote_subnet := `
+    remote_subnet: '` + c.Connections.RemoteSubnet + `'`
+			connection += remote_subnet
 		}
 
 		if c.AuthenticationMethod == AuthTypePUBKEY {
@@ -163,6 +169,12 @@ spec:
 		remote_source_ip := `
     remote_sourceip: '` + c.Connections.RemoteSourceIp + `'`
 		connection += remote_source_ip
+	}
+
+	if c.Connections.RemoteSubnet != "" {
+		remote_subnet := `
+    remote_subnet: '` + c.Connections.RemoteSubnet + `'`
+		connection += remote_subnet
 	}
 
 	if c.AuthenticationMethod == AuthTypePUBKEY {

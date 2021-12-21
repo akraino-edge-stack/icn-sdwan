@@ -56,8 +56,8 @@ func (c *ConnectionManager) GetStoreMeta() string {
 	return c.tagMeta
 }
 
-func (c *ConnectionManager) Deploy(overlay string, cm module.ConnectionObject) error {
-	resutil := NewResUtil()
+func (c *ConnectionManager) Deploy(overlay string, cm module.ConnectionObject, resutil *ResUtil) error {
+/*	resutil := NewResUtil()
 
 	// add resource for End1
 	co1, _ := module.GetObjectBuilder().ToObject(cm.Info.End1.ConnObject)
@@ -80,14 +80,17 @@ func (c *ConnectionManager) Deploy(overlay string, cm module.ConnectionObject) e
 		r, _ := resource.GetResourceBuilder().ToObject(r_str)
 		resutil.AddResource(co2, "create", r)
 	}
+*/
+	// add resource to cm
+	rm := resutil.GetResources()
+	for device, res := range rm {
+		for _, resource := range res.Resources {
+			cm.Info.AddResource(device, resource.Resource.GetName(), resource.Resource.GetType())
+		}
+	}
 
 	// Deploy resources
-	cid, err := resutil.Deploy(cm.Metadata.Name, "YAML")
-	if cm.Info.ContextId == "" {
-		cm.Info.ContextId = cid
-	} else {
-		cm.Info.ContextId = cm.Info.ContextId + "," + cid
-	}
+	err := resutil.Deploy(overlay, cm.Metadata.Name, "YAML")
 
 	if err != nil {
 		log.Println(err)
@@ -97,6 +100,7 @@ func (c *ConnectionManager) Deploy(overlay string, cm module.ConnectionObject) e
 		cm.Info.State = module.StateEnum.Deployed
 	}
 
+	log.Println(cm.Info.End1.IP)
 	// Save to DB
 	_, err = c.UpdateObject(overlay, cm)
 
@@ -105,7 +109,7 @@ func (c *ConnectionManager) Deploy(overlay string, cm module.ConnectionObject) e
 
 func (c *ConnectionManager) Undeploy(overlay string, cm module.ConnectionObject) error {
 	resutil := NewResUtil()
-
+/*
 	// add resource for End1 (reservedRes will be kept)
 	co1, _ := module.GetObjectBuilder().ToObject(cm.Info.End1.ConnObject)
 	for _, r_str := range cm.Info.End1.Resources {
@@ -119,14 +123,15 @@ func (c *ConnectionManager) Undeploy(overlay string, cm module.ConnectionObject)
 		r, _ := resource.GetResourceBuilder().ToObject(r_str)
 		resutil.AddResource(co2, "create", r)
 	}
+*/
+	// fill resutil
+	for _, res := range cm.Info.Resources {
+		co, _ := module.GetObjectBuilder().ToObject(res.ConnObject)
+		resutil.AddResource(co, "delete", &resource.EmptyResource{res.Name, res.Type})
+	}
 
 	// Undeploy resources
-	cid, err := resutil.Undeploy(cm.Metadata.Name, "YAML")
-	if cm.Info.ContextId == "" {
-		cm.Info.ContextId = cid
-	} else {
-		cm.Info.ContextId = cm.Info.ContextId + "," + cid
-	}
+	err := resutil.Undeploy(overlay)
 
 	if err != nil {
 		log.Println(err)

@@ -19,14 +19,16 @@ package resource
 import ()
 
 type EmptyResource struct {
+	Name     string
+	Type     string
 }
 
 func (c *EmptyResource) GetName() string {
-	return ""
+	return c.Name
 }
 
 func (c *EmptyResource) GetType() string {
-	return "Empty"
+	return c.Type
 }
 
 func (c *EmptyResource) ToYaml(target string) string {

@@ -28,26 +28,30 @@ import (
 	"strings"
 )
 
-const DEFAULT_MARK = "30"
-const VTI_MODE = "VTI-based"
-const POLICY_MODE = "policy-based"
-const PUBKEY_AUTH = "pubkey"
-const FORCECRYPTOPROPOSAL = "0"
-const DEFAULT_CONN = "Conn"
-const DEFAULT_UPDOWN = "/etc/updown"
-const IPTABLES_UPDOWN = "/usr/lib/ipsec/_updown iptables"
-const OIP_UPDOWN = "/etc/updown_oip"
-const CONN_TYPE = "tunnel"
-const MODE = "start"
-const OVERLAYIP = "overlayip"
-const HUBTOHUB = "hub-to-hub"
-const HUBTODEVICE = "hub-to-device"
-const DEVICETODEVICE = "device-to-device"
-const BYCONFIG = "%config"
-const ANY = "%any"
-const BASE_PROTOCOL = "TCP"
-const DEFAULT_K8S_API_SERVER_PORT = "6443"
-const ACCEPT = "ACCEPT"
+const (
+ DEFAULT_MARK = "30"
+ VTI_MODE = "VTI-based"
+ POLICY_MODE = "policy-based"
+ PUBKEY_AUTH = "pubkey"
+ FORCECRYPTOPROPOSAL = "0"
+ DEFAULT_CONN = "Conn"
+ DEFAULT_UPDOWN = "/etc/updown"
+ IPTABLES_UPDOWN = "/usr/lib/ipsec/_updown iptables"
+ OIP_UPDOWN = "/etc/updown_oip"
+ CONN_TYPE = "tunnel"
+ START_MODE = "start"
+ ADD_MODE = "add"
+ OVERLAYIP = "overlayip"
+ HUBTOHUB = "hub-to-hub"
+ HUBTODEVICE = "hub-to-device"
+ DEVICETODEVICE = "device-to-device"
+ BYCONFIG = "%config"
+ ANY = "%any"
+ BASE_PROTOCOL = "TCP"
+ DEFAULT_K8S_API_SERVER_PORT = "6443"
+ ACCEPT = "ACCEPT"
+ WILDCARD_SUBNET="0.0.0.0"
+)
 
 type OverlayObjectKey struct {
 	OverlayName string `json:"overlay-name"`
@@ -117,6 +121,17 @@ func (c *OverlayObjectManager) ParseObject(r io.Reader) (module.ControllerObject
 }
 
 func (c *OverlayObjectManager) CreateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
+	// ----------- start for rsync test
+    resutil := NewResUtil()
+
+    to2 := t.(*module.OverlayObject)
+    err2 := resutil.Deploy(to2.Metadata.Name, "test-app", "YAML")
+
+    if err2 != nil {
+         return c.CreateEmptyObject(), pkgerrors.Wrap(err2, "Unable to create the object: fail to deploy resource")
+    }
+    // ----------- end for rsync test
+
 	// Create a issuer each overlay
 	to := t.(*module.OverlayObject)
 	overlay_name := to.Metadata.Name
@@ -165,6 +180,16 @@ func (c *OverlayObjectManager) UpdateObject(m map[string]string, t module.Contro
 }
 
 func (c *OverlayObjectManager) DeleteObject(m map[string]string) error {
+	// ----------- start for rsync test
+    resutil := NewResUtil()
+
+    err2 := resutil.Undeploy(m[OverlayResource])
+
+    if err2 != nil {
+         return err2
+    }
+    // ----------- end for rsync test
+
 	overlay_name := m[OverlayResource]
 
 	// DB Operation
@@ -246,8 +271,14 @@ func (c *OverlayObjectManager) GetCertificate(oname string) (string, string, err
 
 //Set up Connection between objects
 //Passing the original map resource, the two objects, connection type("hub-to-hub", "hub-to-device", "device-to-device") and namespace name.
-func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.ControllerObject, m2 module.ControllerObject, conntype string, namespace string) error {
+func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.ControllerObject, m2 module.ControllerObject, conntype string, namespace string, is_delegated bool) error {
 	//Get all proposals available in the overlay
+	resutil := NewResUtil()
+	hubConn := GetManagerset().HubConn
+	hub_manager := GetManagerset().Hub
+	dev_manager := GetManagerset().Device
+	overlay_name := m[OverlayResource]
+
 	proposal := GetManagerset().Proposal
 	proposals, err := proposal.GetObjects(m)
 	if len(proposals) == 0 || err != nil {
@@ -255,12 +286,16 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		return pkgerrors.New("Error in getting proposals")
 	}
 	var all_proposals []string
-	var proposalresources []*resource.ProposalResource
+//	var proposalresources []*resource.ProposalResource
 	for i := 0; i < len(proposals); i++ {
 		proposal_obj := proposals[i].(*module.ProposalObject)
 		all_proposals = append(all_proposals, proposal_obj.Metadata.Name)
 		pr := proposal_obj.ToResource()
-		proposalresources = append(proposalresources, pr)
+//		proposalresources = append(proposalresources, pr)
+
+		// Add proposal resources
+		resutil.AddResource(m1, "create", pr)
+		resutil.AddResource(m2, "create", pr)
 	}
 
 	device_mgr := GetManagerset().Device
@@ -293,11 +328,23 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		}
 
 		//IpsecResources
-		conn := resource.Connection{
+		conn1 := resource.Connection{
 			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name),
 			ConnectionType: CONN_TYPE,
-			Mode:           MODE,
+			Mode:           ADD_MODE,
 			Mark:           DEFAULT_MARK,
+			LocalSubnet:    WILDCARD_SUBNET+"/0",
+			RemoteSubnet:   WILDCARD_SUBNET+"/0",
+			LocalUpDown:    DEFAULT_UPDOWN,
+			CryptoProposal: all_proposals,
+		}
+		conn2 := resource.Connection{
+			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name),
+			Mark:           DEFAULT_MARK,
+			Mode:           START_MODE,
+			ConnectionType: CONN_TYPE,
+			LocalSubnet:    WILDCARD_SUBNET+"/0",
+			RemoteSubnet:   WILDCARD_SUBNET+"/0",
 			LocalUpDown:    DEFAULT_UPDOWN,
 			CryptoProposal: all_proposals,
 		}
@@ -313,7 +360,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			RemoteIdentifier:     "CN=" + obj2.GetCertName(),
 			CryptoProposal:       all_proposals,
 			ForceCryptoProposal:  FORCECRYPTOPROPOSAL,
-			Connections:          conn,
+			Connections:          conn1,
 		}
 		obj2_ipsec_resource = resource.IpsecResource{
 			Name:                 format_resource_name(obj2.Metadata.Name, obj1.Metadata.Name),
@@ -327,15 +374,31 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			RemoteIdentifier:     "CN=" + obj1.GetCertName(),
 			CryptoProposal:       all_proposals,
 			ForceCryptoProposal:  FORCECRYPTOPROPOSAL,
-			Connections:          conn,
+			Connections:          conn2,
 		}
-		// Todo: Hub-to-device connection
+
+		// for each edge connect to hub2(obj2), add Route in hub1(obj1)
+		// Todo: handle the error the route rule may fail if the vti interface is not exist 
+		dev_names, _ := hubConn.GetConnectedDevices(overlay_name, obj2.Metadata.Name)
+		for _, dev_name := range dev_names {
+			log.Println(dev_name)
+			strs := strings.SplitN(dev_name, "..", 2)
+			if len(strs) == 2 {
+				log.Println("Route Rule in " + obj1.Metadata.Name + " : " + strs[1] + " via " + obj2.Metadata.Name)
+				resutil.AddResource(m1, "create", &resource.RouteResource {
+					Name: strs[1] + "-" + obj2_ip,
+					Destination: strs[1],
+					Device: "vti_" + obj2_ip, // Todo: use the right ifname
+					Table: "default", // Todo: need check
+				})
+			}
+		}
 	case HUBTODEVICE:
 		obj1 := m1.(*module.HubObject)
 		obj2 := m2.(*module.DeviceObject)
 
-		obj1_ip := obj1.Status.Ip
-		obj2_ip, _ := device_mgr.AllocateIP(m, m2, module.CreateEndName(obj1.GetType(), obj1.Metadata.Name))
+		obj1_ip = obj1.Status.Ip
+		obj2_ip, _ = device_mgr.AllocateIP(m, m2, module.CreateEndName(obj1.GetType(), obj1.Metadata.Name))
 
 		//Keypair
 		obj1_crt, obj1_key, err := GetHubCertificate(obj1.GetCertName(), namespace)
@@ -346,10 +409,11 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		obj1_conn := resource.Connection{
 			Name:           DEFAULT_CONN + format_resource_name(obj2.Metadata.Name, ""),
 			ConnectionType: CONN_TYPE,
-			Mode:           MODE,
+			Mode:           START_MODE,
 			Mark:           DEFAULT_MARK,
 			RemoteSourceIp: obj2_ip,
 			LocalUpDown:    DEFAULT_UPDOWN,
+			LocalSubnet:    WILDCARD_SUBNET+"/0",
 			CryptoProposal: all_proposals,
 		}
 
@@ -376,10 +440,11 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		//IpsecResources
 		obj2_conn := resource.Connection{
 			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, ""),
-			Mode:           MODE,
-			LocalUpDown:    IPTABLES_UPDOWN,
+			Mode:           START_MODE,
+			LocalUpDown:    OIP_UPDOWN,
 			ConnectionType: CONN_TYPE,
 			LocalSourceIp:  BYCONFIG,
+			RemoteSubnet:   WILDCARD_SUBNET+"/0",
 			CryptoProposal: all_proposals,
 		}
 		obj2_ipsec_resource = resource.IpsecResource{
@@ -397,13 +462,98 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Connections:          obj2_conn,
 		}
 
-		//Todo: Device-to-device connection
+		hubName := obj1.GetType() + "." + obj1.Metadata.Name
+
+		// for each hub, add route (e.g. to obj2 via obj1)
+		hubs, _ := hub_manager.GetObjects(m)
+		for _, hub_obj := range hubs {
+			if hub_obj.GetMetadata().Name != obj1.GetMetadata().Name {
+				resutil.AddResource(hub_obj, "create", &resource.RouteResource {
+					Name: obj2_ip + "-" + obj1_ip,
+					Destination: obj2_ip,
+					Device: "vti_" + obj1_ip, // Todo: use the right ifname
+					Table: "default", // Todo: need check
+				})
+			}
+		}
+		// for each edge connect to obj1 (1) add route( e.g. to obj2 via obj1) (2) add SNAT (e.g. to obj2 --to-source edge ip) 
+		dev_names, _ := hubConn.GetConnectedDevices(overlay_name, obj1.Metadata.Name)
+		mm := make(map[string]string)
+		mm[OverlayResource] = overlay_name
+
+		for _, dev_name := range dev_names {
+			strs := strings.SplitN(dev_name, "..", 2)
+			if len(strs) == 2 {
+				mm[DeviceResource] = strings.Replace(strs[0], "Device.", "", 1)
+				dev_obj, err := dev_manager.GetObject(mm)
+				dev := dev_obj.(*module.DeviceObject)
+				if err == nil {
+					log.Println("Route Rule in " + strs[0] + " : " + obj2_ip + " via " + obj1.Metadata.Name)
+					resutil.AddResource(dev_obj, "create", &resource.RouteResource {
+						Name: obj2_ip + "-" + obj1_ip,
+						Destination: obj2_ip,
+						Device: "#" + dev.Status.Ip, // Todo: how to get net1
+						Table: "cnf", // Todo: need check
+					})
+
+					log.Println("NAT Rule in " + strs[0] + " to " + obj2.Metadata.Name )
+					resutil.AddResource(dev_obj, "create", &resource.FirewallNatResource {
+						Name: obj2_ip + "-" + dev.Metadata.Name,
+						DestinationIP: obj2_ip,
+						Dest: "#source",
+						SourceDestIP: dev.Status.DataIps[hubName],
+						Index: "1",
+						Target: "SNAT",
+					})
+
+					log.Println("Route Rule in " + obj2_ip + " to " + dev.Metadata.Name)
+					resutil.AddResource(obj2, "create", &resource.RouteResource {
+						Name: dev.Status.DataIps[hubName] + "-" + obj1_ip,
+						Destination: dev.Status.DataIps[hubName],
+						Device: "#" + obj2.Status.Ip,
+						Table: "cnf",
+					})
+
+					log.Println("NAT Rule in " + obj2_ip + " to " + dev.Metadata.Name )
+					resutil.AddResource(obj2, "create", &resource.FirewallNatResource {
+						Name: dev.Status.DataIps[hubName] + "-" + obj2.Metadata.Name,
+						DestinationIP: dev.Status.DataIps[hubName],
+						Dest: "#source",
+						SourceDestIP: obj2_ip,
+						Index: "1",
+						Target: "SNAT",
+					})
+
+				} else {
+					log.Println("error in getting device")
+					log.Println(err)
+				}
+			}
+		}
+
+		if is_delegated {
+			log.Println("adding rules for delegate connections")
+			resutil.AddResource(m2, "create", &resource.RouteResource {
+				Name: "default4" + obj2.Metadata.Name,
+				Destination: "default",
+				Gateway: obj1_ip,
+				Device: "#" + obj2_ip,
+				Table: "cnf",
+			})
+			resutil.AddResource(m2, "create", &resource.FirewallNatResource {
+				Name: "default4" + obj2.Metadata.Name,
+				SourceDestIP: obj2_ip,
+				Dest: "#source",
+				Index: "0",
+				Target: "SNAT",
+			})
+		}
 	case DEVICETODEVICE:
 		obj1 := m1.(*module.DeviceObject)
 		obj2 := m2.(*module.DeviceObject)
 
-		obj1_ip := obj1.Status.Ip
-		obj2_ip := obj2.Status.Ip
+		obj1_ip = obj1.Status.Ip
+		obj2_ip = obj2.Status.Ip
 
 		//Keypair
 		obj1_crt, obj1_key, err := GetDeviceCertificate(m[OverlayResource], obj1.Metadata.Name)
@@ -418,7 +568,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		conn := resource.Connection{
 			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name),
 			ConnectionType: CONN_TYPE,
-			Mode:           MODE,
+			Mode:           START_MODE,
 			Mark:           DEFAULT_MARK,
 			LocalUpDown:    DEFAULT_UPDOWN,
 			CryptoProposal: all_proposals,
@@ -455,21 +605,17 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		return pkgerrors.New("Unknown connection type")
 	}
 
+	resutil.AddResource(m1, "create", &obj1_ipsec_resource)
+	resutil.AddResource(m2, "create", &obj2_ipsec_resource)
+
+	log.Println("cend1 ip:", obj1_ip)
+	log.Println("cend2 ip:", obj2_ip)
 	cend1 := module.NewConnectionEnd(m1, obj1_ip)
 	cend2 := module.NewConnectionEnd(m2, obj2_ip)
-
-	cend1.AddResource(&obj1_ipsec_resource, false)
-	cend2.AddResource(&obj2_ipsec_resource, false)
-
-	for i := 0; i < len(proposalresources); i++ {
-		cend1.AddResource(proposalresources[i], true)
-		cend2.AddResource(proposalresources[i], true)
-	}
-
 	co := module.NewConnectionObject(cend1, cend2)
 
 	cm := GetConnectionManager()
-	err = cm.Deploy(m[OverlayResource], co)
+	err = cm.Deploy(m[OverlayResource], co, resutil)
 	if err != nil {
 		return pkgerrors.Wrap(err, "Unable to create the object: fail to deploy resource")
 	}

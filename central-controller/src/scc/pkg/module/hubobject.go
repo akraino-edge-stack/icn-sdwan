@@ -16,11 +16,6 @@
 
 package module
 
-import (
-	pkgerrors "github.com/pkg/errors"
-	"strconv"
-)
-
 const (
 	MinProxyPort = 10000
 	MaxProxyPort = 16000
@@ -44,8 +39,8 @@ type HubObjectSpec struct {
 type HubObjectStatus struct {
 	Ip   string
 	Data map[string]string
-	// Allocated proxy port for device
-	ProxyPort map[string]string
+	// Devices that this hub delegates
+	DelegateDevices []string
 }
 
 func (c *HubObject) GetMetadata() ObjectMetaData {
@@ -58,33 +53,6 @@ func (c *HubObject) GetCertName() string {
 
 func (c *HubObject) GetType() string {
 	return "Hub"
-}
-
-func (c *HubObject) IsProxyPortUsed(port int) bool {
-	_, ok := c.Status.ProxyPort[strconv.Itoa(port)]
-	return ok
-}
-
-func (c *HubObject) SetProxyPort(port int, device string) {
-	c.Status.ProxyPort[strconv.Itoa(port)] = device
-}
-
-func (c *HubObject) UnsetProxyPort(port int) {
-	delete(c.Status.ProxyPort, strconv.Itoa(port))
-}
-
-func (c *HubObject) GetProxyPort(port int) string {
-	return c.Status.ProxyPort[strconv.Itoa(port)]
-}
-
-func (c *HubObject) AllocateProxyPort() (int, error) {
-	for i := MinProxyPort; i < MaxProxyPort; i++ {
-		if !c.IsProxyPortUsed(i) {
-			return i, nil
-		}
-	}
-
-	return 0, pkgerrors.New("Fail to allocate proxy port")
 }
 
 func init() {
