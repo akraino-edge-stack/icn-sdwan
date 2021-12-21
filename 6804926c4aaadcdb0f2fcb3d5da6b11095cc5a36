@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e8df3da_0dc2aee1",
+        "filename": "central-controller/src/scc/pkg/manager/connection_manager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "Please remove the comment lines.",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 2
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4639239_2b0602f0",
+        "filename": "central-controller/src/scc/pkg/manager/connection_manager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "Please remove the comment lines.",
+      "range": {
+        "startLine": 112,
+        "startChar": 0,
+        "endLine": 126,
+        "endChar": 2
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e090a47_3c34aa6e",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "remove comment line.",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 40
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c2be2de5_e6468f2a",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "remove comment line.",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 34
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c39746b9_2aa50771",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "remove comment line.",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 29
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14ec629d_c817a2a8",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "remove comment line.",
+      "range": {
+        "startLine": 120,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 22
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9872804e_91ca2749",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-21T08:00:00Z",
+      "side": 1,
+      "message": "remove comment line.",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 178,
+        "endChar": 2
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
