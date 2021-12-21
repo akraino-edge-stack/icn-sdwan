@@ -1,0 +1,70 @@
+#!/bin/sh
+# Licensed to the public under the GNU General Public License v2.
+
+. /lib/functions.sh
+
+help()
+{
+	 cat <<EOF
+Syntax: cnfroute [command]
+
+Available commands:
+	check <interface>   check route rule for the interface
+
+EOF
+}
+
+checkroute()
+{
+    config_get name "$1" name ""
+    config_get dst "$1" dst ""
+    config_get src "$1" src ""
+    config_get gw "$1" gw ""
+#    config_get dev "$1" dev ""
+    config_get dev "$1" dev_val ""
+    config_get table "$1" table "main"
+
+    if [ $dev == $2 ]; then
+        if [ $table == "cnf" ]; then
+            rule=$(ip route show table 40 | grep $dev | grep $dst)
+        else
+            rule=$(ip route show | grep $dev | grep $dst)
+        fi
+        echo $rule
+        if [ -z "$rule" ]; then
+            cmd="ip route add "
+            if [ $table == "cnf" ]; then
+                cmd="$cmd table 40"
+            fi
+            cmd="$cmd $dst"
+            if [ -n "$gw" ]; then
+                cmd="$cmd via $gw"
+            fi
+            cmd="$cmd dev $dev"
+            if [ -n "$src" ]; then
+                cmd="$cmd src $src"
+            fi
+            echo $cmd
+            eval $cmd
+        fi
+    fi
+}
+
+check()
+{
+    config_load route-cnf
+
+    echo "Check route:"
+    config_foreach checkroute route $1
+}
+
+case "$1" in
+	check)
+		$*
+	;;
+	*)
+		help
+	;;
+esac
+
+exit 0

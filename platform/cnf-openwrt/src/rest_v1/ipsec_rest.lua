@@ -135,7 +135,7 @@ function is_vti_enabled(value)
         uci:set(uci_conf, "@ipsec[0]", "rtinstall_enabled", 0)
         uci:set(uci_conf, "@ipsec[0]", "vip_enabled", 0)
     else
-        uci:set(uci_conf, "@ipsec[0]", "rtinstall_enabled", 1)
+        uci:set(uci_conf, "@ipsec[0]", "rtinstall_enabled", 0)
         uci:set(uci_conf, "@ipsec[0]", "vip_enabled", 1)
     end
     uci:save(uci_conf)

@@ -15,11 +15,13 @@ uci_conf = "route-cnf"
 
 route_validator = {
     create_section_name=false,
+    object_validator=function(value) return check_route(value) end,
     {name="name"},
     {name="dst", required=true, validator=function(value) return (value == "default") or utils.is_valid_ip(value) end, message="Invalid Destination IP Address"},
     {name="src", validator=function(value) return utils.is_valid_ip_address(value) end, message="Invalid Source IP Address"},
     {name="gw", validator=function(value) return utils.is_valid_ip_address(value) end, message="Invalid Gateway IP Address"},
-    {name="dev", required=true, validator=function(value) return (value == "#default") or ifutil.is_interface_available(value) end, message="Invalid interface", code="428"},
+    {name="dev", required=true},
+    {name="dev_val"},
     {name="table", validator=function(value) return utils.in_array(value, {"default", "cnf"}) end, message="Bad route table"},
 }
 
@@ -50,16 +52,33 @@ function handle_request()
     end
 end
 
+function check_route(value)
+    local dev = value["dev"]
+    local dev_val = dev
+    if utils.start_with(dev, "#") then
+        local dev_name = string.sub(dev, 2, string.len(dev))
+        if dev_name == "default" then
+            dev_val = ifutil.get_default_ifname()
+        else
+            dev_val = ifutil.get_name_by_ip(dev_name)
+        end
+    end
+
+    if dev_val == nil or (not ifutil.is_interface_available(dev_val)) then
+        return false, "428:Field[dev] checked failed: Invalid interface"
+    end
+
+    value["dev_val"] = dev_val
+    return true, value
+end
+
 -- generate command for route
 function route_command(route, op)
     local dst = route["dst"]
     local src = route["src"]
     local gw = route["gw"]
-    local dev = route["dev"]
+    local dev = route["dev_val"]
     local t = route["table"]
-    if dev == "#default" then
-        dev = ifutil.get_default_ifname()
-    end
 
     local comm = "ip route"
     if op == "create" then
