@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "92e75c03_3104d126",
+        "filename": "central-controller/src/scc/pkg/manager/connection_manager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e8df3da_0dc2aee1",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 2
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4639239_2b0602f0",
         "filename": "central-controller/src/scc/pkg/manager/connection_manager.go",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "5beeb575_ad147c54",
+        "filename": "central-controller/src/scc/pkg/manager/connection_manager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4639239_2b0602f0",
+      "range": {
+        "startLine": 112,
+        "startChar": 0,
+        "endLine": 126,
+        "endChar": 2
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f2a0eb59_0ac9629f",
         "filename": "central-controller/src/scc/pkg/manager/constants.go",
         "patchSetId": 2
@@ -62,6 +110,24 @@
       "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d9267b5_d3da3a4b",
+        "filename": "central-controller/src/scc/pkg/manager/constants.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f2a0eb59_0ac9629f",
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "062ed43f_4a9e52c9",
+        "filename": "central-controller/src/scc/pkg/manager/device_objectmanager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2804dd3_ece77c58",
+      "range": {
+        "startLine": 377,
+        "startChar": 2,
+        "endLine": 377,
+        "endChar": 39
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cab2ae02_ad734c29",
         "filename": "central-controller/src/scc/pkg/manager/resource_objectmanager.go",
         "patchSetId": 2
@@ -102,6 +192,24 @@
       "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "15390f50_7ef958cf",
+        "filename": "central-controller/src/scc/pkg/manager/resource_objectmanager.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cab2ae02_ad734c29",
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "4d39f919_28d69705",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e090a47_3c34aa6e",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 40
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2be2de5_e6468f2a",
         "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
         "patchSetId": 2
@@ -148,6 +280,30 @@
       "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59212f76_f2b57419",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2be2de5_e6468f2a",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 34
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -174,6 +330,30 @@
     },
     {
       "key": {
+        "uuid": "78f095c8_924e9cf2",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c39746b9_2aa50771",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 29
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "14ec629d_c817a2a8",
         "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
         "patchSetId": 2
@@ -197,6 +377,30 @@
     },
     {
       "key": {
+        "uuid": "76095a09_168147a4",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14ec629d_c817a2a8",
+      "range": {
+        "startLine": 120,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 22
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9872804e_91ca2749",
         "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
         "patchSetId": 2
@@ -217,6 +421,30 @@
       "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68baee41_8071c53a",
+        "filename": "central-controller/src/scc/pkg/module/connectionobject.go",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2021-12-22T07:01:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9872804e_91ca2749",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 178,
+        "endChar": 2
+      },
+      "revId": "6804926c4aaadcdb0f2fcb3d5da6b11095cc5a36",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
