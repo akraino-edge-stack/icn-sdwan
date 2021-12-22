@@ -19,6 +19,7 @@ data:
     #!/bin/bash
     # Always exit on errors.
     set -ex
+    sysctl -w net.ipv4.ip_forward=1
     echo "" > /etc/config/network
     cat > /etc/config/mwan3 <<EOF
     config globals 'globals'

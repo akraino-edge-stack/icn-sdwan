@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
+	//corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -114,11 +114,11 @@ func (r *CNFServiceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.CNFServiceList{})),
 			},
 			Filter).
-		Watches(
-			&source.Kind{Type: &corev1.Service{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetServiceToRequestsFunc(r)),
-			},
-			IPFilter).
+		//Watches(
+		//	&source.Kind{Type: &corev1.Service{}},
+		//	&handler.EnqueueRequestsFromMapFunc{
+		//		ToRequests: handler.ToRequestsFunc(GetServiceToRequestsFunc(r)),
+		//	},
+		//	IPFilter).
 		Complete(r)
 }

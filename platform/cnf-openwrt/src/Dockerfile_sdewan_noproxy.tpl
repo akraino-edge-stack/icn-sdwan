@@ -18,6 +18,7 @@ RUN mkdir /var/lock && \
     opkg install luci-app-mwan3; exit 0
 
 COPY strongswan.conf /etc/strongswan.conf
+COPY cnfroute /etc/cnfroute
 COPY system /etc/config/system
 COPY ipsec /etc/config/ipsec
 COPY ipsec_exec /etc/init.d/ipsec
