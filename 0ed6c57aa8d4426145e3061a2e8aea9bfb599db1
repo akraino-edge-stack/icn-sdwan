@@ -332,6 +332,30 @@
     },
     {
       "key": {
+        "uuid": "29f64f36_7ff8d067",
+        "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2021-12-22T02:45:01Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d9eedbf7_82418450",
+      "range": {
+        "startLine": 450,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 63
+      },
+      "revId": "0ed6c57aa8d4426145e3061a2e8aea9bfb599db1",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f4ac7905_15a12619",
         "filename": "platform/cnf-openwrt/doc/Accelerated_by_Intel_QAT.md",
         "patchSetId": 1
