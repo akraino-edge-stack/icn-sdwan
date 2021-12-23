@@ -1,5 +1,7 @@
 # Helm Chart for cnf and controller
 
+The installation has been verified on kubernetes v1.20.
+
 ## Pre-condition
 **1.Install cert-manager**
 
