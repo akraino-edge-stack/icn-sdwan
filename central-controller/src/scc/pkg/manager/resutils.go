@@ -17,13 +17,14 @@
 package manager
 
 import (
+	"crypto/sha256"
+
 	rsyncclient "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/client"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
 	"github.com/open-ness/EMCO/src/orchestrator/pkg/resourcestatus"
 
 	"github.com/open-ness/EMCO/src/orchestrator/pkg/appcontext"
-	//    rsyncclient "github.com/open-ness/EMCO/src/orchestrator/pkg/grpc/installappclient"
 	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/rpc"
 	controller "github.com/open-ness/EMCO/src/orchestrator/pkg/module/controller"
 
@@ -34,17 +35,20 @@ import (
 	"fmt"
 	pkgerrors "github.com/pkg/errors"
 	"log"
+	"sync"
 	"time"
 )
 
 var rsync_initialized = false
 var provider_name = "akraino_scc"
 var project_name = "akraino_scc"
+var Resource_mux  = sync.Mutex{}
 
 // sdewan definition
 type DeployResource struct {
 	Action   string
 	Resource resource.ISdewanResource
+	Status   int // 0: to be (un)deployed; 1: success; 2: failed
 }
 
 type DeployResources struct {
@@ -115,6 +119,10 @@ func makeAppContextForCompositeApp(p, ca, v, rName, dig string, namespace string
 	return cca, nil
 }
 
+func getResourceName(resource DeployResource) string {
+	return resource.Resource.GetName() + "+" + resource.Resource.GetType()
+}
+
 func addResourcesToCluster(ct appcontext.AppContext, ch interface{}, target string, resources []DeployResource, isDeploy bool) error {
 
 	var resOrderInstr struct {
@@ -127,13 +135,11 @@ func addResourcesToCluster(ct appcontext.AppContext, ch interface{}, target stri
 	resdep := make(map[string]string)
 
 	for _, resource := range resources {
-		resource_name := resource.Resource.GetName() + "+" + resource.Resource.GetType()
+		resource_name := getResourceName(resource)
 		resource_data := resource.Resource.ToYaml(target)
 		resOrderInstr.Resorder = append(resOrderInstr.Resorder, resource_name)
 		resdep[resource_name] = "go"
-		// rtc.RtcAddResource("<cid>/app/app_name/cluster/clusername/", res.name, res.content)
-		// -> save ("<cid>/app/app_name/cluster/clusername/resource/res.name/", res.content) in etcd
-		// return ("<cid>/app/app_name/cluster/clusername/resource/res.name/"
+
 		rh, err := ct.AddResource(ch, resource_name, resource_data)
 		if isDeploy == false {
 			//Delete resource
@@ -149,9 +155,7 @@ func addResourcesToCluster(ct appcontext.AppContext, ch interface{}, target stri
 		jresOrderInstr, _ := json.Marshal(resOrderInstr)
 		resDepInstr.Resdep = resdep
 		jresDepInstr, _ := json.Marshal(resDepInstr)
-		// rtc.RtcAddInstruction("<cid>app/app_name/cluster/clusername/", "resource", "order", "{[res.name]}")
-		// ->save ("<cid>/app/app_name/cluster/clusername/resource/instruction/order/", "{[res.name]}") in etcd
-		// return "<cid>/app/app_name/cluster/clusername/resource/instruction/order/"
+
 		_, err = ct.AddInstruction(ch, "resource", "order", string(jresOrderInstr))
 		_, err = ct.AddInstruction(ch, "resource", "dependency", string(jresDepInstr))
 		if err != nil {
@@ -210,12 +214,16 @@ func (d *ResUtil) contains(reses []DeployResource, res DeployResource) bool {
 	return false
 }
 
+func (d *ResUtil) GetResources() map[module.ControllerObject]*DeployResources {
+	return d.resmap
+}
+
 func (d *ResUtil) AddResource(device module.ControllerObject, action string, resource resource.ISdewanResource) error {
 	if d.resmap[device] == nil {
 		d.resmap[device] = &DeployResources{Resources: []DeployResource{}}
 	}
 
-	ds := DeployResource{Action: action, Resource: resource}
+	ds := DeployResource{Action: action, Resource: resource, Status: 0}
 	if !d.contains(d.resmap[device].Resources, ds) {
 		d.resmap[device].Resources = append(d.resmap[device].Resources, ds)
 	}
@@ -226,9 +234,17 @@ func (d *ResUtil) TargetName(o module.ControllerObject) string {
 	return o.GetType() + "." + o.GetMetadata().Name
 }
 
-func (d *ResUtil) Deploy(app_name string, format string) (string, error) {
-	// Generate Application context
-	cca, err := makeAppContextForCompositeApp(project_name, app_name+"-d", "1.0", "1.0", "di", "default", "0")
+func (d *ResUtil) getDeviceAppName(device module.ControllerObject) string {
+	return device.GetMetadata().Name + "-app"
+}
+
+func (d *ResUtil) getDeviceClusterName(device module.ControllerObject) string {
+	return provider_name + "+" + device.GetMetadata().Name
+}
+
+func (d *ResUtil) DeployOneResource(app_name string, format string, device module.ControllerObject, resource DeployResource) (string, error) {
+	resource_app_name := app_name + resource.Resource.GetName()
+	cca, err := makeAppContextForCompositeApp(project_name, resource_app_name, "1.0", "1.0", "di", "default", "0")
 	context := cca.context                    // appcontext.AppContext
 	ctxval := cca.ctxval                      // id
 	compositeHandle := cca.compositeAppHandle // cid
@@ -240,25 +256,14 @@ func (d *ResUtil) Deploy(app_name string, format string) (string, error) {
 		Appdep map[string]string `json:"appdependency"`
 	}
 	appdep := make(map[string]string)
-	// create a com_app for each device
-	for device, res := range d.resmap {
-		// Add application
-		app_name := device.GetMetadata().Name + "-app"
-		appOrderInstr.Apporder = append(appOrderInstr.Apporder, app_name)
-		appdep[app_name] = "go"
+	device_app_name := d.getDeviceAppName(device)
+	appOrderInstr.Apporder = append(appOrderInstr.Apporder, device_app_name)
+	appdep[device_app_name] = "go"
 
-		// rtc.RtcAddLevel(cid, "app", app_name) -> save ("<cid>app/app_name/", app_name) in etcd
-		// apphandle = "<cid>app/app_name/"
-		apphandle, _ := context.AddApp(compositeHandle, app_name)
+	apphandle, _ := context.AddApp(compositeHandle, device_app_name)
 
-		// Add cluster
-		// err = addClustersToAppContext(listOfClusters, context, apphandle, resources)
-		// rtc.RtcAddLevel("<cid>app/app_name/", "cluster", clustername)
-		// -> save ("<cid>app/app_name/cluster/clusername/", clustername) in etcd
-		// return "<cid>app/app_name/cluster/clusername/"
-		clusterhandle, _ := context.AddCluster(apphandle, provider_name+"+"+device.GetMetadata().Name)
-		err = addResourcesToCluster(context, clusterhandle, d.TargetName(device), res.Resources, true)
-	}
+	clusterhandle, _ := context.AddCluster(apphandle, d.getDeviceClusterName(device))
+	err = addResourcesToCluster(context, clusterhandle, d.TargetName(device), []DeployResource{resource}, true)
 
 	jappOrderInstr, _ := json.Marshal(appOrderInstr)
 	appDepInstr.Appdep = appdep
@@ -271,55 +276,187 @@ func (d *ResUtil) Deploy(app_name string, format string) (string, error) {
 	err = rsyncclient.InvokeInstallApp(appContextID)
 	if err != nil {
 		log.Println(err)
-		return appContextID, err
+		cleanuperr := context.DeleteCompositeApp()
+		if cleanuperr != nil {
+			log.Printf(":: Error Cleaning up AppContext after add instruction failure ::")
+		}
+
+		return "", err
 	}
 
 	return appContextID, nil
 }
 
-func (d *ResUtil) Undeploy(app_name string, format string) (string, error) {
-	// Generate Application context
-	cca, err := makeAppContextForCompositeApp(project_name, app_name+"-u", "1.0", "1.0", "di", "default", "0")
-	context := cca.context                    // appcontext.AppContext
-	ctxval := cca.ctxval                      // id
-	compositeHandle := cca.compositeAppHandle // cid
-
-	var appOrderInstr struct {
-		Apporder []string `json:"apporder"`
-	}
-	var appDepInstr struct {
-		Appdep map[string]string `json:"appdependency"`
-	}
-	appdep := make(map[string]string)
-	// create a com_app for each device
-	for device, res := range d.resmap {
-		// Add application
-		app_name := device.GetMetadata().Name + "-app"
-		appOrderInstr.Apporder = append(appOrderInstr.Apporder, app_name)
-		appdep[app_name] = "go"
-		apphandle, _ := context.AddApp(compositeHandle, app_name)
-
-		// Add cluster
-		clusterhandle, _ := context.AddCluster(apphandle, provider_name+"+"+device.GetMetadata().Name)
-		err = addResourcesToCluster(context, clusterhandle, d.TargetName(device), res.Resources, false)
-	}
-
-	jappOrderInstr, _ := json.Marshal(appOrderInstr)
-	appDepInstr.Appdep = appdep
-	jappDepInstr, _ := json.Marshal(appDepInstr)
-	context.AddInstruction(compositeHandle, "app", "order", string(jappOrderInstr))
-	context.AddInstruction(compositeHandle, "app", "dependency", string(jappDepInstr))
-
-	initializeAppContextStatus(context, appcontext.AppContextStatus{Status: appcontext.AppContextStatusEnum.Instantiated})
-	// invoke deployment process
-	appContextID := fmt.Sprintf("%v", ctxval)
-	err = rsyncclient.InvokeUninstallApp(appContextID)
+func (d *ResUtil) UpdateOneResource(cid string, device module.ControllerObject, resourceName string, resourceValue string) error {
+	context := appcontext.AppContext{}
+	_, err := context.LoadAppContext(cid)
 	if err != nil {
-		log.Println(err)
-		return appContextID, err
+		return err
 	}
 
-	return appContextID, nil
+	rh, err := context.GetResourceHandle(d.getDeviceAppName(device), d.getDeviceClusterName(device), resourceName)
+	if err != nil {
+		return err
+	}
+
+	err = context.UpdateResourceValue(rh, resourceValue)
+	if err != nil {
+		return err
+	}
+
+	err = rsyncclient.InvokeInstallApp(cid)
+	return err
+}
+
+func (d *ResUtil) Deploy(overlay string, app_name string, format string) error {
+	isErr := false
+	errMessage := "Failed:"
+	res_manager := GetManagerset().Resource
+	m := make(map[string]string)
+	m[OverlayResource] = overlay
+
+	Resource_mux.Lock()
+	defer Resource_mux.Unlock()
+
+	for device, res := range d.resmap {
+		m[DeviceResource] = device.GetType() + "." + device.GetMetadata().Name
+
+		for _, resource := range res.Resources {
+			operation := 1
+			m["Name"] = resource.Resource.GetName()
+			m["Type"] = resource.Resource.GetType()
+			robj, err := res_manager.GetObject(m)
+			resobj := robj.(*module.ResourceObject)
+			if err != nil {
+				// create a new resource object
+				resobj.Metadata.Name = m["Name"]
+				resobj.Specification.Hash = ""
+				resobj.Specification.ContextId = ""
+				resobj.Specification.Ref = 0
+				resobj.Specification.Status = Resource_Status_NotDeployed
+			}
+
+			resource_data := resource.Resource.ToYaml(d.TargetName(device))
+			resource_data_hash_byte := sha256.Sum256([]byte(resource_data))
+			resource_data_hash := string(resource_data_hash_byte[:])
+			if resobj.Specification.Ref > 0 && resource_data_hash != resobj.Specification.Hash {
+				operation = 2
+			}
+
+			switch operation {
+			case 1:
+				// Add resource
+				if resource.Status != 1 {
+					// resource is not deployed or failed to deploy
+					if resobj.Specification.Ref == 0 {
+						// resource needs to be deployed	
+						cid, err := d.DeployOneResource(app_name, format, device, resource)
+
+						if err != nil {
+							isErr = true
+							resource.Status = 2
+							errMessage = errMessage + " " + resource.Resource.GetName()
+						} else {
+							resource.Status = 1
+							resobj.Specification.Hash = resource_data_hash
+							resobj.Specification.ContextId = cid
+							resobj.Specification.Ref = 1
+							resobj.Specification.Status = Resource_Status_Deployed
+
+							res_manager.CreateObject(m, resobj)
+						}
+					} else {
+						// add ref
+						resobj.Specification.Ref += 1
+						resource.Status = 1
+						res_manager.UpdateObject(m, resobj)
+					}
+				}
+			case 2:
+				// Update resource
+				if resource.Status != 1 {
+					err := d.UpdateOneResource(resobj.Specification.ContextId, device, getResourceName(resource), resource_data)
+					if err != nil {
+						isErr = true
+						resource.Status = 2
+						errMessage = errMessage + " " + resource.Resource.GetName()
+						log.Println(err)
+					} else {
+						resource.Status = 1
+						// add ref
+						resobj.Specification.Hash = resource_data_hash
+						resobj.Specification.Ref += 1
+
+						res_manager.UpdateObject(m, resobj)
+					}
+				}
+			default:
+				log.Println("Unknown operation type")
+			}
+		}
+	}
+
+	if isErr {
+		return pkgerrors.New(errMessage)
+	}
+	return nil
+}
+
+func (d *ResUtil) Undeploy(overlay string) error {
+	isErr := false
+	errMessage := "Failed:"
+	res_manager := GetManagerset().Resource
+	m := make(map[string]string)
+	m[OverlayResource] = overlay
+
+	Resource_mux.Lock()
+	defer Resource_mux.Unlock()
+
+	for device, res := range d.resmap {
+		m[DeviceResource] = device.GetType() + "." + device.GetMetadata().Name
+
+		// Use reversed order to do undeploy
+		for i:=len(res.Resources)-1; i>=0; i-- {
+		// for _, resource := range res.Resources {
+			resource := res.Resources[i]
+			m["Name"] = resource.Resource.GetName()
+			m["Type"] = resource.Resource.GetType()
+			robj, err := res_manager.GetObject(m)
+			resobj := robj.(*module.ResourceObject)
+			if err != nil || resobj.Specification.Ref <= 0 {
+				// resource had not been deployed before, nothing to do
+				log.Println("Resource " + resource.Resource.GetName() + " hasn't been deployed, ignore the operation")
+				continue
+			}
+
+			if resource.Status != 1 {
+				// resource is not undeployed or failed to undeploy
+				if resobj.Specification.Ref <= 1 {
+					err = rsyncclient.InvokeUninstallApp(resobj.Specification.ContextId)
+					if err != nil {
+						log.Println(err)
+						isErr = true
+						resource.Status = 2
+						errMessage = errMessage + " " + resource.Resource.GetName()
+					} else {
+						// reset rewource status
+						resource.Status = 1
+						resobj.Specification.Ref = 0
+						res_manager.DeleteObject(m)
+					}
+				} else {
+					resobj.Specification.Ref -= 1
+					resource.Status = 1
+					res_manager.UpdateObject(m, resobj)
+				}
+			}
+		}
+	}
+
+	if isErr {
+		return pkgerrors.New(errMessage)
+	}
+	return nil
 }
 
 func (d *ResUtil) AddQueryResource(device module.ControllerObject, resource QueryResource) error {

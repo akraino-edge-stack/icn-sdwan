@@ -190,7 +190,7 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 		scc_conn := resource.Connection{
 			Name:           DEFAULT_CONN + format_resource_name(to.Metadata.Name, ""),
 			ConnectionType: CONN_TYPE,
-			Mode:           MODE,
+			Mode:           START_MODE,
 			Mark:           DEFAULT_MARK,
 			RemoteSourceIp: oip,
 			LocalUpDown:    DEFAULT_UPDOWN,
@@ -222,7 +222,7 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 			resutil.AddResource(&scc, "create", proposalresource[i])
 		}
 
-		resutil.Deploy("localto"+to.Metadata.Name, "YAML")
+		resutil.Deploy(overlay_name, "localto"+to.Metadata.Name, "YAML")
 
 		//Reserve ipsec resource to device object
 		res_str, err := resource.GetResourceBuilder().ToString(&scc_ipsec_resource)
@@ -300,7 +300,7 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 	overlay_manager := GetManagerset().Overlay
 	ipr_manager := GetManagerset().ProviderIPRange
 
-	device_name := m[DeviceResource]
+	overlay_name := m[OverlayResource]
 
 	to := t.(*module.DeviceObject)
 
@@ -318,7 +318,7 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 		r_str := to.Status.Data["scc_ipsec_resource"]
 		r, _ := resource.GetResourceBuilder().ToObject(r_str)
 		resutils.AddResource(&scc, "create", r)
-		resutils.Undeploy("localto"+device_name, "YAML")
+		resutils.Undeploy(overlay_name)
 	}
 
 	log.Println("Delete device...")
@@ -375,6 +375,21 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 
 	} else {
 		to.Status.Data[RegStatus] = "success"
+                err := GetDBUtils().RegisterDevice(to.Metadata.Name, to.Specification.KubeConfig)
+                if err != nil {
+                        log.Println(err)
+                        return err
+                }
+
+                overlay := GetManagerset().Overlay
+                overlay_name := m[OverlayResource]
+
+                log.Println("Create Certificate: " + to.GetCertName())
+                _, _, err = overlay.CreateCertificate(overlay_name, to.GetCertName())
+                if err != nil {
+                        log.Println(err)
+                        return err
+                }
 	}
 
 	if to.Status.Data[RegStatus] == "success" {
@@ -389,7 +404,7 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 		for i := 0; i < len(devices); i++ {
 			dev := devices[i].(*module.DeviceObject)
 			if to.Status.Mode == 1 || dev.Status.Mode == 1 {
-				err = overlay_manager.SetupConnection(m, to, dev, DEVICETODEVICE, NameSpaceName)
+				err = overlay_manager.SetupConnection(m, to, dev, DEVICETODEVICE, NameSpaceName, false)
 				if err != nil {
 					return err
 				}
