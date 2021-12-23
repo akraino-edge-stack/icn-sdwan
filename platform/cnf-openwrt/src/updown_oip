@@ -1,6 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
-# Copyright (c) 2021 Intel Corporation
+# Licensed to the public under the GNU General Public License v2.
 
 DEFAULT_PREFIX="localto"
 DEFAULT_K8S_SVC="10.96.0.1:443"
@@ -379,7 +378,8 @@ down-client:iptables)
         #
         # IPIP exception teardown
         if [ -n "$PLUTO_IPCOMP" ]
-        then                                                                                                                                iptables -D INPUT -i $PLUTO_INTERFACE -p 4 \
+        then
+	  iptables -D INPUT -i $PLUTO_INTERFACE -p 4 \
               -s $PLUTO_PEER -d $PLUTO_ME $IPSEC_POLICY_IN -j ACCEPT
         fi
         #
@@ -395,5 +395,7 @@ down-client:iptables)
               "- $PLUTO_PEER_ID $PLUTO_PEER_CLIENT == $PLUTO_PEER -- $PLUTO_ME == $PLUTO_MY_CLIENT"
           fi
         fi
+	ip r del $PLUTO_MY_SOURCEIP dev $PLUTO_INTERFACE
+	ip r del $PLUTO_PEER dev $PLUTO_INTERFACE table 40
         ;;
 

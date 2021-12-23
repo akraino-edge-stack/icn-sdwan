@@ -1,6 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
-# Copyright (c) 2021 Intel Corporation
+# Licensed to the public under the GNU General Public License v2.
 
 # set charon.install_virtual_ip = no to prevent the daemon from also installing the VIP
 
