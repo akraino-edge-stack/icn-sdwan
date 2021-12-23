@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b75be1a9_061c2a21",
+        "filename": "platform/cnf-openwrt/src/updown",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2021-12-23T04:21:22Z",
+      "side": 1,
+      "message": "remove space.",
+      "revId": "c19e9b6a08182c3bccec53aea576291f583a271e",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
