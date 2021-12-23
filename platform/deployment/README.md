@@ -1,5 +1,7 @@
 # Helm Chart for cnf and controller
 
+The helm chart have been verified on kuberntes v1.20.
+
 ## Pre-condition
 **1.Install cert-manager**
 
