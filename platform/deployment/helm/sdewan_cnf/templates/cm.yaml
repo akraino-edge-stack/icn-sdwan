@@ -27,7 +27,6 @@ data:
         option local_source 'lan'
     EOF
 
-    defaultip=$(grep "\podIP\b" /tmp/podinfo/annotations | cut -d/ -f2 | cut -d'"' -f2)
     providerip=$(echo {{ .Values.providerCIDR }} | cut -d/ -f1)
     sep="."
     suf="0"
@@ -73,6 +72,7 @@ data:
     /etc/init.d/dropbear start
     /etc/init.d/mwan3 restart
     /etc/init.d/firewall restart
+    defaultip=$(grep "\podIP\b" /tmp/podinfo/annotations | cut -d/ -f2 | cut -d'"' -f2)
     for net in $(echo -e $networks | jq -c ".interface[]")
     do
         interface=$(echo $net | jq -r .interface)

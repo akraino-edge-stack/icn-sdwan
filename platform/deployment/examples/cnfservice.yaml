@@ -3,7 +3,7 @@ kind: CNFService
 metadata:
   name: cnfservice-sample
   labels:
-    sdewanPurpose: sdewan-safe
+    sdewanPurpose: base
 spec:
     fullname: nginx.default.svc.cluster.local
     port: "8866"
