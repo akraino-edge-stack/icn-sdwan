@@ -36,7 +36,6 @@ import (
 const SCC_RESOURCE = "scc_ipsec_resource"
 const RegStatus = "RegStatus"
 
-var ips []string
 var task *runner.Task
 
 type DeviceObjectKey struct {
@@ -159,6 +158,10 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 		log.Println("Using overlay ip " + oip)
 		to.Status.Ip = oip
 
+		resutil := NewResUtil()
+		scc := module.EmptyObject{
+			Metadata: module.ObjectMetaData{"local", "", "", ""}}
+
 		// Get all proposal resources
 		proposal := GetManagerset().Proposal
 		proposals, err := proposal.GetObjects(m)
@@ -168,12 +171,11 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 		}
 
 		var all_proposal []string
-		var proposalresource []*resource.ProposalResource
 		for i := 0; i < len(proposals); i++ {
 			proposal_obj := proposals[i].(*module.ProposalObject)
 			all_proposal = append(all_proposal, proposal_obj.Metadata.Name)
 			pr := proposal_obj.ToResource()
-			proposalresource = append(proposalresource, pr)
+			resutil.AddResource(&scc, "create", pr)
 		}
 
 		//Extract SCC cert/key
@@ -212,23 +214,13 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 			Connections:          scc_conn,
 		}
 
-		scc := module.EmptyObject{
-			Metadata: module.ObjectMetaData{"local", "", "", ""}}
-
 		// Add and deploy resource
-		resutil := NewResUtil()
 		resutil.AddResource(&scc, "create", &scc_ipsec_resource)
-		for i := 0; i < len(proposalresource); i++ {
-			resutil.AddResource(&scc, "create", proposalresource[i])
-		}
-
 		resutil.Deploy(overlay_name, "localto"+to.Metadata.Name, "YAML")
 
 		//Reserve ipsec resource to device object
 		res_str, err := resource.GetResourceBuilder().ToString(&scc_ipsec_resource)
 		to.Status.Data[SCC_RESOURCE] = res_str
-
-		ips = append(ips, oip)
 
 	}
 	return nil
@@ -318,6 +310,21 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 		r_str := to.Status.Data["scc_ipsec_resource"]
 		r, _ := resource.GetResourceBuilder().ToObject(r_str)
 		resutils.AddResource(&scc, "create", r)
+
+		// Get all proposal resources
+                proposal := GetManagerset().Proposal
+                proposals, err := proposal.GetObjects(m)
+                if len(proposals) == 0 || err != nil {
+                        log.Println("Missing Proposal in the overlay")
+                        return pkgerrors.New("Error in getting proposals")
+                }
+
+                for i := 0; i < len(proposals); i++ {
+                        proposal_obj := proposals[i].(*module.ProposalObject)
+                        pr := proposal_obj.ToResource()
+                        resutils.AddResource(&scc, "create", pr)
+                }
+
 		resutils.Undeploy(overlay_name)
 	}
 
@@ -358,7 +365,7 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 			to.Status.Data[RegStatus] = "failed"
 		}
 
-		kube_config, _, err = kubeutil.checkKubeConfigAvail(kube_config, ips, DEFAULT_K8S_API_SERVER_PORT)
+		kube_config, _, err = kubeutil.checkKubeConfigAvail(kube_config, []string{to.Status.Ip}, DEFAULT_K8S_API_SERVER_PORT)
 		if err != nil {
 			//TODO: check the error type, and if is unauthorized then switch the status to failed.
 			return err
@@ -403,7 +410,7 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 		//Maybe because of cert not ready or other reasons.
 		for i := 0; i < len(devices); i++ {
 			dev := devices[i].(*module.DeviceObject)
-			if to.Status.Mode == 1 || dev.Status.Mode == 1 {
+			if to.Status.Mode == 1 && dev.Metadata.Name != to.Metadata.Name || dev.Status.Mode == 1 {
 				err = overlay_manager.SetupConnection(m, to, dev, DEVICETODEVICE, NameSpaceName, false)
 				if err != nil {
 					return err
