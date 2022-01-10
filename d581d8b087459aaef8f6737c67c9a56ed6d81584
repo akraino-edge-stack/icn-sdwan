@@ -22,6 +22,30 @@
       "revId": "d581d8b087459aaef8f6737c67c9a56ed6d81584",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3538caf7_69332885",
+        "filename": "central-controller/src/scc/pkg/manager/device_objectmanager.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-01-10T07:49:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a23ce928_036428c3",
+      "range": {
+        "startLine": 413,
+        "startChar": 3,
+        "endLine": 413,
+        "endChar": 90
+      },
+      "revId": "d581d8b087459aaef8f6737c67c9a56ed6d81584",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
