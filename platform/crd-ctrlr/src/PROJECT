@@ -46,4 +46,4 @@ resources:
 - group: batch
   kind: CNFRouteRule
   version: v1alpha1
-version: "2"
+version: "3"
