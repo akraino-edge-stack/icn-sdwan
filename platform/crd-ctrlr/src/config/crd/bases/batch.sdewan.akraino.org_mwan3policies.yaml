@@ -1,10 +1,10 @@
 
 ---
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.2.5
+    controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
   name: mwan3policies.batch.sdewan.akraino.org
 spec:
@@ -15,70 +15,69 @@ spec:
     plural: mwan3policies
     singular: mwan3policy
   scope: Namespaced
-  subresources:
-    status: {}
-  validation:
-    openAPIV3Schema:
-      description: Mwan3Policy is the Schema for the mwan3policies API
-      properties:
-        apiVersion:
-          description: 'APIVersion defines the versioned schema of this representation
-            of an object. Servers should convert recognized schemas to the latest
-            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-          type: string
-        kind:
-          description: 'Kind is a string value representing the REST resource this
-            object represents. Servers may infer this from the endpoint the client
-            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-          type: string
-        metadata:
-          type: object
-        spec:
-          properties:
-            members:
-              items:
-                description: Mwan3PolicySpec defines the desired state of Mwan3Policy
-                properties:
-                  metric:
-                    type: integer
-                  network:
-                    description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of
-                      cluster Important: Run "make" to regenerate code after modifying
-                      this file'
-                    type: string
-                  weight:
-                    type: integer
-                required:
-                - metric
-                - network
-                - weight
-                type: object
-              type: array
-          required:
-          - members
-          type: object
-        status:
-          description: status subsource used for Sdewan rule CRDs
-          properties:
-            appliedGeneration:
-              format: int64
-              type: integer
-            appliedTime:
-              format: date-time
-              type: string
-            message:
-              type: string
-            state:
-              type: string
-          required:
-          - state
-          type: object
-      type: object
-  version: v1alpha1
   versions:
   - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Mwan3Policy is the Schema for the mwan3policies API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              members:
+                items:
+                  description: Mwan3PolicySpec defines the desired state of Mwan3Policy
+                  properties:
+                    metric:
+                      type: integer
+                    network:
+                      description: 'INSERT ADDITIONAL SPEC FIELDS - desired state
+                        of cluster Important: Run "make" to regenerate code after
+                        modifying this file'
+                      type: string
+                    weight:
+                      type: integer
+                  required:
+                  - metric
+                  - network
+                  - weight
+                  type: object
+                type: array
+            required:
+            - members
+            type: object
+          status:
+            description: status subsource used for Sdewan rule CRDs
+            properties:
+              appliedGeneration:
+                format: int64
+                type: integer
+              appliedTime:
+                format: date-time
+                type: string
+              message:
+                type: string
+              state:
+                type: string
+            required:
+            - state
+            type: object
+        type: object
     served: true
     storage: true
+    subresources:
+      status: {}
 status:
   acceptedNames:
     kind: ""

@@ -6,7 +6,7 @@
 ###Install dependencies
 **1. Install cert-manager**
 
-`$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml`
+`$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml`
 
 **2. Create namespace for SDEWAN Overlay Controller Microservices**
 

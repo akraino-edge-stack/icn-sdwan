@@ -5,7 +5,7 @@ The installation has been verified on kubernetes v1.20.
 ## Pre-condition
 **1.Install cert-manager**
 
-`kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml`
+`kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml`
 
 **2.Label the node**
 
