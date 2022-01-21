@@ -66,7 +66,7 @@ func wildMatchArray(p []rune, pindex int, v []rune, vindex int) bool {
 	return true
 }
 
-// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfroutes;cnfrouterules;cnfservices;cnflocalservices;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org
+// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfroutes;cnfrouterules;cnfservices;cnflocalservices;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1,name=validate-sdewan-bucket.akraino.org,admissionReviewVersions=v1,sideEffects=none
 
 // bucketPermissionValidator validates Pods
 type bucketPermissionValidator struct {

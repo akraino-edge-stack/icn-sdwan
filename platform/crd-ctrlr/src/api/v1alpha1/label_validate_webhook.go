@@ -29,7 +29,7 @@ func SetupLabelValidateWebhookWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-// +kubebuilder:webhook:path=/validate-label,mutating=false,failurePolicy=fail,groups=apps;batch.sdewan.akraino.org,resources=deployments;mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfservices;cnfroutes;cnfrouterules;cnflocalservices;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=update,versions=v1;v1alpha1,name=validate-label.akraino.org
+// +kubebuilder:webhook:path=/validate-label,mutating=false,failurePolicy=fail,groups=apps;batch.sdewan.akraino.org,resources=deployments;mwan3policies;mwan3rules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfservices;cnfroutes;cnfrouterules;cnflocalservices;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=update,versions=v1,name=validate-label.akraino.org,admissionReviewVersions=v1,sideEffects=none
 
 type labelValidator struct {
 	Client  client.Client

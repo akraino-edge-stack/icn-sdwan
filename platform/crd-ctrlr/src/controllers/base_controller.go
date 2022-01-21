@@ -228,6 +228,7 @@ func net2iface(net string, deployment appsv1.Deployment) (string, error) {
 	return "", fmt.Errorf("No matched network in annotation: %s", net)
 }
 
+// +kubebuilder:rbac:groups="",resources=pods,verbs=get;watch;list
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch
 // +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;list;watch
 

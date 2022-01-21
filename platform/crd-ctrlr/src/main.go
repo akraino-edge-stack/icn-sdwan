@@ -39,8 +39,8 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var checkInterval int
-	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
-	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
+	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
+	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
 	flag.IntVar(&checkInterval, "check-interval", 30,
 		"The check interval of CRD Controller (seconds)")
