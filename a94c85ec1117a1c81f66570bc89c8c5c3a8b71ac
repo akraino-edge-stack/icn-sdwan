@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5f5930d_940b2dce",
+        "filename": "platform/crd-ctrlr/src/config/certmanager/certificate.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-01-25T03:00:22Z",
+      "side": 1,
+      "message": "remove extra space",
+      "range": {
+        "startLine": 1,
+        "startChar": 37,
+        "endLine": 1,
+        "endChar": 38
+      },
+      "revId": "a94c85ec1117a1c81f66570bc89c8c5c3a8b71ac",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0960a3fa_e311f2b5",
+        "filename": "platform/crd-ctrlr/src/config/crd/patches/cainjection_in_cnfrouterules.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-01-25T03:00:22Z",
+      "side": 1,
+      "message": "remove extra space",
+      "range": {
+        "startLine": 1,
+        "startChar": 37,
+        "endLine": 1,
+        "endChar": 38
+      },
+      "revId": "a94c85ec1117a1c81f66570bc89c8c5c3a8b71ac",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
