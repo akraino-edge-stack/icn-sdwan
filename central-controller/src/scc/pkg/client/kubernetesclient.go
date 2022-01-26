@@ -19,7 +19,7 @@ package client
 
 import (
 	certmanagerversioned "github.com/jetstack/cert-manager/pkg/client/clientset/versioned"
-	certmanagerv1beta1 "github.com/jetstack/cert-manager/pkg/client/clientset/versioned/typed/certmanager/v1beta1"
+	certmanagerv1 "github.com/jetstack/cert-manager/pkg/client/clientset/versioned/typed/certmanager/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -96,7 +96,7 @@ func (c *KubernetesClient) toRawKubeConfigLoader() clientcmd.ClientConfig {
 	return clientcmd.NewNonInteractiveDeferredLoadingClientConfig(loadingRules, configOverrides)
 }
 
-func (c *KubernetesClient) GetCMClients() (certmanagerv1beta1.CertmanagerV1beta1Interface, corev1.CoreV1Interface, error) {
+func (c *KubernetesClient) GetCMClients() (certmanagerv1.CertmanagerV1Interface, corev1.CoreV1Interface, error) {
 	config, err := c.ToRESTConfig()
 	if err != nil {
 		return nil, nil, err
@@ -112,7 +112,7 @@ func (c *KubernetesClient) GetCMClients() (certmanagerv1beta1.CertmanagerV1beta1
 		return nil, nil, err
 	}
 
-	return cmclientset.CertmanagerV1beta1(), k8sclientset.CoreV1(), nil
+	return cmclientset.CertmanagerV1(), k8sclientset.CoreV1(), nil
 }
 
 func (c *KubernetesClient) KubernetesClientSet() (*kubernetes.Clientset, error) {

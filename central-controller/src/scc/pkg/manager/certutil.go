@@ -19,9 +19,9 @@ package manager
 import (
 	"context"
 	kclient "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/client"
-	v1beta1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1beta1"
+	certv1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
-	certmanagerv1beta1 "github.com/jetstack/cert-manager/pkg/client/clientset/versioned/typed/certmanager/v1beta1"
+	certmanagerv1 "github.com/jetstack/cert-manager/pkg/client/clientset/versioned/typed/certmanager/v1"
 	pkgerrors "github.com/pkg/errors"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,7 +34,7 @@ import (
 const SELFSIGNEDCA = "sdewan-controller"
 
 type CertUtil struct {
-	client    certmanagerv1beta1.CertmanagerV1beta1Interface
+	client    certmanagerv1.CertmanagerV1Interface
 	k8sclient corev1.CoreV1Interface
 }
 
@@ -67,7 +67,7 @@ func (c *CertUtil) DeleteNamespace(name string) error {
 	return c.k8sclient.Namespaces().Delete(context.TODO(), name, metav1.DeleteOptions{})
 }
 
-func (c *CertUtil) GetIssuer(name string, namespace string) (*v1beta1.Issuer, error) {
+func (c *CertUtil) GetIssuer(name string, namespace string) (*certv1.Issuer, error) {
 	return c.client.Issuers(namespace).Get(context.TODO(), name, metav1.GetOptions{})
 }
 
@@ -75,39 +75,39 @@ func (c *CertUtil) DeleteIssuer(name string, namespace string) error {
 	return c.client.Issuers(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
 }
 
-func (c *CertUtil) CreateSelfSignedIssuer(name string, namespace string) (*v1beta1.Issuer, error) {
+func (c *CertUtil) CreateSelfSignedIssuer(name string, namespace string) (*certv1.Issuer, error) {
 	issuer, err := c.GetIssuer(name, namespace)
 	if err == nil {
 		return issuer, nil
 	}
 
 	// Not existing issuer, create a new one
-	return c.client.Issuers(namespace).Create(context.TODO(), &v1beta1.Issuer{
+	return c.client.Issuers(namespace).Create(context.TODO(), &certv1.Issuer{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
-		Spec: v1beta1.IssuerSpec{
-			IssuerConfig: v1beta1.IssuerConfig{
-				SelfSigned: &v1beta1.SelfSignedIssuer{},
+		Spec: certv1.IssuerSpec{
+			IssuerConfig: certv1.IssuerConfig{
+				SelfSigned: &certv1.SelfSignedIssuer{},
 			},
 		},
 	}, metav1.CreateOptions{})
 }
 
-func (c *CertUtil) CreateCAIssuer(name string, namespace string, caname string) (*v1beta1.Issuer, error) {
+func (c *CertUtil) CreateCAIssuer(name string, namespace string, caname string) (*certv1.Issuer, error) {
 	issuer, err := c.GetIssuer(name, namespace)
 	if err == nil {
 		return issuer, nil
 	}
 
 	// Not existing issuer, create a new one
-	return c.client.Issuers(namespace).Create(context.TODO(), &v1beta1.Issuer{
+	return c.client.Issuers(namespace).Create(context.TODO(), &certv1.Issuer{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
-		Spec: v1beta1.IssuerSpec{
-			IssuerConfig: v1beta1.IssuerConfig{
-				CA: &v1beta1.CAIssuer{
+		Spec: certv1.IssuerSpec{
+			IssuerConfig: certv1.IssuerConfig{
+				CA: &certv1.CAIssuer{
 					SecretName: c.GetCertSecretName(caname),
 				},
 			},
@@ -119,7 +119,7 @@ func (c *CertUtil) GetCertSecretName(name string) string {
 	return name + "-cert-secret"
 }
 
-func (c *CertUtil) GetCertificate(name string, namespace string) (*v1beta1.Certificate, error) {
+func (c *CertUtil) GetCertificate(name string, namespace string) (*certv1.Certificate, error) {
 	return c.client.Certificates(namespace).Get(context.TODO(), name, metav1.GetOptions{})
 }
 
@@ -127,7 +127,7 @@ func (c *CertUtil) DeleteCertificate(name string, namespace string) error {
 	return c.client.Certificates(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
 }
 
-func (c *CertUtil) CreateCertificate(name string, namespace string, issuer string, isCA bool) (*v1beta1.Certificate, error) {
+func (c *CertUtil) CreateCertificate(name string, namespace string, issuer string, isCA bool) (*certv1.Certificate, error) {
 	cert, err := c.GetCertificate(name, namespace)
 	if err == nil {
 		return cert, nil
@@ -135,11 +135,11 @@ func (c *CertUtil) CreateCertificate(name string, namespace string, issuer strin
 
 	// Not existing cert, create a new one
 	// Todo: add Duration, RenewBefore, DNSNames
-	cert, err = c.client.Certificates(namespace).Create(context.TODO(), &v1beta1.Certificate{
+	cert, err = c.client.Certificates(namespace).Create(context.TODO(), &certv1.Certificate{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
-		Spec: v1beta1.CertificateSpec{
+		Spec: certv1.CertificateSpec{
 			CommonName: name,
 			// Duration: duration,
 			// RenewBefore: renewBefore,
@@ -168,7 +168,7 @@ func (c *CertUtil) IsCertReady(name string, namespace string) bool {
 	err := wait.PollImmediate(time.Second, time.Second*20,
 		func() (bool, error) {
 			var err error
-			var crt *v1beta1.Certificate
+			var crt *certv1.Certificate
 			crt, err = c.GetCertificate(name, namespace)
 			if err != nil {
 				log.Println("Failed to find certificate " + name + ": " + err.Error())
@@ -176,7 +176,7 @@ func (c *CertUtil) IsCertReady(name string, namespace string) bool {
 			}
 			curConditions := crt.Status.Conditions
 			for _, cond := range curConditions {
-				if v1beta1.CertificateConditionReady == cond.Type && cmmeta.ConditionTrue == cond.Status {
+				if certv1.CertificateConditionReady == cond.Type && cmmeta.ConditionTrue == cond.Status {
 					return true, nil
 				}
 			}
