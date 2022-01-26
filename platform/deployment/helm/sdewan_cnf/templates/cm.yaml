@@ -50,7 +50,7 @@ data:
     if [ -f "/tmp/sdewan/account/password" ]; then
         echo "Changing password ..."
         pass=$(cat /tmp/sdewan/account/password)
-        echo root:$pass | chpasswd
+        echo root:$pass | chpasswd -m
     fi
 
     if [ -d "/tmp/sdewan/serving-certs/" ]; then

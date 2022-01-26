@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-FROM golang:1.14.1-alpine
+FROM golang:1.17-alpine
 
 RUN apk update \
     && apk add --no-cache make
@@ -18,7 +18,7 @@ RUN cd src/scc && make all
 RUN cd src/rsync && make all
 RUN cd src/monitor && make all
 
-FROM alpine:3.12
+FROM alpine:3.15
 
 WORKDIR /opt/scc
 RUN addgroup -S scc && adduser -S -G scc scc

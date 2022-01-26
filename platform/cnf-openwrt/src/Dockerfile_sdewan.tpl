@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2021 Intel Corporation
 
-FROM openwrtorg/rootfs:x86-64-openwrt-19.07
+FROM openwrtorg/rootfs:x86-64-openwrt-21.02
 
 #EXPOSE 80
 ENV http_proxy={docker_proxy}
