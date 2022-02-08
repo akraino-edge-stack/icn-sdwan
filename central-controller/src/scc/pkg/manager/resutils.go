@@ -439,7 +439,7 @@ func (d *ResUtil) Undeploy(overlay string) error {
 						resource.Status = 2
 						errMessage = errMessage + " " + resource.Resource.GetName()
 					} else {
-						// reset rewource status
+						// reset resource status
 						resource.Status = 1
 						resobj.Specification.Ref = 0
 						res_manager.DeleteObject(m)

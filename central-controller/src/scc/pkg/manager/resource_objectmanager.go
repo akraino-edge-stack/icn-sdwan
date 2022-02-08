@@ -59,6 +59,7 @@ func (c *ResourceObjectManager) CreateEmptyObject() module.ControllerObject {
 }
 
 func (c *ResourceObjectManager) GetStoreKey(m map[string]string, t module.ControllerObject, isCollection bool) (db.Key, error) {
+	// Currently no collections fetching supported
 	return ResourceObjectKey{
 		Cluster: m[OverlayResource] + "-" + m[DeviceResource],
 		Type:  m["Type"],
@@ -85,9 +86,7 @@ func (c *ResourceObjectManager) GetObject(m map[string]string) (module.Controlle
 }
 
 func (c *ResourceObjectManager) GetObjects(m map[string]string) ([]module.ControllerObject, error) {
-	// DB Operation
-	t, err := GetDBUtils().GetObjects(c, m)
-	return t, err
+	return []module.ControllerObject{}, pkgerrors.New("Not implemented")
 }
 
 func (c *ResourceObjectManager) UpdateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
