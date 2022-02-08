@@ -180,12 +180,15 @@ func (c *HubDeviceObjectManager) DeleteObject(m map[string]string) error {
 
 	if dev_obj.Status.DelegatedHub == hub_obj.Metadata.Name {
 		dev_obj.Status.DelegatedHub = ""
+		dev_manager.UpdateObject(m, dev_obj)
+
 		for i, item := range hub_obj.Status.DelegateDevices {
 			if item == dev_obj.Metadata.Name {
 				hub_obj.Status.DelegateDevices = append(hub_obj.Status.DelegateDevices[:i], hub_obj.Status.DelegateDevices[i+1:]...)
 				break
 			}
 		}
+		hub_manager.UpdateObject(m, hub_obj)
 	}
 
 	conn, err := conn_manager.GetObject(overlay_name,
