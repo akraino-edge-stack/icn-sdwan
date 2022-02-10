@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e84d5420_e6e830e8",
+        "filename": "platform/crd-ctrlr/src/controllers/base_controller.go",
+        "patchSetId": 3
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-02-10T06:33:40Z",
+      "side": 1,
+      "message": "Just curious, which one requires the secret resource?",
+      "range": {
+        "startLine": 232,
+        "startChar": 31,
+        "endLine": 232,
+        "endChar": 48
+      },
+      "revId": "36cf76d6df402d14a87e6445429b038651b0ce8a",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
