@@ -50,6 +50,12 @@ function check_nat(value)
         if value["dest"] == nil then
             return false, "dest is required for SNAT"
         end
+	if dest == "#source" then
+            dest = ifutil.get_name_by_ip(src_dip)
+            if dest == nil or dest == "" then
+              return false, "ip not found on all interfaces"
+            end
+        end
     end
 
     if target == "MASQUERADE" then
