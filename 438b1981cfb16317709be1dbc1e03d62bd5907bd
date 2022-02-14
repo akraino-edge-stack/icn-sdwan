@@ -22,6 +22,30 @@
       "revId": "438b1981cfb16317709be1dbc1e03d62bd5907bd",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f10dab5d_a5e48397",
+        "filename": "platform/cnf-openwrt/src/rest_v1/nat_rest.lua",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-02-14T02:16:15Z",
+      "side": 1,
+      "message": "\u003e Let\u0027s check whether the failure need return 428 (need retry as the interface may not ready at this time_\n\nIn my view, yes. We could apply 428 while returning executing the nat creation cmd.",
+      "parentUuid": "29234793_059e63ac",
+      "range": {
+        "startLine": 56,
+        "startChar": 28,
+        "endLine": 56,
+        "endChar": 60
+      },
+      "revId": "438b1981cfb16317709be1dbc1e03d62bd5907bd",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
     }
   ]
 }
