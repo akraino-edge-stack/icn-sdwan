@@ -2,15 +2,15 @@
 # Copyright (c) 2021 Intel Corporation
 
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: sdewan-serving-cert
   namespace: {{ .Values.namespace }}
 spec:
   dnsNames:
-  - sdewan-webhook-service.sdewan-system.svc
-  - sdewan-webhook-service.sdewan-system.svc.cluster.local
+  - sdewan-webhook-service.{{ .Values.namespace }}.svc
+  - sdewan-webhook-service.{{ .Values.namespace }}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: sdewan-selfsigned-issuer
