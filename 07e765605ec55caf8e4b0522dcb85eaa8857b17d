@@ -22,6 +22,30 @@
       "revId": "07e765605ec55caf8e4b0522dcb85eaa8857b17d",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3af9a8c7_1163800f",
+        "filename": "platform/deployment/helm/sdewan_controllers/templates/role.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-02-16T08:07:59Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "a9e3e40f_5bb5fe83",
+      "range": {
+        "startLine": 56,
+        "startChar": 2,
+        "endLine": 56,
+        "endChar": 11
+      },
+      "revId": "07e765605ec55caf8e4b0522dcb85eaa8857b17d",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     }
   ]
 }
