@@ -633,7 +633,7 @@ func (c *OverlayObjectManager) DeleteConnection(m map[string]string, conn module
 }
 
 func (c *OverlayObjectManager) DeleteConnections(m map[string]string, m1 module.ControllerObject) error {
-	//Get all connections related to the ControllerObject and do deletion^M
+	//Get all connections related to the ControllerObject and do deletion
 	conn_manager := GetConnectionManager()
 	overlay_name := m[OverlayResource]
 	conns, err := conn_manager.GetObjects(overlay_name, module.CreateEndName(m1.GetType(), m1.GetMetadata().Name))
