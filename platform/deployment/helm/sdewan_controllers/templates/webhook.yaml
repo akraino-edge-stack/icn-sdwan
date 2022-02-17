@@ -2,15 +2,16 @@
 # Copyright (c) 2021 Intel Corporation
 
 ---
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: {{ .Values.namespace }}/sdewan-serving-cert
   name: sdewan-validating-webhook-configuration
 webhooks:
-- clientConfig:
-    caBundle: Cg==
+- admissionReviewVersions:
+  - v1
+  clientConfig:
     service:
       name: sdewan-webhook-service
       namespace: {{ .Values.namespace }}
@@ -21,7 +22,7 @@ webhooks:
   - apiGroups:
     - batch.sdewan.akraino.org
     apiVersions:
-    - v1alpha1
+    - v1
     operations:
     - CREATE
     - UPDATE
@@ -44,8 +45,10 @@ webhooks:
     - ipsecproposals
     - ipsechosts
     - ipsecsites
-- clientConfig:
-    caBundle: Cg==
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
     service:
       name: sdewan-webhook-service
       namespace: {{ .Values.namespace }}
@@ -58,7 +61,6 @@ webhooks:
     - batch.sdewan.akraino.org
     apiVersions:
     - v1
-    - v1alpha1
     operations:
     - UPDATE
     resources:
@@ -71,12 +73,13 @@ webhooks:
     - firewallsnats
     - firewalldnats
     - cnfnats
+    - cnfservices
     - cnfroutes
     - cnfrouterules
-    - cnfservices
     - cnflocalservices
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals
     - ipsechosts
     - ipsecsites
+  sideEffects: None
