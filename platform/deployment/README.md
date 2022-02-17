@@ -31,10 +31,10 @@ metadata:
 spec:
   cniType: ovn4nfv
   ipv4Subnets:
-  - subnet: 10.10.20.1/24
+  - subnet: 10.10.70.1/24
     name: subnet
     gateway: 10.10.20.1/24
-    excludeIps: 10.10.20.2..10.10.20.9
+    excludeIps: 10.10.70.2 10.10.60.5..10.10.20.10
   providerNetType: VLAN
   vlan:
     logicalInterfaceName: eno1.100 // Change to your interface name
@@ -51,9 +51,9 @@ spec:
   # Add fields here
   cniType: ovn4nfv
   ipv4Subnets:
-  - subnet: 172.16.30.1/24
+  - subnet: 172.16.70.0/24
     name: subnet1
-    gateway: 172.16.30.1/24
+    gateway: 172.16.70.1/24
 ```
 - Update `helm/sdewan_cnf/values.yaml` to configure the network information
 
