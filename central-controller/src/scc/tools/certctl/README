@@ -1,0 +1,24 @@
+** README **
+
+[Aim]
+User can use certctl to fetch existing certificate, create certificate. It will
+also show the corresponding input needed for ipsec preconfiguration.
+
+
+[Build]
+go build -o certctl ./certctl.go
+
+
+[Usage]
+Usage of ./certctl:
+  -certName string
+        Certificate name to query
+  -ip string
+        SDEWAN Central Controller IP Address (default "10.233.117.240")
+  -overlay string
+        Overlay the cert belongs to
+  -port string
+        SDEWAN Central Controller Port Number (default "9015")
+
+Command:
+./certctl --ip <SDEWAN Controller IP> --port <SDEWAN Controller Port> --overlay <overlay name> --certName <certificate name>
