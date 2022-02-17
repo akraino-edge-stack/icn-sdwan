@@ -50,8 +50,8 @@ function check_nat(value)
         if value["dest"] == nil then
             return false, "dest is required for SNAT"
         end
-	if dest == "#source" then
-            dest = ifutil.get_name_by_ip(src_dip)
+	if value["dest"] == "#source" then
+            local dest = ifutil.get_name_by_ip(value["src_dip"])
             if dest == nil or dest == "" then
               return false, "428:ip not found on all interfaces"
             end
