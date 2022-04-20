@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3e520d0b_123ffee0",
+        "filename": "central-controller/deployments/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d4b3de1_8f2db700",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 49
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d418dcf8_85e55e71",
         "filename": "central-controller/deployments/kubernetes/scc_etcd.yaml",
         "patchSetId": 1
@@ -65,6 +89,48 @@
     },
     {
       "key": {
+        "uuid": "4748b66c_766b1469",
+        "filename": "central-controller/deployments/kubernetes/scc_etcd.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a7adfbe_32529a52",
+      "range": {
+        "startLine": 96,
+        "startChar": 23,
+        "endLine": 96,
+        "endChar": 31
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb1ad583_d7eb0348",
+        "filename": "central-controller/deployments/kubernetes/scc_etcd.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d418dcf8_85e55e71",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3662e4c1_49db4c02",
         "filename": "central-controller/src/monitor/Makefile",
         "patchSetId": 1
@@ -79,6 +145,24 @@
       "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02c1774c_0442bef6",
+        "filename": "central-controller/src/monitor/Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3662e4c1_49db4c02",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -105,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "0075aca3_f80c7c77",
+        "filename": "central-controller/src/monitor/Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f3c9d16_42ac3b9e",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 33
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0a42e1e_7f79c099",
         "filename": "central-controller/src/rsync/config.json",
         "patchSetId": 1
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "aa000dbe_9e4cca0f",
+        "filename": "central-controller/src/rsync/config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0a42e1e_7f79c099",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 21
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9db033f4_db17afc6",
         "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/k8sexp.go",
         "patchSetId": 1
@@ -142,6 +274,24 @@
       "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d15282df_5980230c",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/k8sexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9db033f4_db17afc6",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -162,6 +312,24 @@
     },
     {
       "key": {
+        "uuid": "0503c08e_21db7407",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db9653cb_c9d93b32",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "117d4216_a9962fec",
         "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
         "patchSetId": 1
@@ -176,6 +344,24 @@
       "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67fba47b_7de269e4",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "117d4216_a9962fec",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
@@ -196,6 +382,24 @@
     },
     {
       "key": {
+        "uuid": "e744cc27_f8b029ae",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "170ddb9b_eedcb4ea",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a8eca36_f580ba10",
         "filename": "central-controller/src/scc/api/api.go",
         "patchSetId": 1
@@ -213,6 +417,24 @@
     },
     {
       "key": {
+        "uuid": "de564e97_65720379",
+        "filename": "central-controller/src/scc/api/api.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a8eca36_f580ba10",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "27b30baa_591f9320",
         "filename": "central-controller/src/scc/pkg/manager/clustersync_objectmanager.go",
         "patchSetId": 1
@@ -227,6 +449,24 @@
       "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3814ae69_a7b9dee3",
+        "filename": "central-controller/src/scc/pkg/manager/clustersync_objectmanager.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-04-20T11:22:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "27b30baa_591f9320",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": false
     },
     {
       "key": {
