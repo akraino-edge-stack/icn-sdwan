@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d418dcf8_85e55e71",
+        "filename": "central-controller/deployments/kubernetes/scc_etcd.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "Please remove white space here.",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3662e4c1_49db4c02",
+        "filename": "central-controller/src/monitor/Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "Please format the makefile.",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9db033f4_db17afc6",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/k8sexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db9653cb_c9d93b32",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "117d4216_a9962fec",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "170ddb9b_eedcb4ea",
+        "filename": "central-controller/src/rsync/pkg/plugins/k8sexp/resourcesexp.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a8eca36_f580ba10",
+        "filename": "central-controller/src/scc/api/api.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "please fix indent",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27b30baa_591f9320",
+        "filename": "central-controller/src/scc/pkg/manager/clustersync_objectmanager.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "remove space and run go fmt",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a69ab370_1adb32a0",
+        "filename": "central-controller/src/scc/pkg/manager/devicesite_objectmanager.go",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 1,
+      "message": "please run go fmt for these go files.",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}

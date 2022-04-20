@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f80db024_50d33f3b",
+        "filename": "central-controller/src/monitor/LICENSE.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 321
+      },
+      "writtenOn": "2022-04-20T07:06:52Z",
+      "side": 0,
+      "message": "Do we need to delete this License?",
+      "revId": "5ea1a96bdf5832b7af2ba7ed817fba6b9b7dabbc",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
