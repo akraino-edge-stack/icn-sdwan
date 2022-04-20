@@ -18,6 +18,7 @@ package module
 
 import (
 	"log"
+	"strings"
 )
 
 type states struct {
@@ -35,9 +36,9 @@ var StateEnum = &states{
 }
 
 type ConnectionResource struct {
-	ConnObject  string  `json:"-"`
-	Name	    string  `json:"-"`
-	Type        string  `json:"-"`
+	ConnObject string `json:"-"`
+	Name       string `json:"-"`
+	Type       string `json:"-"`
 }
 
 type ConnectionObject struct {
@@ -47,18 +48,18 @@ type ConnectionObject struct {
 
 //ConnectionInfo contains the connection information
 type ConnectionInfo struct {
-	End1         ConnectionEnd `json:"end1"`
-	End2         ConnectionEnd `json:"end2"`
+	End1         ConnectionEnd        `json:"end1"`
+	End2         ConnectionEnd        `json:"end2"`
 	Resources    []ConnectionResource `json:"-"`
-	State        string        `json:"state"`
-	ErrorMessage string        `json:"message"`
+	State        string               `json:"state"`
+	ErrorMessage string               `json:"message"`
 }
 
 type ConnectionEnd struct {
-	Name        string   `json:"name"`
-	Type        string   `json:"type"`
-	IP          string   `json:"ip"`
-	ConnObject  string   `json:"-"`
+	Name       string `json:"name"`
+	Type       string `json:"type"`
+	IP         string `json:"ip"`
+	ConnObject string `json:"-"`
 }
 
 func (c *ConnectionObject) GetMetadata() ObjectMetaData {
@@ -83,6 +84,15 @@ func (c *ConnectionObject) GetPeer(t string, n string) (string, string, string) 
 	return "", "", ""
 }
 
+func ParseEndName(name string) (string, string) {
+	s := strings.SplitN(name, ".", 2)
+	if len(s) == 2 {
+		return s[0], s[1]
+	}
+
+	return "Hub", name
+}
+
 func CreateEndName(t string, n string) string {
 	return t + "." + n
 }
@@ -95,10 +105,10 @@ func NewConnectionEnd(conn_obj ControllerObject, ip string) ConnectionEnd {
 	obj_str, err := GetObjectBuilder().ToString(conn_obj)
 	if err == nil {
 		return ConnectionEnd{
-			Name:        CreateEndName(conn_obj.GetType(), conn_obj.GetMetadata().Name),
-			Type:        conn_obj.GetType(),
-			IP:          ip,
-			ConnObject:  obj_str,
+			Name:       CreateEndName(conn_obj.GetType(), conn_obj.GetMetadata().Name),
+			Type:       conn_obj.GetType(),
+			IP:         ip,
+			ConnObject: obj_str,
 		}
 	} else {
 		log.Println(err)

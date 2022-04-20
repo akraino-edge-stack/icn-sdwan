@@ -21,14 +21,14 @@ import (
 	"io"
 
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 )
 
 type ResourceObjectKey struct {
 	Cluster string `json:"cluster-info"`
-	Type	string `json:"type"`
-	Name	string `json:"name"`
+	Type    string `json:"type"`
+	Name    string `json:"name"`
 }
 
 // ResourceObjectManager implements the ControllerObjectManager
@@ -63,8 +63,8 @@ func (c *ResourceObjectManager) GetStoreKey(m map[string]string, t module.Contro
 	// Currently no collections fetching supported
 	return ResourceObjectKey{
 		Cluster: m[OverlayResource] + "-" + m[DeviceResource],
-		Type:  m["Type"],
-		Name:  m["Name"],
+		Type:    m["Type"],
+		Name:    m["Name"],
 	}, nil
 }
 

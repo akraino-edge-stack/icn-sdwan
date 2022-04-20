@@ -134,6 +134,14 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "CNFNAT")
 		os.Exit(1)
 	}
+	if err = (&controllers.NetworkFirewallRuleReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("NetworkFirewallRule"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "NetworkFirewallRule")
+		os.Exit(1)
+	}
 	if err = (&controllers.FirewallZoneReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("FirewallZone"),
@@ -209,9 +217,10 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&controllers.CNFServiceReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("CNFService"),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Log:           ctrl.Log.WithName("controllers").WithName("CNFService"),
+		CheckInterval: time.Duration(checkInterval) * time.Second,
+		Scheme:        mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "CNFService")
 		os.Exit(1)
@@ -247,6 +256,15 @@ func main() {
 		Scheme:        mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "CNFLocalService")
+		os.Exit(1)
+	}
+	if err = (&controllers.CNFHubSiteReconciler{
+		Client:        mgr.GetClient(),
+		Log:           ctrl.Log.WithName("controllers").WithName("CNFHubSite"),
+		CheckInterval: time.Duration(checkInterval) * time.Second,
+		Scheme:        mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "CNFHubSite")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

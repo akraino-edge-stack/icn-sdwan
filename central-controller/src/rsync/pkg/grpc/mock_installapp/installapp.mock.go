@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	installapp "github.com/open-ness/EMCO/src/rsync/pkg/grpc/installapp"
+	installapp "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/installapp"
 	grpc "google.golang.org/grpc"
 )
 

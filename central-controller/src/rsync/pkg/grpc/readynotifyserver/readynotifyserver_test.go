@@ -10,8 +10,24 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotify"
+	pb "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/readynotify"
+	"google.golang.org/grpc/metadata"
 )
+
+type mockReadyNotify_AlertServer struct {
+}
+
+func (x mockReadyNotify_AlertServer) Send(m *pb.Notification) error { return nil }
+func (x mockReadyNotify_AlertServer) SetHeader(metadata.MD) error   { return nil }
+func (x mockReadyNotify_AlertServer) SendHeader(metadata.MD) error  { return nil }
+func (x mockReadyNotify_AlertServer) SetTrailer(metadata.MD)        {}
+func (x mockReadyNotify_AlertServer) Context() context.Context {
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Millisecond)
+	defer cancel()
+	return ctx
+}
+func (x mockReadyNotify_AlertServer) SendMsg(m interface{}) error { return nil }
+func (x mockReadyNotify_AlertServer) RecvMsg(m interface{}) error { return nil }
 
 func Test_readyNotifyServer_Alert(t *testing.T) {
 	type fields struct {
@@ -47,7 +63,7 @@ func Test_readyNotifyServer_Alert(t *testing.T) {
 					ClientName: "dtc",
 					AppContext: "123345",
 				},
-				stream: nil,
+				stream: mockReadyNotify_AlertServer{},
 			},
 			wantErr: false,
 		},
@@ -65,7 +81,7 @@ func Test_readyNotifyServer_Alert(t *testing.T) {
 					ClientName: "dtc",
 					AppContext: "123345",
 				},
-				stream: nil,
+				stream: mockReadyNotify_AlertServer{},
 			},
 			wantErr: false,
 		},

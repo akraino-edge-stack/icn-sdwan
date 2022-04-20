@@ -26,13 +26,13 @@ import (
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/api"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/manager"
 	"github.com/gorilla/handlers"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/auth"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/config"
-	contextDb "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/contextdb"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
-	logs "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
-	controller "github.com/open-ness/EMCO/src/orchestrator/pkg/module/controller"
-	mtypes "github.com/open-ness/EMCO/src/orchestrator/pkg/module/types"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/auth"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/config"
+	contextDb "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/contextdb"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
+	logs "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
+	controller "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/controller"
+	mtypes "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/types"
 
 	rconfig "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/infra/config"
 )
@@ -97,7 +97,7 @@ func main() {
 		})
 	}
 
-	client := controller.NewControllerClient()
+	client := controller.NewControllerClient("resources", "data", "orchestrator")
 
 	// Create or update the controller entry
 	rsync_port, _ := strconv.Atoi(rconfig.GetConfiguration().RsyncPort)
@@ -121,7 +121,7 @@ func main() {
 	}
 
 	// create http server
-	httpRouter := api.NewRouter(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	httpRouter := api.NewRouter(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	loggedRouter := handlers.LoggingHandler(os.Stdout, httpRouter)
 	log.Println("Starting SDEWAN Central Controller API")
 

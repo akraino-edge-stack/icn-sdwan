@@ -17,11 +17,11 @@
 package resource
 
 type RouteResource struct {
-	Name    string
-	Destination       string
-	Gateway string
-	Device       string
-	Table    string
+	Name        string
+	Destination string
+	Gateway     string
+	Device      string
+	Table       string
 }
 
 func (c *RouteResource) GetName() string {
@@ -46,11 +46,11 @@ spec:
   dev: "` + c.Device + `"
   table: ` + c.Table
 
-       if c.Gateway != "" {
-	       basic += `
+	if c.Gateway != "" {
+		basic += `
   gw: ` + c.Gateway
-  }
-       return basic
+	}
+	return basic
 }
 
 func init() {

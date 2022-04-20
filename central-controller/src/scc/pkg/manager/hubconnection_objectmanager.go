@@ -19,8 +19,8 @@ package manager
 import (
 	"encoding/json"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	"io"
 )
 
@@ -142,7 +142,7 @@ func (c *HubConnObjectManager) GetConnectedDevices(overlay_name string, hub_name
 		// get peer end's type and name
 		t, n, ip := co.GetPeer("Hub", hub_name)
 		if t == "Device" {
-			device_names = append(device_names, n + ".." + ip)
+			device_names = append(device_names, n+".."+ip)
 		}
 	}
 	return device_names, nil

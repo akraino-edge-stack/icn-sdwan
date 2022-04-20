@@ -6,7 +6,7 @@ export GO111MODULE=on
 all: clean
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 	go build -a -ldflags '-extldflags "-static"' \
-	-o ./monitor ./cmd/manager/main.go
+	-o ./monitor main.go
 
 build: clean test cover
 deploy: build
@@ -19,7 +19,7 @@ format:
 	@go fmt ./...
 
 clean:
-	@rm -f monitor
+	@rm -f ./monitor
 
 .PHONY: cover
 cover:

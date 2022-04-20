@@ -19,8 +19,8 @@ package resource
 import ()
 
 type EmptyResource struct {
-	Name     string
-	Type     string
+	Name string
+	Type string
 }
 
 func (c *EmptyResource) GetName() string {

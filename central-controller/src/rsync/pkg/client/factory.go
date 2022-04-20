@@ -37,7 +37,9 @@ type factory struct {
 	KubeConfig            string
 	Context               string
 	initOpenAPIGetterOnce sync.Once
-	openAPIGetter         openapi.Getter
+	openAPIGetter         *openapi.CachedOpenAPIGetter
+	openAPIParser         *openapi.CachedOpenAPIParser
+	parser                sync.Once
 }
 
 // If multiple clients are created, this sync.once make sure the CRDs are added
@@ -265,6 +267,12 @@ func (f *factory) OpenAPISchema() (openapi.Resources, error) {
 		f.openAPIGetter = openapi.NewOpenAPIGetter(discovery)
 	})
 
-	// Delegate to the OpenAPIGetter
-	return f.openAPIGetter.Get()
+	// Lazily initialize the OpenAPIParser once
+	f.parser.Do(func() {
+		// Create the caching OpenAPIParser
+		f.openAPIParser = openapi.NewOpenAPIParser(f.openAPIGetter)
+	})
+
+	// Delegate to the OpenAPIPArser
+	return f.openAPIParser.Parse()
 }

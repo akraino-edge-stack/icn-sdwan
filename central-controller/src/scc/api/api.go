@@ -70,7 +70,9 @@ func NewRouter(
 	deviceCNFObjectClient manager.ControllerObjectManager,
 	ipRangeObjectClient manager.ControllerObjectManager,
 	providerIpRangeObjectClient manager.ControllerObjectManager,
-	certificateObjectClient manager.ControllerObjectManager) *mux.Router {
+	certificateObjectClient manager.ControllerObjectManager,
+	deviceSiteObjectClient manager.ControllerObjectManager,
+	clusterSyncObjectClient manager.ControllerObjectManager) *mux.Router {
 
 	router := mux.NewRouter()
 	ver := "v1"
@@ -146,6 +148,13 @@ func NewRouter(
 	mgrset.DeviceCNF = deviceCNFObjectClient.(*manager.CNFObjectManager)
 	createHandlerMapping(deviceCNFObjectClient, devRouter, manager.CNFCollection, manager.CNFResource)
 
+	// device-site API
+	if deviceSiteObjectClient == nil {
+		deviceSiteObjectClient = manager.NewDeviceSiteObjectManager()
+	}
+	mgrset.DeviceSite = deviceSiteObjectClient.(*manager.DeviceSiteObjectManager)
+	createHandlerMapping(deviceSiteObjectClient, devRouter, manager.SiteCollection, manager.SiteResource)
+
 	// provider iprange API
 	if providerIpRangeObjectClient == nil {
 		providerIpRangeObjectClient = manager.NewIPRangeObjectManager(true)
@@ -167,6 +176,13 @@ func NewRouter(
 	mgrset.Cert = certificateObjectClient.(*manager.CertificateObjectManager)
 	createHandlerMapping(certificateObjectClient, olRouter, manager.CertCollection, manager.CertResource)
 
+	// cluster-sync-objects API
+	if clusterSyncObjectClient == nil {
+		clusterSyncObjectClient = manager.NewClusterSyncObjectManager()
+	}
+	mgrset.ClusterSync = clusterSyncObjectClient.(*manager.ClusterSyncObjectManager)
+	createHandlerMapping(clusterSyncObjectClient, olRouter, manager.ClusterSyncCollection, manager.ClusterSyncResource)
+
 	// create resource object manager
 	mgrset.Resource = manager.NewResourceObjectManager()
 
@@ -176,6 +192,7 @@ func NewRouter(
 	overlayObjectClient.AddOwnResManager(deviceObjectClient)
 	overlayObjectClient.AddOwnResManager(ipRangeObjectClient)
 	overlayObjectClient.AddOwnResManager(certificateObjectClient)
+	overlayObjectClient.AddOwnResManager(clusterSyncObjectClient)
 	hubObjectClient.AddOwnResManager(hubDeviceObjectClient)
 	deviceObjectClient.AddOwnResManager(hubDeviceObjectClient)
 
@@ -184,11 +201,13 @@ func NewRouter(
 	deviceObjectClient.AddDepResManager(overlayObjectClient)
 	ipRangeObjectClient.AddDepResManager(overlayObjectClient)
 	certificateObjectClient.AddDepResManager(overlayObjectClient)
+	clusterSyncObjectClient.AddDepResManager(overlayObjectClient)
 	hubDeviceObjectClient.AddDepResManager(hubObjectClient)
 	hubConnObjectClient.AddDepResManager(hubObjectClient)
 	deviceConnObjectClient.AddDepResManager(deviceObjectClient)
 	hubCNFObjectClient.AddDepResManager(hubObjectClient)
 	deviceCNFObjectClient.AddDepResManager(deviceObjectClient)
+	deviceSiteObjectClient.AddDepResManager(deviceObjectClient)
 
 	return router
 }

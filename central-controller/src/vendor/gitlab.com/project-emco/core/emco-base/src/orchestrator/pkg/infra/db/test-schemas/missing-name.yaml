@@ -1,0 +1,4 @@
+resources:
+  - name: provider
+  - name: clusterLabel
+    parent: cluster

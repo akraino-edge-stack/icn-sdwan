@@ -32,7 +32,7 @@ type DeviceObjectSpec struct {
 	UseHub4Internet      bool     `json:"useHub4Internet"`
 	DedicatedSFC         bool     `json:"dedicatedSFC"`
 	CertificateId        string   `json:"certificateId"`
-	KubeConfig           string   `json:"kubeConfig"`
+	KubeConfig           string   `json:"kubeConfig" encrypted:""`
 }
 
 // DeviceObjectStatus
@@ -46,7 +46,7 @@ type DeviceObjectStatus struct {
 	// DataIps saves the overlay ips assigned for different traffic tunnel
 	DataIps map[string]string
 	// Status Data
-	Data map[string]string
+	Data         map[string]string
 	DelegatedHub string
 }
 

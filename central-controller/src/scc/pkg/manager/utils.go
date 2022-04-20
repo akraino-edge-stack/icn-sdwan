@@ -26,3 +26,7 @@ func format_resource_name(name1 string, name2 string) string {
 
 	return strings.ToLower(name1 + name2)
 }
+
+func format_ip_as_suffix(ip string) string {
+	return "_" + strings.Replace(ip, ".", "", -1)
+}

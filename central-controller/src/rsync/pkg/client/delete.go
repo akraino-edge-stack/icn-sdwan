@@ -33,12 +33,12 @@ func (c *Client) DeleteResource(r *resource.Result) error {
 	if err := r.Err(); err != nil {
 		return err
 	}
-	return r.Visit(delete)
+	return r.Visit(deleteResource)
 }
 
-func delete(info *resource.Info, err error) error {
+func deleteResource(info *resource.Info, err error) error {
 	if err != nil {
-		return failedTo("delete", info, err)
+		return failedTo("deleteResource", info, err)
 	}
 
 	// TODO: Background or Foreground?

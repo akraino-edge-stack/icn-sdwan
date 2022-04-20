@@ -8,6 +8,7 @@ function index()
     entry({"sdewan", ver}, call("help")).dependent = false
     entry({"sdewan", "mwan3", ver}, call("help")).dependent = false
     entry({"sdewan", "firewall", ver}, call("help")).dependent = false
+    entry({"sdewan", "networkfirewall", ver}, call("help")).dependent = false
     entry({"sdewan", "ipsec", ver}, call("help")).dependent = false
     entry({"sdewan", "service", ver}, call("help")).dependent = false
     entry({"sdewan", "application", ver}, call("help")).dependent = false

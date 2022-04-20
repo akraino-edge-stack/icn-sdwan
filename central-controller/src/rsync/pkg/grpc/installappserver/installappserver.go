@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"log"
 
-	con "github.com/open-ness/EMCO/src/rsync/pkg/context"
-	"github.com/open-ness/EMCO/src/rsync/pkg/grpc/installapp"
+	con "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/context"
+	"gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/installapp"
 )
 
 type installappServer struct {

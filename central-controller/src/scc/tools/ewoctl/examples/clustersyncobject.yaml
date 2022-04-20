@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Intel Corporation
+
+# creating overlay1
+version: ewo/v1
+resourceContext:
+  anchor: overlays
+metadata:
+  name: overlay1
+  description: 
+  userData1: 
+  userData2: 
+
+---
+# creating cluster-sync-obj
+version: ewo/v1
+resourceContext:
+  anchor: overlays/overlay1/cluster-sync-objects
+metadata:
+  name: cso1
+  description: 
+  userData1: 
+  userData2: 
+spec:
+  kv:
+    - key1: value1
+    - key2: value2
+    - key3: value3 
+
+---
+# creating cluster-sync-obj
+version: ewo/v1
+resourceContext:
+  anchor: overlays/overlay1/cluster-sync-objects
+metadata:
+  name: cso2
+  description: 
+  userData1: 
+  userData2: 
+spec:
+  kv:
+    - gitType: github
+    - user: user1
+    - token: xxx
+    - repoUrl: https://github.com/org1/myRepo
+    - branch: main 

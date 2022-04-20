@@ -18,16 +18,16 @@ package module
 
 // App contains metadata for Apps
 type ResourceObject struct {
-	Metadata      ObjectMetaData    `json:"metadata"`
+	Metadata      ObjectMetaData     `json:"metadata"`
 	Specification ResourceObjectSpec `json:"spec"`
 }
 
 //ResourceObjectSpec contains the parameters
 type ResourceObjectSpec struct {
-	Hash             string   `json:"hash"`
-	Ref		         int      `json:"ref"`
-	ContextId		 string      `json:"cid"`
-	Status   		 string      `json:"status"`
+	Hash      string `json:"hash"`
+	Ref       int    `json:"ref"`
+	ContextId string `json:"cid"`
+	Status    string `json:"status"`
 }
 
 func (c *ResourceObject) GetMetadata() ObjectMetaData {

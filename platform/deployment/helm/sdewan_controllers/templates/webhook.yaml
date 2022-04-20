@@ -45,6 +45,8 @@ webhooks:
     - ipsecproposals
     - ipsechosts
     - ipsecsites
+    - networkfirewallrules
+    - cnfhubsites
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -64,7 +66,6 @@ webhooks:
     operations:
     - UPDATE
     resources:
-    - deployments
     - mwan3policies
     - mwan3rules
     - firewallzones
@@ -82,4 +83,6 @@ webhooks:
     - ipsecproposals
     - ipsechosts
     - ipsecsites
+    - cnfhubsites
+    - networkfirewallrules
   sideEffects: None

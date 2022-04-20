@@ -6,7 +6,7 @@ package client
 import (
 	"context"
 
-	log "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
+	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

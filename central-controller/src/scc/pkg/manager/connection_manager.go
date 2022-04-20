@@ -19,8 +19,8 @@ package manager
 import (
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	"log"
 )
 
@@ -214,6 +214,25 @@ func (c *ConnectionManager) DeleteObject(overlay string, key1 string, key2 strin
 	err := db.DBconn.Remove(c.GetStoreName(), key)
 	if err != nil {
 		return pkgerrors.Wrap(err, "Delete Object")
+	}
+
+	// Delete HubSite resource if required
+	t1, n1 := module.ParseEndName(key1)
+	t2, n2 := module.ParseEndName(key2)
+	hub_name := ""
+	dev_name := ""
+	if t1 == "Hub" && t2 == "Device" {
+		hub_name = n1
+		dev_name = n2
+	}
+	if t1 == "Device" && t2 == "Hub" {
+		hub_name = n2
+		dev_name = n1
+	}
+
+	if hub_name != "" && dev_name != "" {
+		ds_manager := GetManagerset().DeviceSite
+		ds_manager.TryDeleteSite(overlay, hub_name, dev_name)
 	}
 
 	return err

@@ -19,9 +19,10 @@ package manager
 import (
 	"encoding/json"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	"io"
+	"strings"
 )
 
 type DeviceConnObjectKey struct {
@@ -123,4 +124,41 @@ func (c *DeviceConnObjectManager) UpdateObject(m map[string]string, t module.Con
 
 func (c *DeviceConnObjectManager) DeleteObject(m map[string]string) error {
 	return pkgerrors.New("Not implemented")
+}
+
+func (c *DeviceConnObjectManager) GetConnectedHubs(overlay_name string, device_name string) ([]string, error) {
+	m := make(map[string]string)
+	m[OverlayResource] = overlay_name
+	m[DeviceResource] = device_name
+
+	// get all connections
+	cs, err := c.GetObjects(m)
+	if err != nil {
+		return []string{}, err
+	}
+
+	var hub_names []string
+	for _, c := range cs {
+		co := c.(*module.ConnectionObject)
+		// get peer end's type and name
+		t, n, ip := co.GetPeer("Device", device_name)
+		if t == "Hub" {
+			hub_names = append(hub_names, n+".."+ip)
+		}
+	}
+	return hub_names, nil
+}
+
+func (c *DeviceConnObjectManager) IsConnectedHub(overlay_name string, device_name string, hub string) bool {
+	hub_names, _ := c.GetConnectedHubs(overlay_name, device_name)
+	for _, hub_name := range hub_names {
+		strs := strings.SplitN(hub_name, "..", 2)
+		if len(strs) == 2 {
+			if hub == strings.Replace(strs[0], "Hub.", "", 1) {
+				return true
+			}
+		}
+	}
+
+	return false
 }

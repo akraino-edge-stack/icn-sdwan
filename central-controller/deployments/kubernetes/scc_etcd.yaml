@@ -1,0 +1,96 @@
+# Resources to create context Databases used by SDEWAN Central Controller v1 Microservices
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: etcd-init
+  labels:
+    app: etcd
+data:
+  etcd-setup.sh: |
+    until etcdctl version
+    do
+      sleep 1
+    done
+    etcdctl user add "$CONTEXTDB_ROOT_USERNAME":"$CONTEXTDB_ROOT_PASSWORD"
+    etcdctl user grant-role "$ETCD_ROOT_USER" root
+    etcdctl role add emcorole
+    etcdctl role grant-permission --prefix=true  emcorole readwrite '/context/'
+    etcdctl role grant-permission --prefix=true  emcorole readwrite '/activecontext/'
+    etcdctl user add "$CONTEXTDB_EMCO_USERNAME":"$CONTEXTDB_EMCO_PASSWORD"
+    etcdctl user grant-role "$CONTEXTDB_EMCO_USERNAME" emcorole
+    etcdctl auth enable
+
+---
+# Etcd Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: etcd
+  name: etcd
+spec:
+  ports:
+  - name: "2379"
+    port: 2379
+    targetPort: 2379
+  - name: "2380"
+    port: 2380
+    targetPort: 2380
+  selector:
+    app: etcd
+
+---
+#Etcd Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etcd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etcd
+  template:
+    metadata:
+      labels:
+        app: etcd
+    spec:
+      containers:
+      - image: bitnami/etcd:3
+        imagePullPolicy: IfNotPresent
+        name: etcd
+        env:
+          - name: "ALLOW_NONE_AUTHENTICATION"
+            value: "yes"
+          - name: CONTEXTDB_EMCO_USERNAME
+            value: "scc"
+          - name: CONTEXTDB_EMCO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: etcd-secret
+                key: userPassword
+          - name: CONTEXTDB_ROOT_USERNAME
+            value: "root"
+          - name: CONTEXTDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: etcd-secret
+                key: rootPassword
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - /tmp/etcd-setup.sh
+        volumeMounts:
+        - mountPath: /tmp
+          name: etcd-init
+        ports:
+        - containerPort: 2379
+        - containerPort: 2380
+      volumes:
+      - configMap:
+          defaultMode: 511
+          name: etcd-init
+        name: etcd-init 

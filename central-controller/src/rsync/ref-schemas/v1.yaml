@@ -1,0 +1,129 @@
+name: emco-base
+resources:
+#emco-clm
+  - name: clusterProvider
+  - name: cluster
+    parent: clusterProvider
+  - name: clusterLabel
+    parent: cluster
+  - name: clusterKv
+    parent: cluster
+  - name: clusterSyncObject
+    parent: clusterProvider
+#emco-dcm
+  - name: logicalCloud
+    parent: project
+  - name: clusterReference
+    parent: logicalCloud
+    references:
+      - name: cluster
+  - name: clusterQuota
+    parent: logicalCloud
+  - name: logicalCloudKv
+    parent: logicalCloud
+  - name: userPermission
+    parent: logicalCloud
+#emco-dtc
+  - name: trafficGroupIntent
+    parent: deploymentIntentGroup
+  - name: inboundServerIntent
+    parent: trafficGroupIntent
+    references:
+      - name: app
+  - name: inboundClientsIntent
+    parent: inboundServerIntent
+    references:
+      - name: app
+#emco-gac
+  - name: genericK8sIntent
+    parent: deploymentIntentGroup
+  - name: genericResource
+    parent: genericK8sIntent
+    references:
+      - name: app
+  - name: customization
+    parent: genericResource
+    references:
+      - name: cluster
+#emco-hpa-plc
+  - name: hpaIntent
+    parent: deploymentIntentGroup
+    references:
+      - name: app
+  - name: hpaConsumer
+    parent: hpaIntent
+  - name: hpaResource
+    parent: hpaConsumer
+#emco-ncm
+  - name: providerNetwork
+    parent: cluster
+  - name: network
+    parent: cluster
+#emco-orchestrator
+  - name: controllerGroup.controller
+  - name: project
+  - name: compositeApp.compositeAppVersion
+    parent: project
+  - name: app
+    parent: compositeAppVersion
+  - name: compositeProfile
+    parent: compositeAppVersion
+  - name: appProfile
+    parent: compositeProfile
+    references:
+      - name: app
+  - name: deploymentIntentGroup
+    parent: compositeAppVersion
+    references:
+      - name: logicalCloud
+      - name: compositeProfile
+  - name: groupIntent
+    parent: deploymentIntentGroup
+    references:
+      - name: controller
+        type: map
+        map: intent
+        fixedKv:
+          controllerGroup: orchestrator
+        filterKeys:
+          - genericPlacementIntent
+  - name: genericPlacementIntent
+    parent: deploymentIntentGroup
+  - name: genericAppPlacementIntent
+    parent: genericPlacementIntent
+    references:
+      - name: app
+      - name: cluster
+        type: many
+  - name: appDependency
+    parent: app
+#emco-ovnaction
+  - name: netControllerIntent
+    parent: deploymentIntentGroup
+  - name: workloadIntent
+    parent: netControllerIntent
+    references:
+      - name: app
+  - name: interfaceIntent
+    parent: workloadIntent
+#emco-sfc
+  - name: sfcIntent
+    parent: deploymentIntentGroup
+  - name: sfcLink
+    parent: sfcIntent
+    references:
+      - name: app
+  - name: sfcClientSelector
+    parent: sfcIntent
+  - name: sfcProviderNetwork
+    parent: sfcIntent
+#emco-sfc-client
+  - name: sfcClientIntent
+    parent: deploymentIntentGroup
+    references:
+      - name: sfcIntent
+      - name: app
+        commonKey: compositeAppVersion
+#emco-workflowmgr
+  - name: workflowIntent
+    parent: deploymentIntentGroup

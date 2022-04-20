@@ -4,8 +4,9 @@
 package db
 
 import (
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
-	log "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
+	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
+	mtypes "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/types"
 
 	pkgerrors "github.com/pkg/errors"
 )
@@ -14,36 +15,59 @@ type clientDbInfo struct {
 	storeName    string // name of the mongodb collection to use for client documents
 	tagNamespace string // attribute key name for the namespace section of a CloudConfig
 	tagConfig    string // attribute key name for the kubeconfig section of a CloudConfig
+	tagMeta      string // attribute key name for the GitOps related Objects
 }
 
 // ClusterKey is the key structure that is used in the database
 type CloudConfigKey struct {
-	Provider  string `json:"provider"`
-	Cluster   string `json:"cluster"`
+	Provider  string `json:"cloudConfigClusterProvider"`
+	Cluster   string `json:"cloudConfigCluster"`
 	Level     string `json:"level"`
 	Namespace string `json:"namespace"`
 }
 
 // CloudConfig contains the parameters that specify access to a cloud at any level
 type CloudConfig struct {
-	Provider  string `json:"provider"`
-	Cluster   string `json:"cluster"`
+	Provider  string `json:"cloudConfigClusterProvider"`
+	Cluster   string `json:"cloudConfigCluster"`
 	Level     string `json:"level"`
 	Namespace string `json:"namespace"`
 	Config    string `json:"config"`
 }
 
 type KubeConfig struct {
-	Config string `json:"config"`
+	Config string `json:"config" encrypted:""`
+}
+
+// ClusterSyncObjectKey is the key structure that is used in the database
+type ClusterSyncObjectsKey struct {
+	ClusterProviderName    string `json:"clusterProvider"`
+	ClusterSyncObjectsName string `json:"clusterSyncObject"`
+}
+
+// CloudConfig contains the parameters that specify access to a cloud at any level
+type CloudGitOpsConfig struct {
+	Provider  string            `json:"cloudConfigClusterProvider"`
+	Cluster   string            `json:"cloudConfigCluster"`
+	Level     string            `json:"level"`
+	Namespace string            `json:"namespace"`
+	Config    mtypes.GitOpsSpec `json:"gitOps"`
 }
 
 // CloudConfigManager is an interface that exposes the Cloud Config functionality
 type CloudConfigManager interface {
 	GetCloudConfig(provider string, cluster string, level string, namespace string) (CloudConfig, error)
 	CreateCloudConfig(provider string, cluster string, level string, namespace string, config string) (CloudConfig, error)
-	GetNamespace(provider string, cluster string) (CloudConfig, error)                   // level-0 only
-	SetNamespace(provider string, cluster string, namespace string) (CloudConfig, error) // level-0 only
+	GetNamespace(provider string, cluster string) (string, error)         // level-0 only
+	SetNamespace(provider string, cluster string, namespace string) error // level-0 only
 	DeleteCloudConfig(provider string, cluster string, level string, namespace string) error
+	CreateClusterSyncObjects(provider string, pr mtypes.ClusterSyncObjects, exists bool) (mtypes.ClusterSyncObjects, error)
+	GetClusterSyncObjects(provider, syncobject string) (mtypes.ClusterSyncObjects, error)
+	GetClusterSyncObjectsValue(provider, syncobject, syncobjectkey string) (interface{}, error)
+	GetAllClusterSyncObjects(provider string) ([]mtypes.ClusterSyncObjects, error)
+	DeleteClusterSyncObjects(provider, syncobject string) error
+	CreateGitOpsConfig(provider string, cluster string, gs mtypes.GitOpsSpec, level string, namespace string) (CloudGitOpsConfig, error)
+	GetGitOpsConfig(provider string, cluster string, level string, namespace string) (CloudGitOpsConfig, error)
 }
 
 // CloudConfigClient implements CloudConfigManager
@@ -57,9 +81,10 @@ type CloudConfigClient struct {
 func NewCloudConfigClient() *CloudConfigClient {
 	return &CloudConfigClient{
 		db: clientDbInfo{
-			storeName:    "cloudconfig",
+			storeName:    "resources",
 			tagNamespace: "namespace",
 			tagConfig:    "config",
+			tagMeta:      "meta",
 		},
 	}
 }
@@ -69,8 +94,8 @@ func unmarshal(values [][]byte) (KubeConfig, error) {
 		kc := KubeConfig{}
 		err := db.DBconn.Unmarshal(values[0], &kc)
 		if err != nil {
-			log.Error("Failed unmarshaling Value", log.Fields{})
-			return KubeConfig{}, pkgerrors.Wrap(err, "Failed unmarshaling Value")
+			log.Error("Failed unmarshalling Value", log.Fields{})
+			return KubeConfig{}, err
 		}
 		return kc, nil
 	}
@@ -194,6 +219,7 @@ func (c *CloudConfigClient) GetNamespace(provider string, cluster string) (strin
 		log.Error("Could not fetch the CloudConfig so can't return namespace", log.Fields{})
 		return "", pkgerrors.Wrap(err, "Could not fetch the CloudConfig so can't return namespace")
 	}
+
 	if len(values) > 1 {
 		log.Error("Multiple CloudConfigs were returned, which was unexpected", log.Fields{})
 		return "", pkgerrors.New("Multiple CloudConfigs were returned, which was unexpected")
@@ -226,6 +252,220 @@ func (c *CloudConfigClient) DeleteCloudConfig(provider string, cluster string, l
 	if err != nil {
 		log.Error("Could not delete the CloudConfig", log.Fields{})
 		return pkgerrors.Wrap(err, "Could not delete the CloudConfig")
+	}
+
+	return nil
+}
+
+func (c *CloudConfigClient) CreateClusterSyncObjects(provider string, p mtypes.ClusterSyncObjects, exists bool) (mtypes.ClusterSyncObjects, error) {
+	key := ClusterSyncObjectsKey{
+		ClusterProviderName:    provider,
+		ClusterSyncObjectsName: p.Metadata.Name,
+	}
+
+	//Check if this ClusterSyncObjects already exists
+	_, err := c.GetClusterSyncObjects(provider, p.Metadata.Name)
+	if err == nil && !exists {
+		return mtypes.ClusterSyncObjects{}, pkgerrors.New("Cluster Sync Objects already exists")
+	}
+
+	err = db.DBconn.Insert(c.db.storeName, key, nil, c.db.tagMeta, p)
+	if err != nil {
+		return mtypes.ClusterSyncObjects{}, pkgerrors.Wrap(err, "Creating DB Entry")
+	}
+
+	return p, nil
+}
+
+// GetClusterSyncObjects returns the Cluster Sync objects for corresponding provider and sync object name
+func (c *CloudConfigClient) GetClusterSyncObjects(provider, syncobject string) (mtypes.ClusterSyncObjects, error) {
+	//Construct key and tag to select entry
+	key := ClusterSyncObjectsKey{
+		ClusterProviderName:    provider,
+		ClusterSyncObjectsName: syncobject,
+	}
+
+	value, err := db.DBconn.Find(c.db.storeName, key, c.db.tagMeta)
+	if err != nil {
+		return mtypes.ClusterSyncObjects{}, err
+	} else if len(value) == 0 {
+		return mtypes.ClusterSyncObjects{}, pkgerrors.New("Cluster sync object not found")
+	}
+
+	//value is a byte array
+	if value != nil {
+		ckvp := mtypes.ClusterSyncObjects{}
+		err = db.DBconn.Unmarshal(value[0], &ckvp)
+		if err != nil {
+			return mtypes.ClusterSyncObjects{}, err
+		}
+		return ckvp, nil
+	}
+
+	return mtypes.ClusterSyncObjects{}, pkgerrors.New("Unknown Error")
+}
+
+// DeleteClusterSyncObjects the  ClusterSyncObjects from database
+func (c *CloudConfigClient) DeleteClusterSyncObjects(provider, syncobject string) error {
+	//Construct key and tag to select entry
+	key := ClusterSyncObjectsKey{
+		ClusterProviderName:    provider,
+		ClusterSyncObjectsName: syncobject,
+	}
+
+	err := db.DBconn.Remove(c.db.storeName, key)
+	return err
+}
+
+// GetClusterSyncObjectsValue returns the value of the key from the corresponding provider and Sync Object name
+func (c *CloudConfigClient) GetClusterSyncObjectsValue(provider, syncobject, syncobjectkey string) (interface{}, error) {
+	//Construct key and tag to select entry
+	key := ClusterSyncObjectsKey{
+		ClusterProviderName:    provider,
+		ClusterSyncObjectsName: syncobject,
+	}
+
+	value, err := db.DBconn.Find(c.db.storeName, key, c.db.tagMeta)
+	if err != nil {
+		return mtypes.ClusterSyncObjects{}, err
+	} else if len(value) == 0 {
+		return mtypes.ClusterSyncObjects{}, pkgerrors.New("Cluster sync object not found")
+	}
+
+	//value is a byte array
+	if value != nil {
+		ckvp := mtypes.ClusterSyncObjects{}
+		err = db.DBconn.Unmarshal(value[0], &ckvp)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, kvmap := range ckvp.Spec.Kv {
+			if val, ok := kvmap[syncobjectkey]; ok {
+				return struct {
+					Value interface{} `json:"value"`
+				}{Value: val}, nil
+			}
+		}
+		return nil, pkgerrors.New("Cluster Sync Object key value not found")
+	}
+
+	return nil, pkgerrors.New("Unknown Error")
+}
+
+// GetAllClusterSyncObjects returns the Cluster Sync Objects for corresponding provider
+func (c *CloudConfigClient) GetAllClusterSyncObjects(provider string) ([]mtypes.ClusterSyncObjects, error) {
+	//Construct key and tag to select the entry
+	key := ClusterSyncObjectsKey{
+		ClusterProviderName:    provider,
+		ClusterSyncObjectsName: "",
+	}
+	values, err := db.DBconn.Find(c.db.storeName, key, c.db.tagMeta)
+	if err != nil {
+		return []mtypes.ClusterSyncObjects{}, err
+	}
+
+	resp := make([]mtypes.ClusterSyncObjects, 0)
+	for _, value := range values {
+		cp := mtypes.ClusterSyncObjects{}
+		err = db.DBconn.Unmarshal(value, &cp)
+		if err != nil {
+			return []mtypes.ClusterSyncObjects{}, err
+		}
+		resp = append(resp, cp)
+	}
+
+	return resp, nil
+}
+
+// CreateGitOpsConfig allows to create a new cloud config entry to hold a kubeconfig for access
+func (c *CloudConfigClient) CreateGitOpsConfig(provider string, cluster string, gs mtypes.GitOpsSpec, level string, namespace string) (CloudGitOpsConfig, error) {
+
+	key := CloudConfigKey{
+		Provider:  provider,
+		Cluster:   cluster,
+		Level:     level,
+		Namespace: namespace,
+	}
+
+	// check if it already exists
+	_, err := c.GetGitOpsConfig(provider, cluster, level, namespace)
+	if err == nil {
+		log.Error("CloudConfig already exists", log.Fields{})
+		return CloudGitOpsConfig{}, pkgerrors.New("CloudConfig already exists")
+	}
+	log.Info("Inserting in gs db", log.Fields{"gs": gs})
+	err = db.DBconn.Insert(c.db.storeName, key, nil, c.db.tagMeta, gs)
+	if err != nil {
+		log.Error("Failure inserting CloudConfig", log.Fields{})
+		return CloudGitOpsConfig{}, pkgerrors.Wrap(err, "Failure inserting CloudConfig")
+	}
+
+	cc := CloudGitOpsConfig{
+		Provider:  provider,
+		Cluster:   cluster,
+		Level:     level,
+		Namespace: namespace,
+		Config:    gs,
+	}
+
+	return cc, nil
+}
+
+// GetGitOpsConfig allows to create a new cloud config entry to hold a kubeconfig for access
+func (c *CloudConfigClient) GetGitOpsConfig(provider string, cluster string, level string, namespace string) (CloudGitOpsConfig, error) {
+
+	key := CloudConfigKey{
+		Provider:  provider,
+		Cluster:   cluster,
+		Level:     level,
+		Namespace: namespace,
+	}
+
+	value, err := db.DBconn.Find(c.db.storeName, key, c.db.tagMeta)
+	if err != nil {
+		log.Error("Failure inserting CloudConfig", log.Fields{})
+		return CloudGitOpsConfig{}, pkgerrors.Wrap(err, "Failure inserting CloudConfig")
+	}
+	log.Info("Get in gs db", log.Fields{"value": value})
+
+	cp := mtypes.GitOpsSpec{}
+	err = db.DBconn.Unmarshal(value[0], &cp)
+	if err != nil {
+		return CloudGitOpsConfig{}, err
+	}
+
+	cc := CloudGitOpsConfig{
+		Provider:  provider,
+		Cluster:   cluster,
+		Level:     level,
+		Namespace: namespace,
+		Config:    cp,
+	}
+
+	return cc, nil
+}
+
+// DeleteGitOpsConfig deletes a cloud config entry
+func (c *CloudConfigClient) DeleteGitOpsConfig(provider string, cluster string, level string, namespace string) error {
+	key := CloudConfigKey{
+		Provider:  provider,
+		Cluster:   cluster,
+		Level:     level,
+		Namespace: namespace,
+	}
+
+	// check if it doesn't exist
+	_, err := c.GetGitOpsConfig(provider, cluster, level, namespace)
+	if err != nil {
+		log.Error("Could not fetch the CloudConfig so not deleting", log.Fields{})
+		return pkgerrors.New("Could not fetch the GitOpsConfig so not deleting")
+	}
+
+	err = db.DBconn.Remove(c.db.storeName, key)
+	if err != nil {
+		log.Error("Could not delete the GitOpsConfig", log.Fields{})
+		return pkgerrors.Wrap(err, "Could not delete the GitOpsConfig")
 	}
 
 	return nil

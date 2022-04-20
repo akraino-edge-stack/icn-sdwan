@@ -22,8 +22,8 @@ import (
 	"log"
 
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 )
 
 type HubDeviceObjectKey struct {
@@ -137,7 +137,7 @@ func (c *HubDeviceObjectManager) CreateObject(m map[string]string, t module.Cont
 
 		device.Status.DelegatedHub = hub_name
 		dev_manager.UpdateObject(m, device)
-        }
+	}
 
 	return c.CreateEmptyObject(), nil
 }

@@ -13,7 +13,9 @@
 
 **2. Create Databases used by SDEWAN Central Controller v1 Microservices for Etcd and Mongo**
 
-`$ kubectl apply -f scc_db.yaml -n sdewan-system`
+`$ kubectl apply -f scc_secret.yaml -n sdewan-system`
+`$ kubectl apply -f scc_etcd.yaml -n sdewan-system`
+`$ kubectl apply -f scc_mongo.yaml -n sdewan-system`
 
 **3. create SDEWAN Central Controller v1 Microservices**
 
@@ -23,4 +25,4 @@
 
 **4. install monitor resources**
 
-`$ ./monitor-deploy.sh`
+`$ kubectl apply -f monitor-deploy.yaml -n sdewan-sysyem`

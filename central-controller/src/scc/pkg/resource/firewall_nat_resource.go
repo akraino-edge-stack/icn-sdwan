@@ -53,23 +53,23 @@ metadata:
 spec:
   target: ` + c.Target + `
   src_dip: ` + c.SourceDestIP
-        if c.DestinationIP != "" {
+	if c.DestinationIP != "" {
 		basic += `
   dest_ip: ` + c.DestinationIP
-        }
+	}
 
-        if c.DestinationPort != "" {
+	if c.DestinationPort != "" {
 		basic += `
   dest_port: ` + c.DestinationPort
-        }
+	}
 	if c.Dest != "" {
 		basic += `
   dest: "` + c.Dest + `"`
-        }
+	}
 	if c.SourceDestPort != "" {
 		basic += `
   src_dport: ` + c.SourceDestPort
-        }
+	}
 	if c.Protocol != "" {
 		basic += `
   proto: ` + c.Protocol
@@ -77,7 +77,7 @@ spec:
 	if c.Source != "" {
 		basic += `
   src: "` + c.Source + `"`
-        }
+	}
 	if c.SourceIP != "" {
 		basic += `
   src_ip: ` + c.SourceIP
@@ -85,7 +85,7 @@ spec:
 	if c.Index != "" {
 		basic += `
   index: "` + c.Index + `"`
-        }
+	}
 
 	return basic
 }
