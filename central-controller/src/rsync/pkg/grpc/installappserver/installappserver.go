@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"log"
 
-	con "github.com/open-ness/EMCO/src/rsync/pkg/context"
-	"github.com/open-ness/EMCO/src/rsync/pkg/grpc/installapp"
+	con "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/context"
+	"gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/installapp"
 )
 
 type installappServer struct {
@@ -49,7 +49,8 @@ func (cs *installappServer) UninstallApp(ctx context.Context, req *installapp.Un
 	return &installapp.UninstallAppResponse{AppContextUninstalled: true}, nil
 }
 
-func (cs *installappServer) ReadAppContext(ctx context.Context, req *installapp.ReadAppContextRequest) (*installapp.ReadAppContextResponse, error) {
+
+func (cs *installappServer) ReadAppContext(ctx context.Context, req *installapp.ReadAppContextRequest) (*installapp.ReadAppContextResponse, error){
 	readAppContext, _ := json.Marshal(req)
 	log.Println("GRPC Server received ReadAppContext: ", string(readAppContext))
 

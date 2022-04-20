@@ -1,0 +1,13 @@
+name: emco-base
+resources:
+  - name: clusterProvider
+  - name: cluster
+    parent: clusterLabel
+  - name: clusterLabel
+    parent: cluster
+  - name: clusterKv
+    parent: cluster
+  - name: roviderNetwork
+    parent: cluster
+  - name: network
+    parent: cluster

@@ -81,6 +81,46 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
+  - cnfhubsites
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfhubsites/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - networkfirewallrules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - networkfirewallrules/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
   - cnflocalservices
   verbs:
   - create

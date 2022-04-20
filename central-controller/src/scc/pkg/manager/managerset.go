@@ -29,7 +29,9 @@ type Managerset struct {
 	ProviderIPRange *IPRangeObjectManager
 	IPRange         *IPRangeObjectManager
 	Cert            *CertificateObjectManager
+	ClusterSync     *ClusterSyncObjectManager
 	Resource	*ResourceObjectManager
+	DeviceSite	*DeviceSiteObjectManager
 }
 
 var mgrset = Managerset{}

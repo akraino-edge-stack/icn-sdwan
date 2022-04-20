@@ -21,7 +21,7 @@ import (
 	"encoding/json"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
 	"io"
 	"log"
@@ -308,7 +308,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 
 		//IpsecResources
 		conn1 := resource.Connection{
-			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name),
+			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name) + format_ip_as_suffix(obj1_ip),
 			ConnectionType: CONN_TYPE,
 			Mode:           ADD_MODE,
 			Mark:           DEFAULT_MARK,
@@ -318,7 +318,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			CryptoProposal: all_proposals,
 		}
 		conn2 := resource.Connection{
-			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name),
+			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, obj2.Metadata.Name) + format_ip_as_suffix(obj2_ip),
 			Mark:           DEFAULT_MARK,
 			Mode:           START_MODE,
 			ConnectionType: CONN_TYPE,
@@ -386,7 +386,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		}
 
 		obj1_conn := resource.Connection{
-			Name:           DEFAULT_CONN + format_resource_name(obj2.Metadata.Name, ""),
+			Name:           DEFAULT_CONN + format_resource_name(obj2.Metadata.Name, "") + format_ip_as_suffix(obj2_ip),
 			ConnectionType: CONN_TYPE,
 			Mode:           START_MODE,
 			Mark:           DEFAULT_MARK,
@@ -418,7 +418,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 
 		//IpsecResources
 		obj2_conn := resource.Connection{
-			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, ""),
+			Name:           DEFAULT_CONN + format_resource_name(obj1.Metadata.Name, "") + format_ip_as_suffix(obj1_ip),
 			Mode:           START_MODE,
 			LocalUpDown:    OIP_UPDOWN,
 			ConnectionType: CONN_TYPE,

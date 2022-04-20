@@ -32,7 +32,7 @@ data:
   rsync_config.json: |
           {
           "rsync-ip": "rsync",
-          "rsync-port": "9041"
+          "rsync-port": "9031"
           }
 
 ---
@@ -85,6 +85,26 @@ spec:
           - name: rsync-config
             mountPath: /opt/scc/rsync_config.json
             subPath: rsync_config.json
+          env:
+          - name: DB_EMCO_USERNAME
+            value: "scc"
+          - name: DB_EMCO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: userPassword
+          - name: CONTEXTDB_EMCO_USERNAME
+            value: "scc"
+          - name: CONTEXTDB_EMCO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: etcd-secret
+                key: userPassword
+          - name: EMCO_DATA_KEY
+            valueFrom:
+              secretKeyRef:
+                name: mongo-data-secret
+                key: key
       volumes:
         - name: config
           configMap:

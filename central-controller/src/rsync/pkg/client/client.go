@@ -10,11 +10,11 @@ import (
 	"strings"
 
 	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/cli-runtime/pkg/resource"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/kubectl/pkg/validation"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/apimachinery/pkg/api/meta"
 
 	resapi "k8s.io/apimachinery/pkg/api/resource"
 )

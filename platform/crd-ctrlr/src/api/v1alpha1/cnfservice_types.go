@@ -16,6 +16,30 @@ type CNFServiceSpec struct {
 	DPort    string `json:"dport,omitempty"`
 }
 
+func (c *CNFServiceStatus) IsEqual(s *CNFServiceStatus) bool {
+	if c.Port != s.Port ||
+		c.DPort != s.DPort ||
+		c.SIp != s.SIp {
+		return false
+	}
+
+	return true
+}
+
+// CNFServiceStatus defines the observed state of CNFLocalServiceStatus
+type CNFServiceStatus struct {
+	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+	// +optional
+	SIp string `json:"sip,omitempty"`
+	// +optional
+	Port string `json:"port,omitempty"`
+	// +optional
+	DPort string `json:"dport,omitempty"`
+	// +optional
+	Message string `json:"message,omitempty"`
+}
+
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
@@ -24,8 +48,8 @@ type CNFService struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   CNFServiceSpec `json:"spec,omitempty"`
-	Status SdewanStatus   `json:"status,omitempty"`
+	Spec   CNFServiceSpec   `json:"spec,omitempty"`
+	Status CNFServiceStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

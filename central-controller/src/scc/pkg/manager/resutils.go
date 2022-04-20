@@ -22,11 +22,11 @@ import (
 	rsyncclient "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/client"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/resourcestatus"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/resourcestatus"
 
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/appcontext"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/rpc"
-	controller "github.com/open-ness/EMCO/src/orchestrator/pkg/module/controller"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/appcontext"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/rpc"
+	controller "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/controller"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -130,15 +130,15 @@ func addResourcesToCluster(ct appcontext.AppContext, ch interface{}, target stri
 	}
 
 	var resDepInstr struct {
-		Resdep map[string]string `json:"resdependency"`
+		Resdep map[string][]string `json:"resdependency"`
 	}
-	resdep := make(map[string]string)
+	resdep := make(map[string][]string)
 
 	for _, resource := range resources {
 		resource_name := getResourceName(resource)
 		resource_data := resource.Resource.ToYaml(target)
 		resOrderInstr.Resorder = append(resOrderInstr.Resorder, resource_name)
-		resdep[resource_name] = "go"
+		resdep[resource_name] = []string{}
 
 		rh, err := ct.AddResource(ch, resource_name, resource_data)
 		if isDeploy == false {
@@ -170,7 +170,7 @@ func addResourcesToCluster(ct appcontext.AppContext, ch interface{}, target stri
 }
 
 func InitRsyncClient() bool {
-	client := controller.NewControllerClient()
+	client := controller.NewControllerClient("resources", "data", "orchestrator")
 
 	vals, _ := client.GetControllers()
 	found := false
@@ -258,7 +258,7 @@ func (d *ResUtil) DeployOneResource(app_name string, format string, device modul
 	appdep := make(map[string]string)
 	device_app_name := d.getDeviceAppName(device)
 	appOrderInstr.Apporder = append(appOrderInstr.Apporder, device_app_name)
-	appdep[device_app_name] = "go"
+	appdep[device_app_name] = ""
 
 	apphandle, _ := context.AddApp(compositeHandle, device_app_name)
 
@@ -309,6 +309,10 @@ func (d *ResUtil) UpdateOneResource(cid string, device module.ControllerObject, 
 }
 
 func (d *ResUtil) Deploy(overlay string, app_name string, format string) error {
+	return d.DeployUpdate(overlay, app_name, format, false)
+}
+
+func (d *ResUtil) DeployUpdate(overlay string, app_name string, format string, update bool) error {
 	isErr := false
 	errMessage := "Failed:"
 	res_manager := GetManagerset().Resource
@@ -367,7 +371,9 @@ func (d *ResUtil) Deploy(overlay string, app_name string, format string) error {
 						}
 					} else {
 						// add ref
-						resobj.Specification.Ref += 1
+						if !update {
+							resobj.Specification.Ref += 1
+						}
 						resource.Status = 1
 						res_manager.UpdateObject(m, resobj)
 					}
@@ -385,7 +391,9 @@ func (d *ResUtil) Deploy(overlay string, app_name string, format string) error {
 						resource.Status = 1
 						// add ref
 						resobj.Specification.Hash = resource_data_hash
-						resobj.Specification.Ref += 1
+						if !update {
+							resobj.Specification.Ref += 1
+						}
 
 						res_manager.UpdateObject(m, resobj)
 					}
@@ -442,6 +450,19 @@ func (d *ResUtil) Undeploy(overlay string) error {
 						// reset resource status
 						resource.Status = 1
 						resobj.Specification.Ref = 0
+
+						/*
+						// delete app from context db
+						context := appcontext.AppContext{}
+						_, err := context.LoadAppContext(resobj.Specification.ContextId)
+						if err != nil {
+							err = context.DeleteCompositeApp()
+						}
+
+						if err != nil {
+							log.Println(err)
+						}
+						*/
 						res_manager.DeleteObject(m)
 					}
 				} else {

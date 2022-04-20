@@ -27,6 +27,7 @@ webhooks:
     resources:
     - mwan3policies
     - mwan3rules
+    - networkfirewallrules
     - firewallzones
     - firewallforwardings
     - firewallrules
@@ -37,6 +38,7 @@ webhooks:
     - cnfrouterules
     - cnfservices
     - cnflocalservices
+    - cnfhubsites
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals
@@ -61,9 +63,9 @@ webhooks:
     operations:
     - UPDATE
     resources:
-    - deployments
     - mwan3policies
     - mwan3rules
+    - networkfirewallrules
     - firewallzones
     - firewallforwardings
     - firewallrules
@@ -74,6 +76,7 @@ webhooks:
     - cnfroutes
     - cnfrouterules
     - cnflocalservices
+    - cnfhubsites
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals

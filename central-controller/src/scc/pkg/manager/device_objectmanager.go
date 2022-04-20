@@ -27,7 +27,7 @@ import (
 	"time"
 
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	//"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/client"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
 	pkgerrors "github.com/pkg/errors"
@@ -235,7 +235,7 @@ func (c *DeviceObjectManager) CreateObject(m map[string]string, t module.Control
 
 	to := t.(*module.DeviceObject)
 	task = runner.Go(func(ShouldStop runner.S) error {
-		for to.Status.Data[RegStatus] != "success" {
+		for to.Status.Data[RegStatus] == "pending" {
 			err = c.PostRegister(m, t)
 			if err != nil {
 				log.Println(err)
@@ -336,6 +336,11 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 
 	// DB Operation
 	err = GetDBUtils().DeleteObject(c, m)
+	err = GetDBUtils().UnregisterDevice(m[DeviceResource])
+        if err != nil {
+                log.Println(err)
+        }
+
 
 	return err
 }
@@ -361,8 +366,9 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 
 	if to.Status.Mode == 2 {
 		kube_config, err := base64.StdEncoding.DecodeString(to.Specification.KubeConfig)
-		if err != nil {
+		if err != nil || len(kube_config) == 0 {
 			to.Status.Data[RegStatus] = "failed"
+			return pkgerrors.New("Error in decoding kubeconfig in registration")
 		}
 
 		kube_config, _, err = kubeutil.checkKubeConfigAvail(kube_config, []string{to.Status.Ip}, DEFAULT_K8S_API_SERVER_PORT)

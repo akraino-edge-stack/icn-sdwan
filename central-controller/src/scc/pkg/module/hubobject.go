@@ -32,7 +32,7 @@ type HubObject struct {
 type HubObjectSpec struct {
 	PublicIps     []string `json:"publicIps"`
 	CertificateId string   `json:"certificateId"`
-	KubeConfig    string   `json:"kubeConfig"`
+	KubeConfig    string   `json:"kubeConfig" encrypted:""`
 }
 
 //HubObjectStatus

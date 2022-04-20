@@ -23,4 +23,4 @@
 
 **4. install monitor resources**
 
-`$ ./monitor-deploy.sh`
+`$ kubectl apply -f monitor-deploy.yaml -n sdewan-sysyem`

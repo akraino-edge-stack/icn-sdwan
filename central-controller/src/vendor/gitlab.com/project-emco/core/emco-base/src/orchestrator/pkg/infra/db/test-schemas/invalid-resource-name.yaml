@@ -1,0 +1,5 @@
+name: emco-app
+resources:
+  - name: app.compositeApp.invalid
+  - name: clusterLabel
+    parent: cluster

@@ -18,6 +18,7 @@ package module
 
 import (
 	"log"
+	"strings"
 )
 
 type states struct {
@@ -81,6 +82,15 @@ func (c *ConnectionObject) GetPeer(t string, n string) (string, string, string) 
 	}
 
 	return "", "", ""
+}
+
+func ParseEndName(name string) (string, string) {
+	s := strings.SplitN(name, ".", 2)
+	if len(s) == 2 {
+		return s[0], s[1]
+	}
+
+	return "Hub", name
 }
 
 func CreateEndName(t string, n string) string {

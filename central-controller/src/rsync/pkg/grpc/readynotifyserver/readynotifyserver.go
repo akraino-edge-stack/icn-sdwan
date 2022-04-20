@@ -8,8 +8,8 @@ import (
 	"log"
 	"sync"
 
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
-	pb "github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotify"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
+	pb "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/readynotify"
 )
 
 // readyNotifyServer will be initialized by NewReadyNotifyServer() and
@@ -39,11 +39,15 @@ func (s *readyNotifyServer) Alert(topic *pb.Topic, stream pb.ReadyNotify_AlertSe
 	s.alertNotify[appContextID][client] = stream
 	s.streamChannel[stream] = make(chan int)
 	c := s.streamChannel[stream]
+	ctx := stream.Context()
 	s.mutex.Unlock()
 
 	// Keep stream open
 	for {
 		select {
+		case <-ctx.Done():
+			logutils.Info("[ReadyNotify gRPC] Client has disconnected", logutils.Fields{"client": client})
+			return nil
 		case <-c:
 			log.Printf("[ReadyNotify gRPC] stop channel got triggered for the client = %s\n", client)
 			return nil

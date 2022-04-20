@@ -32,7 +32,7 @@ type DeviceObjectSpec struct {
 	UseHub4Internet      bool     `json:"useHub4Internet"`
 	DedicatedSFC         bool     `json:"dedicatedSFC"`
 	CertificateId        string   `json:"certificateId"`
-	KubeConfig           string   `json:"kubeConfig"`
+	KubeConfig           string   `json:"kubeConfig" encrypted:""`
 }
 
 // DeviceObjectStatus

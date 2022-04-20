@@ -1,0 +1,276 @@
+apiVersion: k8splugin.io/v1alpha1
+kind: ResourceBundleState
+metadata:
+  name: 5738075950853499756-collectd
+  namespace: default
+  resourceVersion: "10638140"
+  selfLink: /apis/k8splugin.io/v1alpha1/namespaces/default/resourcebundlestates/5738075950853499756-collectd
+  uid: 9beed5a4-7148-4ee2-bb3a-3713562c02dd
+spec:
+  selector:
+    matchLabels:
+      emco/deployment-id: 5738075950853499756-collectd
+status:
+  configMapStatuses:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      creationTimestamp: "2021-11-22T20:27:12Z"
+      labels:
+        emco/deployment-id: 5738075950853499756-collectd
+      name: info-cm
+      namespace: default
+      resourceVersion: "10638104"
+      selfLink: /api/v1/namespaces/default/configmaps/info-cm
+      uid: d388f37c-a094-4fad-bfd8-1ab07fdf84ed
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      creationTimestamp: "2021-11-22T20:27:10Z"
+      labels:
+        app: collectd
+        chart: collectd-0.2.0
+        emco/deployment-id: 5738075950853499756-collectd
+        release: r6
+      name: r6-collectd-config
+      namespace: default
+      resourceVersion: "10638087"
+      selfLink: /api/v1/namespaces/default/configmaps/r6-collectd-config
+      uid: dd2986f4-3f1f-41fe-856b-ab78ab86e9c9
+  csrStatuses: []
+  daemonSetStatuses:
+  - apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      annotations:
+        checksum/config: 0952c8535863755990ab5103e45c26fddc33a59b00be9fb949b40368314e877c
+        deprecated.daemonset.template.generation: "1"
+      creationTimestamp: "2021-11-22T20:27:10Z"
+      generation: 1
+      labels:
+        app: collectd
+        chart: collectd-0.2.0
+        emco/deployment-id: 5738075950853499756-collectd
+        release: r6
+      name: r6-collectd
+      namespace: default
+      resourceVersion: "10638101"
+      selfLink: /apis/apps/v1/namespaces/default/daemonsets/r6-collectd
+      uid: 21eca93d-b006-4e09-af47-afcd6f8a4d56
+    spec:
+      revisionHistoryLimit: 10
+      selector:
+        matchLabels:
+          app: collectd
+          collector: collectd
+          release: r6
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: collectd
+            collector: collectd
+            emco/deployment-id: 5738075950853499756-collectd
+            release: r6
+        spec:
+          containers:
+          - image: opnfv/barometer-collectd:latest
+            imagePullPolicy: IfNotPresent
+            name: collectd
+            resources: {}
+            securityContext:
+              allowPrivilegeEscalation: true
+              privileged: true
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /opt/collectd/etc
+              name: r6-collectd-config
+            - mountPath: /mnt/proc
+              name: proc
+              readOnly: true
+            - mountPath: /hostfs
+              name: root
+              readOnly: true
+            - mountPath: /mnt/etc
+              name: etc
+              readOnly: true
+            - mountPath: /var/run/docker.sock
+              name: run
+          dnsPolicy: ClusterFirst
+          hostNetwork: true
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - configMap:
+              defaultMode: 484
+              name: r6-collectd-config
+            name: r6-collectd-config
+          - hostPath:
+              path: /proc
+              type: ""
+            name: proc
+          - hostPath:
+              path: /
+              type: ""
+            name: root
+          - hostPath:
+              path: /etc
+              type: ""
+            name: etc
+          - hostPath:
+              path: /var/run/docker.sock
+              type: ""
+            name: run
+      updateStrategy:
+        rollingUpdate:
+          maxUnavailable: 1
+        type: RollingUpdate
+    status:
+      currentNumberScheduled: 1
+      desiredNumberScheduled: 1
+      numberAvailable: 1
+      numberMisscheduled: 0
+      numberReady: 1
+      observedGeneration: 1
+      updatedNumberScheduled: 1
+  deploymentStatuses: []
+  ingressStatuses: []
+  jobStatuses: []
+  podStatuses:
+  - apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/collectd: runtime/default
+        kubernetes.io/psp: restricted
+        seccomp.security.alpha.kubernetes.io/pod: runtime/default
+      creationTimestamp: "2021-11-22T20:27:11Z"
+      generateName: r6-collectd-
+      labels:
+        app: collectd
+        collector: collectd
+        controller-revision-hash: 7d78fdd5d8
+        emco/deployment-id: 5738075950853499756-collectd
+        pod-template-generation: "1"
+        release: r6
+      name: r6-collectd-p9n45
+      namespace: default
+      ownerReferences:
+      - apiVersion: apps/v1
+        blockOwnerDeletion: true
+        controller: true
+        kind: DaemonSet
+        name: r6-collectd
+        uid: 21eca93d-b006-4e09-af47-afcd6f8a4d56
+      resourceVersion: "10638105"
+      selfLink: /api/v1/namespaces/default/pods/r6-collectd-p9n45
+      uid: a5a88727-5a3a-4295-9cb2-6edf2a794185
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchFields:
+              - key: metadata.name
+                operator: In
+                values:
+                - localhost
+      containers:
+      - image: opnfv/barometer-collectd:latest
+        imagePullPolicy: IfNotPresent
+        name: collectd
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: true
+          capabilities:
+            drop:
+            - NET_RAW
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      hostNetwork: true
+      nodeName: localhost
+      priority: 0
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+    status:
+      conditions:
+      - lastProbeTime: null
+        lastTransitionTime: "2021-11-22T20:27:11Z"
+        status: "True"
+        type: Initialized
+      - lastProbeTime: null
+        lastTransitionTime: "2021-11-22T20:27:19Z"
+        status: "True"
+        type: Ready
+      - lastProbeTime: null
+        lastTransitionTime: "2021-11-22T20:27:19Z"
+        status: "True"
+        type: ContainersReady
+      - lastProbeTime: null
+        lastTransitionTime: "2021-11-22T20:27:11Z"
+        status: "True"
+        type: PodScheduled
+      containerStatuses:
+      - containerID: docker://7d2fc26b1489ab0304526276ab3f721587b5d059e7a9ed4a962a80b692f8031f
+        image: opnfv/barometer-collectd:latest
+        imageID: docker-pullable://opnfv/barometer-collectd@sha256:5424d11948e4d2ef265800d7ab19bd087da600d76e681a5e18d8847f159c6785
+        lastState: {}
+        name: collectd
+        ready: true
+        restartCount: 0
+        started: true
+        state:
+          running:
+            startedAt: "2021-11-22T20:27:19Z"
+      hostIP: 192.168.121.109
+      phase: Running
+      podIP: 192.168.121.109
+      podIPs:
+      - ip: 192.168.121.109
+      qosClass: BestEffort
+      startTime: "2021-11-22T20:27:11Z"
+  ready: false
+  resourceCount: 0
+  secretStatuses: []
+  serviceStatuses:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/last-applied-configuration: |
+          {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"collectd","emco/deployment-id":"5738075950853499756-collectd","release":"r6"},"name":"collectd","namespace":"default"},"spec":{"ports":[{"name":"collectd-prometheus","port":9104,"protocol":"TCP","targetPort":9103}],"selector":{"app":"collectd","collector":"collectd"},"type":"ClusterIP"}}
+      creationTimestamp: "2021-11-22T20:27:10Z"
+      labels:
+        app: collectd
+        emco/deployment-id: 5738075950853499756-collectd
+        release: r6
+      name: collectd
+      namespace: default
+      resourceVersion: "10638089"
+      selfLink: /api/v1/namespaces/default/services/collectd
+      uid: d2129cff-6d9a-4d39-83c8-13b3aaecf940
+    spec:
+      clusterIP: 10.244.17.224
+      ports:
+      - name: collectd-prometheus
+        port: 9104
+        protocol: TCP
+        targetPort: 9103
+      selector:
+        app: collectd
+        collector: collectd
+      sessionAffinity: None
+      type: ClusterIP
+    status:
+      loadBalancer: {}
+  statefulSetStatuses: []

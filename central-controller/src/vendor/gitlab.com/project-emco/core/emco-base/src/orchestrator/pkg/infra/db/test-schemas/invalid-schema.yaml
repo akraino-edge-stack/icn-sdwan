@@ -1,0 +1,12 @@
+resources:
+  - name: clusterProvider
+  - name: cluster
+    parent: clusterProvider
+ - name: clusterLabel
+    parent: cluster
+  - name: kvname
+    parent: cluster
+  - name: providerNetwork
+    parent: cluster
+  - name: network
+    parent: cluster

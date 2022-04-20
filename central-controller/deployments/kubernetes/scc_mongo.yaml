@@ -1,0 +1,91 @@
+# Resources to create Mongo Databases used by SDEWAN Central Controller v1 Microservices
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mongo-init
+  labels:
+    app: mongo
+data:
+  mongo-user.sh: |
+    mongo -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" <<EOF
+    use scc
+    db.createUser(
+      {
+        user: "$DB_EMCO_USERNAME",
+        pwd: "$DB_EMCO_PASSWORD",
+        roles: [
+           { role: "dbOwner", db: "scc" },
+           { role: "clusterMonitor", db: "admin" }
+        ]
+      }
+    )
+    EOF
+
+---
+#Mongo Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongo
+  name: mongo
+spec:
+  ports:
+  - name: "27017"
+    port: 27017
+    targetPort: 27017
+  selector:
+    app: mongo
+
+---
+#Mongo Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongo
+  name: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - image: mongo
+        imagePullPolicy: IfNotPresent
+        name: mongo
+        ports:
+        - containerPort: 27017
+        command:
+        - docker-entrypoint.sh
+        args:
+        - --auth
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "admin"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: rootPassword
+        - name: MONGO_INITDB_DATABASE
+          value: "scc"
+        - name: DB_EMCO_USERNAME
+          value: "scc"
+        - name: DB_EMCO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: userPassword
+        volumeMounts:
+        - name: mongo-init
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: mongo-init
+        configMap:
+          name: mongo-init

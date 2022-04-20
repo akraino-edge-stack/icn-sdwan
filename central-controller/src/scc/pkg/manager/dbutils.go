@@ -18,9 +18,9 @@ package manager
 
 import (
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
-	mtypes "github.com/open-ness/EMCO/src/orchestrator/pkg/module/types"
-	rsync "github.com/open-ness/EMCO/src/rsync/pkg/db"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
+	mtypes "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/types"
+	rsync "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/db"
 	pkgerrors "github.com/pkg/errors"
 )
 
@@ -183,6 +183,33 @@ func (d *DBUtils) UnregisterDevice(cluster_name string) error {
 	ccc := rsync.NewCloudConfigClient()
 
 	err := ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
+	if err != nil {
+		return pkgerrors.Wrap(err, "Error deleting cloud config")
+	}
+
+	return nil
+}
+
+func (d *DBUtils) RegisterGitOpsDevice(cluster_name string, gs mtypes.GitOpsSpec) error {
+	ccc := rsync.NewCloudConfigClient()
+
+	_, err := ccc.GetGitOpsConfig(PROVIDERNAME, cluster_name, "0", "default")
+	if err == nil {
+		ccc.DeleteGitOpsConfig(PROVIDERNAME, cluster_name, "0", "default")
+	}
+
+	_, err = ccc.CreateGitOpsConfig(PROVIDERNAME, cluster_name, gs, "0", "default")
+	if err != nil {
+		return pkgerrors.Wrap(err, "Error creating cloud config")
+	}
+
+	return nil
+}
+
+func (d *DBUtils) UnregisterGitOpsDevice(cluster_name string) error {
+	ccc := rsync.NewCloudConfigClient()
+
+	err := ccc.DeleteGitOpsConfig(PROVIDERNAME, cluster_name, "0", "default")
 	if err != nil {
 		return pkgerrors.Wrap(err, "Error deleting cloud config")
 	}

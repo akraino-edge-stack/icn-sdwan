@@ -1,0 +1,19 @@
+domain: io
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: monitor
+repo: src/monitor
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: io
+  group: k8splugin
+  kind: ResourceBundleState
+  path: src/monitor/api/v1alpha1
+  version: v1alpha1
+version: "3"

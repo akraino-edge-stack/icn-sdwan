@@ -29,9 +29,9 @@ spec:
   type: NodePort
   ports:
   - name: internal
-    port: 9041
+    port: 9031
     protocol: TCP
-    targetPort: 9041
+    targetPort: 9031
     nodePort: 31297
 
 ---
@@ -57,11 +57,31 @@ spec:
           command: ["/opt/scc/entrypoint", "rsync"]
           workingDir: /opt/scc
           ports:
-          - containerPort: 9041
+          - containerPort: 9031
           volumeMounts:
           - name: config
             mountPath: /opt/scc/config.json
             subPath: config.json
+          env:
+          - name: DB_EMCO_USERNAME
+            value: "scc"
+          - name: DB_EMCO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: userPassword
+          - name: CONTEXTDB_EMCO_USERNAME
+            value: "scc"
+          - name: CONTEXTDB_EMCO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: etcd-secret
+                key: userPassword
+          - name: EMCO_DATA_KEY
+            valueFrom:
+              secretKeyRef:
+                name: mongo-data-secret
+                key: key
       volumes:
         - name: config
           configMap:

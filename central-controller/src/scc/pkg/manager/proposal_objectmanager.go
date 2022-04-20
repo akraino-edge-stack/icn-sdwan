@@ -19,7 +19,7 @@ package manager
 import (
 	"encoding/json"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	pkgerrors "github.com/pkg/errors"
 	"io"
 )

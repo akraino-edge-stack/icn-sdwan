@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2020 Intel Corporation
+
+syntax = "proto3";
+
+service updateapp {
+    // Sync
+    rpc UpdateApp(UpdateAppRequest) returns (UpdateAppResponse) {
+    }
+
+    rpc RollbackApp(RollbackAppRequest) returns (RollbackAppResponse) {
+    }
+
+}
+
+message UpdateAppRequest {
+    string update_from_appContext = 1;
+    string update_to_appContext = 2;
+}
+
+message UpdateAppResponse {
+    bool app_context_updated = 1;
+    string app_context_update_message = 2;
+}
+
+message RollbackAppRequest {
+    string rollback_from_appContext = 1;
+    string rollback_to_appContext = 2;
+}
+
+message RollbackAppResponse {
+    bool app_context_rolledback = 1;
+    string app_context_rollback_message = 2;
+}

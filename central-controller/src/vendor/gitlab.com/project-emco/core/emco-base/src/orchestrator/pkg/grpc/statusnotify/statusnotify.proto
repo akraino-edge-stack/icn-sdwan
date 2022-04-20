@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright (c) 2021 Intel Corporation
+
+syntax = "proto3";
+
+option go_package="./statusnotify";
+
+service StatusNotify {
+	rpc StatusRegister (StatusRegistration) returns (stream StatusNotification){
+
+	}
+
+	rpc StatusDeregister (StatusDeregistration) returns (StatusDeregistrationResponse){
+		
+	}
+}
+
+message DigKey {
+	string project = 1;
+	string compositeApp = 2;
+	string compositeAppVersion = 3;
+	string deploymentIntentGroup = 4;
+}
+
+message LcKey {
+	string project = 1;
+	string logicalCloud = 2;
+}
+
+message ClusterKey {
+	string clusterProvider = 1;
+	string cluster = 2;
+}
+
+enum OutputType {
+	SUMMARY = 0;
+	ALL = 1;
+}
+
+message StatusRegistration {
+	string clientId = 1;
+	oneof key {
+		DigKey digKey = 2;
+		LcKey lcKey = 3;
+		ClusterKey clusterKey = 4;
+	}
+	StatusValue statusType = 5;
+	repeated string apps = 6;
+	repeated string clusters = 7;
+	repeated string resources = 8;
+	OutputType output = 9;
+}
+
+enum StatusValue {
+	STATUS_ERROR = 0;
+	NOT_READY = 1;
+	READY = 2;
+	NOT_DEPLOYED = 3;
+	DEPLOYED = 4;
+}
+
+message GVK {
+	string group = 1;
+	string version = 2;
+	string kind = 3;
+}
+
+message ResourceStatus {
+	string name = 1;
+	GVK gvk = 2;
+	StatusValue statusValue = 3;
+}
+
+message ClusterStatus {
+	string clusterProvider = 1;
+	string cluster = 2;
+	StatusValue statusValue = 3;
+	repeated ResourceStatus resources = 4;
+}
+
+message AppStatus {
+	string app = 1;
+	StatusValue statusValue = 2;
+	repeated ClusterStatus clusters = 3;
+}
+
+message StatusDetail {
+	oneof statusDetail {
+		AppStatus app = 1;
+		ClusterStatus cluster = 2;
+	}
+}
+
+message StatusNotification {
+	StatusValue statusValue = 1;
+	repeated StatusDetail details = 2;
+}
+
+message StatusDeregistration {
+	string clientId = 1;
+}
+
+message StatusDeregistrationResponse {
+}

@@ -4,69 +4,30 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"math/rand"
-	"net"
-	"strings"
+	"os"
+	"os/signal"
 	"time"
 
-	register "github.com/open-ness/EMCO/src/rsync/pkg/grpc"
-	installpb "github.com/open-ness/EMCO/src/rsync/pkg/grpc/installapp"
-	"github.com/open-ness/EMCO/src/rsync/pkg/grpc/installappserver"
-	readynotifypb "github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotify"
-	"github.com/open-ness/EMCO/src/rsync/pkg/grpc/readynotifyserver"
+	register "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/grpc"
+	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
+	installpb "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/installapp"
+	"gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/installappserver"
+	readynotifypb "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/readynotify"
+	"gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/readynotifyserver"
+	updatepb "gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/updateapp"
+	"gitlab.com/project-emco/core/emco-base/src/rsync/pkg/grpc/updateappserver"
 
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/config"
-	contextDb "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/contextdb"
-	"github.com/open-ness/EMCO/src/orchestrator/pkg/infra/db"
+	contextDb "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/contextdb"
+	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
+	"gitlab.com/project-emco/core/emco-base/src/rsync/pkg/context"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/testdata"
 )
 
-func startGrpcServer() error {
-	var tls bool
-
-	if strings.Contains(config.GetConfiguration().GrpcEnableTLS, "enable") {
-		tls = true
-	} else {
-		tls = false
-	}
-	certFile := config.GetConfiguration().GrpcServerCert
-	keyFile := config.GetConfiguration().GrpcServerKey
-
-	_, port := register.GetServerHostPort()
-
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-	if err != nil {
-		log.Fatalf("Could not listen to port: %v", err)
-	}
-	var opts []grpc.ServerOption
-	if tls {
-		if certFile == "" {
-			certFile = testdata.Path("server.pem")
-		}
-		if keyFile == "" {
-			keyFile = testdata.Path("server.key")
-		}
-		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
-		if err != nil {
-			log.Fatalf("Could not generate credentials %v", err)
-		}
-		opts = []grpc.ServerOption{grpc.Creds(creds)}
-	}
-
-	grpcServer := grpc.NewServer(opts...)
+func RegisterRsyncServices(grpcServer *grpc.Server, srv interface{}) {
 	installpb.RegisterInstallappServer(grpcServer, installappserver.NewInstallAppServer())
 	readynotifypb.RegisterReadyNotifyServer(grpcServer, readynotifyserver.NewReadyNotifyServer())
-
-	log.Println("Starting rsync gRPC Server")
-	err = grpcServer.Serve(lis)
-	if err != nil {
-		log.Fatalf("rsync grpc server is not serving %v", err)
-	}
-	return err
+	updatepb.RegisterUpdateappServer(grpcServer, updateappserver.NewUpdateAppServer())
 }
 
 func main() {
@@ -76,21 +37,36 @@ func main() {
 	// Initialize the mongodb
 	err := db.InitializeDatabaseConnection("scc")
 	if err != nil {
-		log.Println("Unable to initialize mongo database connection...")
-		log.Println(err)
-		log.Fatalln("Exiting...")
+		log.Error("Unable to initialize mongo database connection", log.Fields{"Error": err})
+		os.Exit(1)
 	}
 
 	// Initialize contextdb
 	err = contextDb.InitializeContextDatabase()
 	if err != nil {
-		log.Println("Unable to initialize etcd database connection...")
-		log.Println(err)
-		log.Fatalln("Exiting...")
+		log.Error("Unable to initialize etcd database connection", log.Fields{"Error": err})
+		os.Exit(1)
 	}
 
-	err = startGrpcServer()
+	go func() {
+		err := register.StartGrpcServer("rsync", "RSYNC_NAME", 9031,
+			RegisterRsyncServices, nil)
+		if err != nil {
+			log.Error("GRPC server failed to start", log.Fields{"Error": err})
+			os.Exit(1)
+		}
+	}()
+
+	err = context.RestoreActiveContext()
 	if err != nil {
-		log.Fatalf("GRPC server failed to start")
+		log.Error("RestoreActiveContext failed", log.Fields{"Error": err})
 	}
+
+	connectionsClose := make(chan struct{})
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+	close(connectionsClose)
+
 }

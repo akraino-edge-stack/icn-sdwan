@@ -6,6 +6,7 @@
 resources:
 - bases/batch.sdewan.akraino.org_mwan3policies.yaml
 - bases/batch.sdewan.akraino.org_mwan3rules.yaml
+- bases/batch.sdewan.akraino.org_networkfirewallrules.yaml
 - bases/batch.sdewan.akraino.org_firewallzones.yaml
 - bases/batch.sdewan.akraino.org_firewallrules.yaml
 - bases/batch.sdewan.akraino.org_firewallsnats.yaml
@@ -16,6 +17,7 @@ resources:
 - bases/batch.sdewan.akraino.org_ipsecsites.yaml
 - bases/batch.sdewan.akraino.org_cnfservices.yaml
 - bases/batch.sdewan.akraino.org_cnflocalservices.yaml
+- bases/batch.sdewan.akraino.org_cnfhubsites.yaml
 - bases/batch.sdewan.akraino.org_sdewanapplications.yaml
 - bases/batch.sdewan.akraino.org_cnfstatuses.yaml
 - bases/batch.sdewan.akraino.org_cnfroutes.yaml

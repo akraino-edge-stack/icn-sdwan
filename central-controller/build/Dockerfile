@@ -25,6 +25,7 @@ RUN addgroup -S scc && adduser -S -G scc scc
 RUN chown scc:scc /opt/scc -R
 
 COPY --chown=scc --from=0 /go/src/github.com/central-controller/src/scc/scc ./
+COPY --chown=scc --from=0 /go/src/github.com/central-controller/src/scc/ref-schemas ./ref-schemas/
 COPY --chown=scc --from=0 /go/src/github.com/central-controller/src/rsync/rsync ./
 COPY --chown=scc --from=0 /go/src/github.com/central-controller/src/monitor/monitor ./
 COPY --chown=scc --from=0 /go/src/github.com/central-controller/build/entrypoint ./

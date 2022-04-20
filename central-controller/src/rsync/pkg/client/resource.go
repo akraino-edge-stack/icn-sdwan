@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 
-	log "github.com/open-ness/EMCO/src/orchestrator/pkg/infra/logutils"
+	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -22,13 +22,11 @@ var (
 
 // GetNodeLabels .. Fetch labels published by the K8s node
 func (c *Client) GetNodeLabels(ctx context.Context) (map[string](map[string]string), error) {
-	log.Info("Get Node Labels list", nil)
-
 	var nodeLabelMap = make(map[string](map[string]string))
+
 	// iterate through Node Labels
 	nodes, _ := c.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 	for _, node := range nodes.Items {
-		log.Info("GetNodeLabels .. Node Labels", log.Fields{"kube_cluster_name": node.GetClusterName(), "kube_node_name": node.Name, "node_labels": node.Labels})
 		nodeLabelMap[node.Name] = node.Labels
 	}
 
@@ -123,22 +121,26 @@ func (c *Client) GetAvailableNodeResources(ctx context.Context, resName string) 
 		reqs, limits, _ := c.GetPodsTotalRequestsAndLimits(ctx, podList)
 		resReqs, resLimits := reqs[corev1.ResourceName(resName)], limits[corev1.ResourceName(resName)]
 
-		// availableAfterResourceReqs is Resource available after deducting active pod and system daemon Resource requests
-		// availableAfterResourceLimits is Resource available after deducting active pod and system daemon Resource limits
-		// Limit can be negative for over committed Resources
-
+		// availableAfterResourceReqs is Resource count available(after deducting active pod and system daemon Resource requests)
+		// availableAfterResourceLimits is Resource count available(after deducting active pod and system daemon Resource limits)
+		// nodeResourceMap is the map of node to Resource count available(after deducting active pod and system daemon Resource requests)
 		if val, ok := node.Status.Allocatable[corev1.ResourceName(resName)]; ok {
-			availableAfterResourceReqs += (val.Value() - resReqs.MilliValue()/1000)
-			nodeResourceMap[node.Name] = (val.Value() - resReqs.MilliValue()/1000)
-			availableAfterResourceLimits += (val.Value() - resLimits.MilliValue()/1000)
+			valOrig := val
+			val.Sub(resReqs)
+			availableAfterResourceReqs += val.MilliValue() / 1000
+			nodeResourceMap[node.Name] = val.MilliValue() / 1000
+			availableAfterResourceLimits += val.MilliValue() / 1000
 
 			log.Info("GetAvailableNodeResources info => ", log.Fields{
-				"res_name":                         resName,
-				"node_name":                        node.Name,
-				"cluster_name":                     node.GetClusterName(),
-				"resAllocatedToPodsRequest(milli)": resReqs.MilliValue(),
-				"resAllocatedToPodsLimit(milli)":   resLimits.MilliValue(),
-				"allocatableRes(milli)":            (val.Value() * 1000)})
+				"res_name":                  resName,
+				"node_name":                 node.Name,
+				"cluster_name":              node.GetClusterName(),
+				"resAllocatedRequests":      valOrig,
+				"resAllocatedToPodsRequest": resReqs,
+				"resAllocatedToPodsLimit":   resLimits,
+				"resAllocatedFinalRequests": val,
+				"nodeResourceMap":           nodeResourceMap,
+			})
 		}
 	}
 
