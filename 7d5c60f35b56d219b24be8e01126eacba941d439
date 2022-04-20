@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "8d4b3de1_8f2db700",
+        "filename": "central-controller/deployments/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2022-04-20T07:10:04Z",
+      "side": 1,
+      "message": "`$ kubectl apply -f scc_secret.yaml -n sdewan-system`\n`$ kubectl apply -f scc_mongo.yaml -n sdewan-system`\n`$ kubectl apply -f scc_etcd.yaml -n sdewan-system`",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 49
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d418dcf8_85e55e71",
         "filename": "central-controller/deployments/kubernetes/scc_etcd.yaml",
         "patchSetId": 1
@@ -19,6 +42,29 @@
     },
     {
       "key": {
+        "uuid": "5a7adfbe_32529a52",
+        "filename": "central-controller/deployments/kubernetes/scc_etcd.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2022-04-20T07:10:04Z",
+      "side": 1,
+      "message": "Please remove the space",
+      "range": {
+        "startLine": 96,
+        "startChar": 23,
+        "endLine": 96,
+        "endChar": 31
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3662e4c1_49db4c02",
         "filename": "central-controller/src/monitor/Makefile",
         "patchSetId": 1
@@ -30,6 +76,52 @@
       "writtenOn": "2022-04-20T07:06:52Z",
       "side": 1,
       "message": "Please format the makefile.",
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f3c9d16_42ac3b9e",
+        "filename": "central-controller/src/monitor/Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2022-04-20T07:10:04Z",
+      "side": 1,
+      "message": "@rm -f monitor",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 33
+      },
+      "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0a42e1e_7f79c099",
+        "filename": "central-controller/src/rsync/config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 249
+      },
+      "writtenOn": "2022-04-20T07:10:04Z",
+      "side": 1,
+      "message": "\"database-ip\": \"mongo\"?",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 21
+      },
       "revId": "7d5c60f35b56d219b24be8e01126eacba941d439",
       "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
       "unresolved": true
