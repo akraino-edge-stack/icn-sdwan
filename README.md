@@ -1,8 +1,3 @@
-**NOTICE: This is a PreProd version.**
-
-**We are actively working on this to make it for Prod release. For now, please DO NOT use it for any Prod environment!**
-
-
 # Introduction to Akraino ICN SD-EWAN solution
 
 SD-EWAN main functionality include
@@ -52,6 +47,10 @@ central-controller's high level design can be found at: https://www.linkedin.com
 ## Environment Settings Recommendations
 To make our project work for your solution, please do the environment settings following the best practices that are widely known by the communities and industries.
 
+### Host OS
+First of all, please follow the best practices to configure your host operating system.
+e.g. keep host OS components up-to-date and minimize host OS attack surface.
+
 ### Docker Image Usage
 Please follow the best know practices of Docker in your development lifecycle that will give you more productivity and security.
 
@@ -59,6 +58,12 @@ Please follow the best know practices of Docker in your development lifecycle th
 - [Image Build Best Practices](https://docs.docker.com/get-started/09_image_best/)
 - [Only Use Trusted Registry Service Like Docker Hub](https://docs.docker.com/docker-hub/)
 - [Using Docker Hub for CI CD](https://docs.docker.com/ci-cd/best-practices/)
+
+### Kubernetes
+Please follow the industry best practices for setting your Kubernetes clusters.
+- [Kubrenetes Security Tutorial](https://kubernetes.io/docs/tutorials/security/)
+- [Kubernetes CIS Benchmark](https://www.aquasec.com/cloud-native-academy/kubernetes-in-production/kubernetes-cis-benchmark-best-practices-in-brief/)
+- [Kube Bench](https://github.com/aquasecurity/kube-bench)
 
 ### Etcd
 Etcd is a is a strongly consistent, distributed key-value store. It's a critical Kubernetes component which stores information on state and secrets, and it should be protected differently from the rest of your cluster. Administrators should always use strong credentials from the API servers to their etcd server, such as mutual auth via TLS client certificates, and it is often recommended to isolate the etcd servers behind a firewall that only the API servers may access.
@@ -75,7 +80,21 @@ Please follow the best known practices of MongoDB
 - [Encrypt Data At Rest](https://www.mongodb.com/docs/manual/core/security-encryption-at-rest/)
 
 ### Istio
-Our project can be used with Istio to enable a secure running environment. Please follow the general practice of [the Istio Service Mesh](https://istio.io/latest/about/service-mesh/) and [Istio / Security](https://istio.io/latest/docs/concepts/security/) to complete the settings for your own solution. In addition to that, in order to get a general idea or quick impression about the usage, you can also reference our introduction to a [demo](https://github.com/intel-sandbox/akraino-sdewan/tree/main/central-controller/docs/istio). 
+Our project can be used with Istio to enable a secure running environment. Please follow the general practice of [the Istio Service Mesh](https://istio.io/latest/about/service-mesh/) and [Istio / Security](https://istio.io/latest/docs/concepts/security/) to complete the settings for your own solution. In addition to that, in order to get a general idea or quick impression about the usage, you can also reference our introduction to a [demo](https://github.com/intel-sandbox/akraino-sdewan/tree/main/central-controller/docs/istio).
+Please also follow the best practices of Istio for [scalability and performace](https://istio.io/latest/docs/ops/deployment/performance-and-scalability/).
+
+
+## Administration/Operation Guideline
+Please follow the best practices for administration or operations.
+
+
+e.g. We recommend you to follow the guidelines about the authentication lifecycle management in [Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html) that covers a broad range of that topic. Especially, please follow the guidelines in section "5.1.1.2 Memorized Secret Verifiers" in that document when you configure your secret verifiers.
+
+### Account Management.
+Please follow the best practices of industry to manage the accounts. e.g. authentication lockout or throttling, minimum password requirements, password of application should be protected, authentication error should be consistent, avoid authentication timing vulnerabilities, new user should be forced to change password etc.
+
+### Certificate Management.
+Please follow the best practices of industry to manange your certificate. e.g. https://kubernetes.io/docs/setup/best-practices/certificates/
 
 ## Contact Us
 
