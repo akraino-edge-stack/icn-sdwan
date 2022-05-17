@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "288545d8_beeb0861",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-05-17T01:11:54Z",
+      "side": 1,
+      "message": "typo here",
+      "range": {
+        "startLine": 64,
+        "startChar": 3,
+        "endLine": 64,
+        "endChar": 13
+      },
+      "revId": "33b746eb57466e59e57515b21793e2e27a095e98",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf951fd8_3268ff7a",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 308
+      },
+      "writtenOn": "2022-05-17T01:11:54Z",
+      "side": 1,
+      "message": "Just a bit confusing here. Why it\u0027s stating ovn4nfv k8s?",
+      "range": {
+        "startLine": 101,
+        "startChar": 24,
+        "endLine": 101,
+        "endChar": 35
+      },
+      "revId": "33b746eb57466e59e57515b21793e2e27a095e98",
+      "serverId": "4cada01b-0314-4fe0-84a1-f9ddc89863f9",
+      "unresolved": true
+    }
+  ]
+}
