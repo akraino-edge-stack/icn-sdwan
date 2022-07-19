@@ -40,7 +40,7 @@ func (p *Provider) GetClientProviders(app, cluster, level, namespace string) (Cl
 	}
 
 	kc, err := utils.GetKubeConfig(cluster, level, namespace)
-	if err != nil {
+	if err != nil && !pkgerrors.Is(err, utils.KubeConfigNotFoundErr) {
 		return nil, err
 	}
 

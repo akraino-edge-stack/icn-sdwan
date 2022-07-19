@@ -14,6 +14,7 @@ type CNFServiceSpec struct {
 	FullName string `json:"fullname,omitempty"`
 	Port     string `json:"port,omitempty"`
 	DPort    string `json:"dport,omitempty"`
+	CIDR     string `json:"cidr,omitempty"`
 }
 
 func (c *CNFServiceStatus) IsEqual(s *CNFServiceStatus) bool {

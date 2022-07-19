@@ -25,14 +25,21 @@ type DeviceObject struct {
 
 // DeviceObjectSpec contains the parameters
 type DeviceObjectSpec struct {
-	PublicIps            []string `json:"publicIps"`
-	ForceHubConnectivity bool     `json:"forceHubConnectivity"`
-	ProxyHub             string   `json:"proxyHub"`
-	ProxyHubPort         int      `json:"proxyHubPort"`
-	UseHub4Internet      bool     `json:"useHub4Internet"`
-	DedicatedSFC         bool     `json:"dedicatedSFC"`
-	CertificateId        string   `json:"certificateId"`
-	KubeConfig           string   `json:"kubeConfig" encrypted:""`
+	PublicIps            []string     `json:"publicIps"`
+	ForceHubConnectivity bool         `json:"forceHubConnectivity"`
+	ProxyHub             string       `json:"proxyHub"`
+	ProxyHubPort         int          `json:"proxyHubPort"`
+	UseHub4Internet      bool         `json:"useHub4Internet"`
+	DedicatedSFC         bool         `json:"dedicatedSFC"`
+	CertificateId        string       `json:"certificateId"`
+	KubeConfig           string       `json:"kubeConfig" encrypted:""`
+	GitOpsParam          GitOpsParams `json:"gitOpsParam"`
+}
+
+type GitOpsParams struct {
+	GitOpsType            string `json:"gitOpsType"`
+	GitOpsReferenceObject string `json:"gitOpsReferenceObject"`
+	GitOpsResourceObject  string `json:"gitOpsResourceObject"`
 }
 
 // DeviceObjectStatus

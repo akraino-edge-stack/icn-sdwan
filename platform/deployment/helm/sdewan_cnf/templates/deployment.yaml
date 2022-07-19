@@ -63,10 +63,9 @@ spec:
         name: {{ .Values.containers.name }}
         readinessProbe:
           failureThreshold: 5
-          httpGet:
-            path: /
+          tcpSocket:
+            host:
             port: 80
-            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 5
           successThreshold: 1

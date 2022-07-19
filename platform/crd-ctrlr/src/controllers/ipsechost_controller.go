@@ -29,7 +29,7 @@ func (m *IpsecHostHandler) GetType() string {
 	return "IpsecHost"
 }
 
-func (m *IpsecHostHandler) GetName(instance runtime.Object) string {
+func (m *IpsecHostHandler) GetName(instance client.Object) string {
 	host := instance.(*batchv1alpha1.IpsecHost)
 	return host.Name
 }
@@ -38,13 +38,13 @@ func (m *IpsecHostHandler) GetFinalizer() string {
 	return "ipsec.host.finalizers.sdewan.akraino.org"
 }
 
-func (m *IpsecHostHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *IpsecHostHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.IpsecHost{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *IpsecHostHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *IpsecHostHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	host := instance.(*batchv1alpha1.IpsecHost)
 	numOfConn := len(host.Spec.Connections)
 	conn := host.Spec.Connections
@@ -133,8 +133,8 @@ type IpsecHostReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=ipsechosts,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=ipsechosts/status,verbs=get;update;patch
 
-func (r *IpsecHostReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, ipsecHostHandler)
+func (r *IpsecHostReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, ipsecHostHandler)
 }
 
 func (r *IpsecHostReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -143,9 +143,7 @@ func (r *IpsecHostReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.IpsecHost{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.IpsecHostList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.IpsecHostList{})),
 			Filter).
 		Complete(r)
 }

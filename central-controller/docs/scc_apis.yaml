@@ -404,12 +404,36 @@ paths:
           description: Internal error
           content: {}
 
-  /overlays/{overlay-name}/hubs/{hub-name}/devices/{device-name}:
+  /overlays/{overlay-name}/hubs/{hub-name}/cnfs:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/HubName'
+
+    get: # get all connections (hub or device) to this hub
+      tags:
+        - Hub CNF
+      summary: Get all Hub CNF statuses
+
+      description: |
+        Get all `cnfs' statuses`
+
+      operationId: getAllHubCNFStatuses
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/CNFStatus'
+        '500':
+          description: Internal error
+          content: {}
+
+  /overlays/{overlay-name}/hubs/{hub-name}/devices:
     # parameters list that are used with each operation for this path
     parameters:
     - $ref: '#/components/parameters/OverlayName'
     - $ref: '#/components/parameters/HubName'
-    - $ref: '#/components/parameters/DeviceName'
     post: # documentation for GET operation for this path
       tags:
         - Hub Connection
@@ -422,10 +446,26 @@ paths:
       responses: # list of responses
         '201':
           description: Success
-          content: {}
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/HubDevice'
         '500':
           description: Internal error
           content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/HubDevice'
+        description: Hub device connection information
+        required: true
+  /overlays/{overlay-name}/hubs/{hub-name}/devices/{device-name}:
+    # parameters list that are used with each operation for this path
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/HubName'
+    - $ref: '#/components/parameters/DeviceName'
     delete: # documentation for DELETE operation for this path
       tags:
         - Hub Connection
@@ -585,14 +625,215 @@ paths:
         '500':
           description: Internal error
           content: {}
+  /overlays/{overlay-name}/devices/{device-name}/cnfs:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/DeviceName'
+
+    get: # get all cnfs in this device
+      tags:
+        - Device CNF
+      summary: Get all CNFs statuses
+
+      description: |
+        Get all `cnfs' statuses`
+
+      operationId: getAllDeviceCNFStatuses
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/CNFStatus'
+        '500':
+          description: Internal error
+          content: {}
+          
+  ############################ Device Site API'S #################################################
+  /overlays/{overlay-name}/devices/{device-name}/sites:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/DeviceName'
+    post: # create site for this device
+      tags:
+        - Device Site
+      summary: Create Device Site
+      
+      description: |
+        Create `site`
+        
+      operationId: createDeviceSite
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/DeviceSite'
+        '409':
+          description: Name conflict
+          content: {}
+        '500':
+              description: Internal error
+              content: {}
+              
+    get: # get certain site defined for this device
+      tags:
+        - Device Site
+      summary: Get all Device sites
+
+      description: |
+        Get all `sites`
+
+      operationId: getAllDeviceSites
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/DeviceSiteArray'
+        '500':
+          description: Internal error
+          content: {}    
+  /overlays/{overlay-name}/devices/{device-name}/sites/{device-site-name}:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/DeviceName'
+    - $ref: '#/components/parameters/DeviceSiteName'        
+    get: # get certain site defined for this device
+      tags:
+        - Device Site
+      summary: Get specific Device sites
+
+      description: |
+        Get specific `sites`
+
+      operationId: getSpecificDeviceSites
+      responses: # one response
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/DeviceSite'
+        '500':
+          description: Internal error
+          content: {}
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Device Site
+      summary: Delete device site by site name
+
+      description: |
+        Delete `site`
+
+      operationId: deleteSiteByName
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
   
   ############################ IP ranges API'S #################################################
+  /provider/ipranges:
+    post:
+      tags:
+        - Control Plane IP range Registration
+      summary: Control Plane IP range
+      description: Add a new `ip range` for control plane
+      operationId: addIpRangeCtrl
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRangeCtrl'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/IpRangeCtrl'
+        description: Ip range information
+        required: true
+
+    get: # documentation for GET operation for this path
+      tags:
+        - Control Plane IP range Registration
+      summary: Get all control plane ip ranges
+
+      description: |
+        Get all `ip ranges`
+
+      operationId: getAllIpRangesCtrl
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRangeArray'
+        '500':
+          description: Internal error
+          content: {}
+  /provider/ipranges/{iprange-name}:
+    parameters:
+    - $ref: '#/components/parameters/IpRangeName'
+    get: # documentation for GET operation for this path
+      tags:
+        - Control Plane IP range Registration
+      summary: Get specific control plane ip range
+
+      description: |
+        Get specific `ip range`
+
+      operationId: getSpecifiIpRangesCtrl
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/IpRange'
+        '500':
+          description: Internal error
+          content: {}
+    delete: # documentation for DELETE operation for this path
+      tags:
+        - Control Plane IP range Registration
+      summary: Delete ip range by ip range name
+
+      description: |
+        Delete `ip range`
+
+      operationId: deleteIpRangeByNameCtrl
+      responses: # list of responses
+        '204':
+          description: Deleted
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+          
   /overlays/{overlay-name}/ipranges:
     parameters:
     - $ref: '#/components/parameters/OverlayName'
     post:
       tags:
-        - IP range Registration
+        - Data Plane IP range Registration
       summary: IP range
       description: Add a new `ip range`
       operationId: addIpRange
@@ -622,7 +863,7 @@ paths:
 
     get: # documentation for GET operation for this path
       tags:
-        - IP range Registration
+        - Data Plane IP range Registration
       summary: Get all ip ranges
 
       description: |
@@ -639,7 +880,6 @@ paths:
         '500':
           description: Internal error
           content: {}
-
   /overlays/{overlay-name}/ipranges/{iprange-name}:
     # parameters list that are used with each operation for this path
     parameters:
@@ -647,7 +887,7 @@ paths:
     - $ref: '#/components/parameters/IpRangeName'
     get: # documentation for GET operation for this path
       tags:
-        - IP range Registration
+        - Data Plane IP range Registration
       summary: Get a Ip range by ip range name
 
       description: |
@@ -664,36 +904,9 @@ paths:
         '500':
           description: Internal error
           content: {}
-    put:
-      tags:
-        - IP range Registration
-      summary: Update ip range
-      description: Update `ip range`
-      operationId: updateIpRange
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json: # operation response mime type
-              schema:
-                $ref: '#/components/schemas/IpRange'
-        '422':
-          description: Invalid data
-          content: {}
-        '500':
-          description: Internal error
-          content: {}
-      # request body documentation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IpRange'
-        description: Update ip range object
-        required: true
     delete: # documentation for DELETE operation for this path
       tags:
-        - IP range Registration
+        - Data Plane IP range Registration
       summary: Delete ip range by ip range name
 
       description: |
@@ -707,6 +920,245 @@ paths:
         '500':
           description: Internal error
           content: {}
+          
+  ############################ Certificates API'S #################################################
+  /overlays/{overlay-name}/certificates:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    post:
+      tags:
+      - Certificate Registration
+      summary: Create certificate
+      
+      description: |
+        Create `certificate`
+        
+      operationId: createCertificate
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateData'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Certificate'
+        description: Certificate information
+        required: true
+    get:
+      tags:
+      - Certificate Registration
+      summary: Get certificates
+      
+      description: | 
+        Get `certificates`
+      
+      operationId: getAllCertificates
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateArray'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Error
+          content: {}
+  /overlays/{overlay-name}/certificates/{certificate-name}:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/CertificateName'
+    get:
+      tags:
+      - Certificate Registration
+      summary: Get specific certificate
+      
+      description: |
+        Get `specific certificate`
+        
+      operationId: getSpecificCertificate
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateData'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Error
+          content: {}
+    delete:
+      tags:
+      - Certificate Registration
+      summary: Delete specific certificate
+      
+      description: |
+        Delete `specific certificate`
+        
+      operationId: deleteSpecificCertificate
+      responses:
+        '204':
+          description: Deleted
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Error
+          content: {}
+  
+  ############################ ClusterSyncObject API'S #################################################
+  /overlays/{overlay-name}/cluster-sync-objects:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    post:
+      tags:
+      - Cluster Sync Object Registration
+      summary: Create cluster sync object
+      
+      description: |
+        Create `ClusterSyncObject`
+        
+      operationId: createClusterSyncObject
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterSyncObject'
+        '409':
+          description: Name conflict
+          content: {}
+        '422':
+          description: Invalid Input
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/ClusterSyncObject'
+        description: ClusterSyncObject information
+        required: true
+    get:
+      tags:
+      - Cluster Sync Object Registration
+      summary: Get all cluster sync objects
+      
+      description: |
+        Get all `ClusterSyncObjects`
+        
+      operationId: getAllClusterSyncObject
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterSyncObjectArray'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Error
+          content: {}
+  /overlays/{overlay-name}/cluster-sync-objects/{cluster-sync-object-name}:
+    parameters:
+    - $ref: '#/components/parameters/OverlayName'
+    - $ref: '#/components/parameters/ClusterSyncObjectName'
+    get:
+      tags:
+      - Cluster Sync Object Registration
+      summary: Get specific cluster sync objects
+      
+      description: |
+        Get specific `ClusterSyncObjects`
+        
+      operationId: getSpecificClusterSyncObject
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterSyncObject'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Error
+          content: {}
+    put:
+      tags:
+      - Cluster Sync Object Registration
+      summary: Update specific cluster sync objects
+      
+      description: |
+        Update `specific ClusterSyncObjects`
+        
+      operationId: updateSpecificClusterSyncObject
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema:
+                $ref: '#/components/schemas/ClusterSyncObject'
+        '422':
+          description: Invalid data
+          content: {}
+        '500':
+          description: Internal error
+          content: {}
+      # request body documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterSyncObject'
+        description: Update ClusterSyncObject object
+        required: true
+    delete:
+      tags:
+      - Cluster Sync Object Registration
+      summary: Delete specific cluster sync object
+      
+      description: |
+        Delete `specific ClusterSyncObject`
+        
+      operationId: deleteSpecificClusterSyncObject
+      responses:
+        '204':
+          description: Deleted
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Error
+          content: {}
+    
      
 ######################### SCHEMAS ####################################################
 # An object to hold reusable parts that can be used across the definition
@@ -801,6 +1253,38 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Hub'
+    HubDeviceSpec:
+      type: object
+      properties:
+        device:
+          description: device name to establish connection with
+          type: string
+          example: "edge-1"
+        isDelegateHub:
+          description: is this the connection with a delegate hub
+          type: boolean
+          example: true
+      required:
+      - device
+      - isDelegateHub
+    HubDevice:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/HubDeviceSpec'
+    Device:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/DeviceSpec'
+    DeviceArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Device'
     DeviceSpec:
       type: object
       properties:
@@ -825,20 +1309,38 @@ components:
           type: string
           description: kubeconfiguration information for the traffic hub device
           example: "token"
+        certificateId:
+          type: string
+          description: certificate identifier for the device
+          example: "ResName-cert"
       required:
       - name
       - kubeConfig
-    Device:
+    DeviceSite:
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/MetadataBase'
         spec:
-          $ref: '#/components/schemas/DeviceSpec'
-    DeviceArray:
+          $ref: '#/components/schemas/DeviceSiteSpec'
+    DeviceSiteArray:
       type: array
       items:
-        $ref: '#/components/schemas/Device'
+        $ref: '#/components/schemas/DeviceSite'
+    DeviceSiteSpec:
+      type: object
+      properties:
+        hubs:
+          type: array
+          items:
+            type: string
+            example: "sample-hub"
+        url:
+          type: string
+          example: "http://www.xxx.com"
+        subnet:
+          type: string
+          example: "1.1.1.0/24"
     ConnectionEnd:
       type: object
       properties:
@@ -880,6 +1382,49 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Connection'
+    CNFStatusSpec:
+      type: object
+      properties:
+        appliedGeneration:
+          type: integer
+          example: 1
+        appliedTime:
+          type: string
+          example: "2022-04-22T07:10:58Z"
+        information:
+          $ref: '#/components/schemas/CNFInfoArray'
+    CNFStatus:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        status:
+          $ref: '#/components/schemas/CNFStatusSpec'
+    CNFInfoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CNFInfoSpec'
+    CNFInfoSpec:
+      type: object
+      properties:
+        ip:
+          type: string
+          example: "10.10.10.10"
+        name:
+          type: string
+          example: "sample-cnf"
+        namespace:
+          type: string
+          example: "default"
+        node:
+          type: string
+          example: "sample-node"
+        purpose:
+          type: string
+          example: "base"
+        status:
+          type: string
+          example: ""
     IpRangeSpec:
       type: object
       properties:
@@ -890,11 +1435,11 @@ components:
           example: "192.168.11.0/24"
         minIp:
           description: minium ip of the ip range
-          type: int
+          type: integer
           example: "1"
         maxIp:
           description: maximum ip of the ip range
-          type: int
+          type: integer
           example: "100"
       required:
       - name
@@ -910,9 +1455,16 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/IpRange'
-    OverlaySpec:
+    IpRangeCtrl:
       type: object
       properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          $ref: '#/components/schemas/IpRangeSpec'
+    OverlaySpec:
+      type: object
+      properties: {}
     Overlay:
       type: object
       properties:
@@ -924,6 +1476,69 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Overlay'
+    Certificate:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+    CertificateData:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          type: object
+          properties: {}
+        data:
+          type: object
+          properties:
+            rootca:
+              type: string
+            ca:
+              type: string
+            key:
+              type: string
+    CertificateArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CertificateData'
+    ClusterSyncObject:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataBase'
+        spec:
+          type: object
+          properties:
+            kv:
+              type: array
+              items:
+                $ref: '#/components/schemas/ClusterSyncObjectKV'
+    ClusterSyncObjectKV:
+      type: object
+      description: "Key value pairs for clustersyncobject"
+      properties:
+        gitType:
+          type: string
+          example: "github"
+        username:
+          type: string
+          example: "SampleUser"
+        repoName:
+          type: string
+          example: "SampleRepo"
+        gitToken:
+          type: string
+          description: "Personal access token to access the repo"
+          example: "xxxxxxxxxxxxxxxxx"
+        branch:
+          type: string
+          example: "main"
+    ClusterSyncObjectArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ClusterSyncObject'
+
 
 ################## PARAMETERS #########################################################    
   parameters:
@@ -951,6 +1566,14 @@ components:
       schema:
         type: string
         maxLength: 128
+    DeviceSiteName:
+      name: device-site-name
+      in: path
+      description: Name of the device site config
+      required: true
+      schema:
+        type: string
+        maxLength: 128
     IpRangeName:
       name: iprange-name
       in: path
@@ -963,6 +1586,22 @@ components:
       name: overlay-name
       in: path
       description: Name of the overlay
+      required: true
+      schema:
+        type: string
+        maxLength: 128
+    CertificateName:
+      name: certificate-name
+      in: path
+      description: Name of the certificate
+      required: true
+      schema:
+        type: string
+        maxLength: 128
+    ClusterSyncObjectName:
+      name: cluster-sync-object-name
+      in: path
+      description: Name of the cluster sync object
       required: true
       schema:
         type: string

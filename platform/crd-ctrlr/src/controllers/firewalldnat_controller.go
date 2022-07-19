@@ -29,7 +29,7 @@ func (m *FirewallDnatHandler) GetType() string {
 	return "FirewallDnat"
 }
 
-func (m *FirewallDnatHandler) GetName(instance runtime.Object) string {
+func (m *FirewallDnatHandler) GetName(instance client.Object) string {
 	dnat := instance.(*batchv1alpha1.FirewallDNAT)
 	return dnat.Name
 }
@@ -38,7 +38,7 @@ func (m *FirewallDnatHandler) GetFinalizer() string {
 	return "dnat.finalizers.sdewan.akraino.org"
 }
 
-func (m *FirewallDnatHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *FirewallDnatHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.FirewallDNAT{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
@@ -46,7 +46,7 @@ func (m *FirewallDnatHandler) GetInstance(r client.Client, ctx context.Context, 
 
 //pupulate "dnat" to target field as default value
 //copy "name" field value from metadata to SPEC.name
-func (m *FirewallDnatHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *FirewallDnatHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	firewalldnat := instance.(*batchv1alpha1.FirewallDNAT)
 	firewalldnat.Spec.Name = firewalldnat.ObjectMeta.Name
 	firewalldnat.Spec.Target = "DNAT"
@@ -103,8 +103,8 @@ type FirewallDNATReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewalldnats,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewalldnats/status,verbs=get;update;patch
 
-func (r *FirewallDNATReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, firewallDnatHandler)
+func (r *FirewallDNATReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, firewallDnatHandler)
 }
 
 func (r *FirewallDNATReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -113,9 +113,7 @@ func (r *FirewallDNATReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.FirewallDNAT{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.FirewallDNATList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.FirewallDNATList{})),
 			Filter).
 		Complete(r)
 }

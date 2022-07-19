@@ -160,7 +160,7 @@ func (p *AzureArcProvider) createGitConfiguration(accessToken string, repository
 */
 func (p *AzureArcProvider) addDummyFile(ctx context.Context, gitBranch string) error {
 
-	c, err := emcogit.CreateClient(p.gitProvider.GitToken, p.gitProvider.GitType)
+	c, err := emcogit.CreateClient(p.gitProvider.UserName, p.gitProvider.GitToken, p.gitProvider.GitType)
 
 	if err != nil {
 		log.Error("Error Creating emcogit client", log.Fields{"err": err})
@@ -171,7 +171,8 @@ func (p *AzureArcProvider) addDummyFile(ctx context.Context, gitBranch string) e
 	path := "clusters/" + p.gitProvider.Cluster + "/context/" + p.gitProvider.Cid
 	files = emcogit.Add(path+"/DoNotDelete", "Dummy file", files, p.gitProvider.GitType).([]gitprovider.CommitFile)
 
-	err = emcogit.CommitFiles(ctx, c, p.gitProvider.UserName, p.gitProvider.RepoName, gitBranch, "New Commit", files, p.gitProvider.GitType)
+	appName := p.gitProvider.Cid + p.gitProvider.App
+	err = emcogit.CommitFiles(ctx, c, p.gitProvider.UserName, p.gitProvider.RepoName, gitBranch, "New Commit", appName, files, p.gitProvider.GitType)
 	if err != nil {
 		log.Error("Couldn't commit the file", log.Fields{"err": err})
 		return err
@@ -187,7 +188,7 @@ func (p *AzureArcProvider) addDummyFile(ctx context.Context, gitBranch string) e
 */
 func (p *AzureArcProvider) deleteDummyFile(ctx context.Context, gitBranch string) error {
 
-	c, err := emcogit.CreateClient(p.gitProvider.GitToken, p.gitProvider.GitType)
+	c, err := emcogit.CreateClient(p.gitProvider.UserName, p.gitProvider.GitToken, p.gitProvider.GitType)
 
 	if err != nil {
 		log.Error("Error Creating emcogit client", log.Fields{"err": err})
@@ -198,7 +199,8 @@ func (p *AzureArcProvider) deleteDummyFile(ctx context.Context, gitBranch string
 	path := "clusters/" + p.gitProvider.Cluster + "/context/" + p.gitProvider.Cid
 	files = emcogit.Delete(path+"/DoNotDelete", files, p.gitProvider.GitType).([]gitprovider.CommitFile)
 
-	err = emcogit.CommitFiles(ctx, c, p.gitProvider.UserName, p.gitProvider.RepoName, gitBranch, "New Commit", files, p.gitProvider.GitType)
+	appName := p.gitProvider.Cid + p.gitProvider.App
+	err = emcogit.CommitFiles(ctx, c, p.gitProvider.UserName, p.gitProvider.RepoName, gitBranch, "New Commit", appName, files, p.gitProvider.GitType)
 	if err != nil {
 		log.Error("Couldn't commit the file", log.Fields{"err": err})
 		return err

@@ -1,9 +1,9 @@
 # Steps to setup Overlay Controller cluster
 
-###Prerequisite
-**Install Kubernetes**
+## Prerequisite
+**Install Kubernetes(verified on v1.23.3)**
 
-###Install dependencies
+## Install dependencies
 **1. Install cert-manager**
 
 `$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml`
@@ -12,16 +12,16 @@
 
 `$ kubectl create namespace sdewan-system`
 
-###Install CNF
-**Please follow the README.md under ../platform/cnf folder for installation**
+## Install CNF and CRD Controller
+**Please follow the README.md under ../platform/deployment folder for installation**
 
-###Install CRD Controller
-**Please follow the README.md under ../platform/crd-ctrlr folder for installation**
+## Install Overlay Controller Microservices
+**Please follow the README.md under ./deployments folder for installation**
 
-###Install Overlay Controller Microservices
-**Please follow the README.md under deployments folder for installation**
+## Install Monitor
+**Please follow the README.md under ./deployments/kubernetes/monitor-deploy folder for installation**
 
-###Configurations for Overlay Controller
+## Configurations for Overlay Controller
 **1. Routing rule**
 
 **2. Local cluster registration**

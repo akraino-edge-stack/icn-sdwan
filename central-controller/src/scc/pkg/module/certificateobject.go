@@ -25,12 +25,14 @@ type CertificateObject struct {
 
 // CertificateObjectSpec contains the parameters
 type CertificateObjectSpec struct {
+	IsCA        bool   `json:"isCA"`
+	ClusterType string `json:"clusterType"`
 }
 
 type CertificateObjectData struct {
-	RootCA string `json:"rootca"`
-	Ca     string `json:"ca"`
-	Key    string `json:"key"`
+	CA   string `json:"ca"`
+	Cert string `json:"cert"`
+	Key  string `json:"key"`
 }
 
 func (c *CertificateObject) GetMetadata() ObjectMetaData {

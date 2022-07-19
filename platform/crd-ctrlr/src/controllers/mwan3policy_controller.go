@@ -30,7 +30,7 @@ func (m *Mwan3PolicyHandler) GetType() string {
 	return "Mwan3Policy"
 }
 
-func (m *Mwan3PolicyHandler) GetName(instance runtime.Object) string {
+func (m *Mwan3PolicyHandler) GetName(instance client.Object) string {
 	policy := instance.(*batchv1alpha1.Mwan3Policy)
 	return policy.Name
 }
@@ -39,13 +39,13 @@ func (m *Mwan3PolicyHandler) GetFinalizer() string {
 	return "rule.finalizers.sdewan.akraino.org"
 }
 
-func (m *Mwan3PolicyHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *Mwan3PolicyHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.Mwan3Policy{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *Mwan3PolicyHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *Mwan3PolicyHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	policy := instance.(*batchv1alpha1.Mwan3Policy)
 	members := make([]openwrt.SdewanMember, len(policy.Spec.Members))
 	for i, membercr := range policy.Spec.Members {
@@ -111,8 +111,8 @@ type Mwan3PolicyReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=mwan3policies,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=mwan3policies/status,verbs=get;update;patch
 
-func (r *Mwan3PolicyReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, mwan3PolicyHandler)
+func (r *Mwan3PolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, mwan3PolicyHandler)
 }
 
 func (r *Mwan3PolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -121,9 +121,7 @@ func (r *Mwan3PolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.Mwan3Policy{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.Mwan3PolicyList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.Mwan3PolicyList{})),
 			Filter).
 		Complete(r)
 }

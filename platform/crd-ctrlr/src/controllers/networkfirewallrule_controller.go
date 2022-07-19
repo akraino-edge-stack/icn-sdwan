@@ -29,7 +29,7 @@ func (m *NetworkFirewallRuleHandler) GetType() string {
 	return "NetworkFirewallRule"
 }
 
-func (m *NetworkFirewallRuleHandler) GetName(instance runtime.Object) string {
+func (m *NetworkFirewallRuleHandler) GetName(instance client.Object) string {
 	rule := instance.(*batchv1alpha1.NetworkFirewallRule)
 	return rule.Name
 }
@@ -38,13 +38,13 @@ func (m *NetworkFirewallRuleHandler) GetFinalizer() string {
 	return "networkfirewallrule.finalizers.sdewan.akraino.org"
 }
 
-func (m *NetworkFirewallRuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *NetworkFirewallRuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.NetworkFirewallRule{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *NetworkFirewallRuleHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *NetworkFirewallRuleHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	firewallrule := instance.(*batchv1alpha1.NetworkFirewallRule)
 	firewallrule.Spec.Name = firewallrule.ObjectMeta.Name
 	firewallruleObject := openwrt.SdewanNetworkFirewallRule(firewallrule.Spec)
@@ -98,8 +98,8 @@ type NetworkFirewallRuleReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=networkfirewallrules,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=networkfirewallrules/status,verbs=get;update;patch
 
-func (r *NetworkFirewallRuleReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, networkFirewallRuleHandler)
+func (r *NetworkFirewallRuleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, networkFirewallRuleHandler)
 }
 
 func (r *NetworkFirewallRuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -108,9 +108,7 @@ func (r *NetworkFirewallRuleReconciler) SetupWithManager(mgr ctrl.Manager) error
 		For(&batchv1alpha1.NetworkFirewallRule{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.NetworkFirewallRuleList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.NetworkFirewallRuleList{})),
 			Filter).
 		Complete(r)
 }

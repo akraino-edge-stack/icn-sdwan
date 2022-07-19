@@ -1,4 +1,3 @@
-
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -19,7 +18,7 @@ webhooks:
   - apiGroups:
     - batch.sdewan.akraino.org
     apiVersions:
-    - v1
+    - v1alpha1
     operations:
     - CREATE
     - UPDATE
@@ -60,9 +59,11 @@ webhooks:
     - batch.sdewan.akraino.org
     apiVersions:
     - v1
+    - v1alpha1
     operations:
     - UPDATE
     resources:
+    - deployments
     - mwan3policies
     - mwan3rules
     - networkfirewallrules

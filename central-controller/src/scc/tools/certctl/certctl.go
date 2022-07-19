@@ -26,7 +26,7 @@ type CertData struct {
 }
 
 func main(){
-    servIp := flag.String("ip", "10.233.117.240", "SDEWAN Central Controller IP Address")
+    servIp := flag.String("ip", "127.0.0.1", "SDEWAN Central Controller IP Address")
     servPort := flag.String("port", "9015", "SDEWAN Central Controller Port Number")
     overlayName := flag.String("overlay", "", "Overlay the cert belongs to")
     certName := flag.String("certName", "", "Certificate name to query")

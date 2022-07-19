@@ -9,7 +9,87 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: cnfhubsites.batch.sdewan.akraino.org
+spec:
+  group: batch.sdewan.akraino.org
+  names:
+    kind: CNFHubSite
+    listKind: CNFHubSiteList
+    plural: cnfhubsites
+    singular: cnfhubsite
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: CNFHubSite is the Schema for the cnfhubsites API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CNFHubSiteSpec defines the desired state of CNFHubSite
+            properties:
+              devicepip:
+                type: string
+              hubip:
+                type: string
+              site:
+                type: string
+              subnet:
+                type: string
+              type:
+                type: string
+            type: object
+          status:
+            description: CNFHubSiteStatus defines the observed state of CNFHubSiteStatus
+            properties:
+              devicepip:
+                type: string
+              hubip:
+                type: string
+              message:
+                type: string
+              remoteips:
+                items:
+                  type: string
+                type: array
+              subnet:
+                type: string
+              type:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnflocalservices.batch.sdewan.akraino.org
 spec:
@@ -85,7 +165,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfnats.batch.sdewan.akraino.org
 spec:
@@ -176,7 +256,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfrouterules.batch.sdewan.akraino.org
 spec:
@@ -253,7 +333,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfroutes.batch.sdewan.akraino.org
 spec:
@@ -329,7 +409,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfservices.batch.sdewan.akraino.org
 spec:
@@ -361,6 +441,8 @@ spec:
           spec:
             description: CNFServiceSpec defines the desired state of CNFService
             properties:
+              cidr:
+                type: string
               dport:
                 type: string
               fullname:
@@ -369,20 +451,19 @@ spec:
                 type: string
             type: object
           status:
-            description: status subsource used for Sdewan rule CRDs
+            description: CNFServiceStatus defines the observed state of CNFLocalServiceStatus
             properties:
-              appliedGeneration:
-                format: int64
-                type: integer
-              appliedTime:
-                format: date-time
+              dport:
                 type: string
               message:
                 type: string
-              state:
+              port:
                 type: string
-            required:
-            - state
+              sip:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                type: string
             type: object
         type: object
     served: true
@@ -400,7 +481,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfstatuses.batch.sdewan.akraino.org
 spec:
@@ -482,7 +563,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewalldnats.batch.sdewan.akraino.org
 spec:
@@ -577,7 +658,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallforwardings.batch.sdewan.akraino.org
 spec:
@@ -653,7 +734,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallrules.batch.sdewan.akraino.org
 spec:
@@ -754,7 +835,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallsnats.batch.sdewan.akraino.org
 spec:
@@ -849,7 +930,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallzones.batch.sdewan.akraino.org
 spec:
@@ -954,7 +1035,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: ipsechosts.batch.sdewan.akraino.org
 spec:
@@ -1086,7 +1167,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: ipsecproposals.batch.sdewan.akraino.org
 spec:
@@ -1163,7 +1244,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: ipsecsites.batch.sdewan.akraino.org
 spec:
@@ -1297,7 +1378,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: mwan3policies.batch.sdewan.akraino.org
 spec:
@@ -1382,7 +1463,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: mwan3rules.batch.sdewan.akraino.org
 spec:
@@ -1474,7 +1555,109 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: networkfirewallrules.batch.sdewan.akraino.org
+spec:
+  group: batch.sdewan.akraino.org
+  names:
+    kind: NetworkFirewallRule
+    listKind: NetworkFirewallRuleList
+    plural: networkfirewallrules
+    singular: networkfirewallrule
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: NetworkFirewallRule is the Schema for the networkfirewallrules
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NetworkFirewallRuleSpec defines the desired state of NetworkFirewallRule
+            properties:
+              dest:
+                type: string
+              dest_ip:
+                type: string
+              dest_port:
+                type: string
+              extra:
+                type: string
+              family:
+                type: string
+              icmp_type:
+                items:
+                  type: string
+                type: array
+              mark:
+                type: string
+              name:
+                description: Foo is an example field of NetworkFirewallRule. Edit
+                  NetworkFirewallRule_types.go to remove/update
+                type: string
+              proto:
+                type: string
+              set_mark:
+                type: string
+              set_xmark:
+                type: string
+              src:
+                type: string
+              src_ip:
+                type: string
+              src_mac:
+                type: string
+              src_port:
+                type: string
+              target:
+                type: string
+            type: object
+          status:
+            description: status subsource used for Sdewan rule CRDs
+            properties:
+              appliedGeneration:
+                format: int64
+                type: integer
+              appliedTime:
+                format: date-time
+                type: string
+              message:
+                type: string
+              state:
+                type: string
+            required:
+            - state
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: sdewanapplications.batch.sdewan.akraino.org
 spec:
@@ -1507,6 +1690,8 @@ spec:
             description: SdewanApplicationSpec defines the desired state of SdewanApplication
             properties:
               appNamespace:
+                type: string
+              cnfPort:
                 type: string
               podSelector:
                 description: A label selector is a label query over a set of resources.
@@ -1555,6 +1740,8 @@ spec:
                       are ANDed.
                     type: object
                 type: object
+              servicePort:
+                type: string
             type: object
           status:
             description: status subsource used for Sdewan rule CRDs
@@ -1635,18 +1822,6 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - secrets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
   - services
   verbs:
   - create
@@ -1672,6 +1847,26 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfhubsites
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - cnfhubsites/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
@@ -1995,6 +2190,26 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
+  - networkfirewallrules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - networkfirewallrules/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
   - sdewanapplications
   verbs:
   - create
@@ -2011,6 +2226,15 @@ rules:
   verbs:
   - get
   - patch
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - list
   - update
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -2208,7 +2432,7 @@ webhooks:
   - apiGroups:
     - batch.sdewan.akraino.org
     apiVersions:
-    - v1
+    - v1alpha1
     operations:
     - CREATE
     - UPDATE
@@ -2216,6 +2440,7 @@ webhooks:
     resources:
     - mwan3policies
     - mwan3rules
+    - networkfirewallrules
     - firewallzones
     - firewallforwardings
     - firewallrules
@@ -2226,6 +2451,7 @@ webhooks:
     - cnfrouterules
     - cnfservices
     - cnflocalservices
+    - cnfhubsites
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals
@@ -2247,12 +2473,14 @@ webhooks:
     - batch.sdewan.akraino.org
     apiVersions:
     - v1
+    - v1alpha1
     operations:
     - UPDATE
     resources:
     - deployments
     - mwan3policies
     - mwan3rules
+    - networkfirewallrules
     - firewallzones
     - firewallforwardings
     - firewallrules
@@ -2263,6 +2491,7 @@ webhooks:
     - cnfroutes
     - cnfrouterules
     - cnflocalservices
+    - cnfhubsites
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals

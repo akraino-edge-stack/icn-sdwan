@@ -14,13 +14,13 @@ type CNFHubSiteStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// +optional
-	Type      string `json:"type,omitempty"`
+	Type string `json:"type,omitempty"`
 	// +optional
 	SiteIPs []string `json:"remoteips,omitempty"`
 	// +optional
-	Subnet    string `json:"subnet,omitempty"`
+	Subnet string `json:"subnet,omitempty"`
 	// +optional
-	HubIP     string `json:"hubip,omitempty"`
+	HubIP string `json:"hubip,omitempty"`
 	// +optional
 	DevicePIP string `json:"devicepip,omitempty"`
 	// +optional
@@ -29,7 +29,7 @@ type CNFHubSiteStatus struct {
 
 func (c *CNFHubSiteStatus) IsEqual(s *CNFHubSiteStatus) bool {
 	if c.Type != s.Type ||
-	    c.Subnet != s.Subnet ||
+		c.Subnet != s.Subnet ||
 		c.HubIP != s.HubIP ||
 		c.DevicePIP != s.DevicePIP {
 		return false

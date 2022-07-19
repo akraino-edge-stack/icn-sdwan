@@ -42,7 +42,7 @@ type NetworkFirewallRule struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	Spec   NetworkFirewallRuleSpec `json:"spec,omitempty"`
-	Status SdewanStatus     `json:"status,omitempty"`
+	Status SdewanStatus            `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

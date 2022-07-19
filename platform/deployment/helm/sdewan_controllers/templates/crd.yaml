@@ -6,7 +6,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfhubsites.batch.sdewan.akraino.org
 spec:
@@ -86,109 +86,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
-  creationTimestamp: null
-  name: networkfirewallrules.batch.sdewan.akraino.org
-spec:
-  group: batch.sdewan.akraino.org
-  names:
-    kind: NetworkFirewallRule
-    listKind: NetworkFirewallRuleList
-    plural: networkfirewallrules
-    singular: networkfirewallrule
-  scope: Namespaced
-  versions:
-  - name: v1alpha1
-    schema:
-      openAPIV3Schema:
-        description: NetworkFirewallRule is the Schema for the networkfirewallrules
-          API
-        properties:
-          apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-            type: string
-          kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-            type: string
-          metadata:
-            type: object
-          spec:
-            description: NetworkFirewallRuleSpec defines the desired state of NetworkFirewallRule
-            properties:
-              dest:
-                type: string
-              dest_ip:
-                type: string
-              dest_port:
-                type: string
-              extra:
-                type: string
-              family:
-                type: string
-              icmp_type:
-                items:
-                  type: string
-                type: array
-              mark:
-                type: string
-              name:
-                description: Foo is an example field of NetworkFirewallRule. Edit
-                  NetworkFirewallRule_types.go to remove/update
-                type: string
-              proto:
-                type: string
-              set_mark:
-                type: string
-              set_xmark:
-                type: string
-              src:
-                type: string
-              src_ip:
-                type: string
-              src_mac:
-                type: string
-              src_port:
-                type: string
-              target:
-                type: string
-            type: object
-          status:
-            description: status subsource used for Sdewan rule CRDs
-            properties:
-              appliedGeneration:
-                format: int64
-                type: integer
-              appliedTime:
-                format: date-time
-                type: string
-              message:
-                type: string
-              state:
-                type: string
-            required:
-            - state
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
----
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnflocalservices.batch.sdewan.akraino.org
 spec:
@@ -264,7 +162,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfnats.batch.sdewan.akraino.org
 spec:
@@ -355,7 +253,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfrouterules.batch.sdewan.akraino.org
 spec:
@@ -432,7 +330,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfroutes.batch.sdewan.akraino.org
 spec:
@@ -508,7 +406,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfservices.batch.sdewan.akraino.org
 spec:
@@ -579,7 +477,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: cnfstatuses.batch.sdewan.akraino.org
 spec:
@@ -661,7 +559,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewalldnats.batch.sdewan.akraino.org
 spec:
@@ -756,7 +654,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallforwardings.batch.sdewan.akraino.org
 spec:
@@ -832,7 +730,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallrules.batch.sdewan.akraino.org
 spec:
@@ -933,7 +831,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallsnats.batch.sdewan.akraino.org
 spec:
@@ -1028,7 +926,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: firewallzones.batch.sdewan.akraino.org
 spec:
@@ -1133,7 +1031,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: ipsechosts.batch.sdewan.akraino.org
 spec:
@@ -1265,7 +1163,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: ipsecproposals.batch.sdewan.akraino.org
 spec:
@@ -1342,7 +1240,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: ipsecsites.batch.sdewan.akraino.org
 spec:
@@ -1476,7 +1374,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: mwan3policies.batch.sdewan.akraino.org
 spec:
@@ -1561,7 +1459,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: mwan3rules.batch.sdewan.akraino.org
 spec:
@@ -1653,7 +1551,109 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: networkfirewallrules.batch.sdewan.akraino.org
+spec:
+  group: batch.sdewan.akraino.org
+  names:
+    kind: NetworkFirewallRule
+    listKind: NetworkFirewallRuleList
+    plural: networkfirewallrules
+    singular: networkfirewallrule
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: NetworkFirewallRule is the Schema for the networkfirewallrules
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NetworkFirewallRuleSpec defines the desired state of NetworkFirewallRule
+            properties:
+              dest:
+                type: string
+              dest_ip:
+                type: string
+              dest_port:
+                type: string
+              extra:
+                type: string
+              family:
+                type: string
+              icmp_type:
+                items:
+                  type: string
+                type: array
+              mark:
+                type: string
+              name:
+                description: Foo is an example field of NetworkFirewallRule. Edit
+                  NetworkFirewallRule_types.go to remove/update
+                type: string
+              proto:
+                type: string
+              set_mark:
+                type: string
+              set_xmark:
+                type: string
+              src:
+                type: string
+              src_ip:
+                type: string
+              src_mac:
+                type: string
+              src_port:
+                type: string
+              target:
+                type: string
+            type: object
+          status:
+            description: status subsource used for Sdewan rule CRDs
+            properties:
+              appliedGeneration:
+                format: int64
+                type: integer
+              appliedTime:
+                format: date-time
+                type: string
+              message:
+                type: string
+              state:
+                type: string
+            required:
+            - state
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: sdewanapplications.batch.sdewan.akraino.org
 spec:
@@ -1762,3 +1762,4 @@ status:
     plural: ""
   conditions: []
   storedVersions: []
+---

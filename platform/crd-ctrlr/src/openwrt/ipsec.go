@@ -31,6 +31,10 @@ func (o *SdewanIpsecProposal) GetName() string {
 	return o.Name
 }
 
+func (o *SdewanIpsecProposal) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
+
 // Remotes
 type SdewanIpsecConnection struct {
 	Name           string   `json:"name"`
@@ -72,6 +76,9 @@ type SdewanIpsecRemotes struct {
 
 func (o *SdewanIpsecRemote) GetName() string {
 	return o.Name
+}
+func (o *SdewanIpsecRemote) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
 }
 
 // Proposal APIs

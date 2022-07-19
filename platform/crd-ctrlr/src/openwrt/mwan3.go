@@ -57,6 +57,9 @@ type SdewanPolicies struct {
 func (o *SdewanPolicy) GetName() string {
 	return o.Name
 }
+func (o *SdewanPolicy) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
 
 // MWAN3 Rule
 type SdewanRule struct {
@@ -78,6 +81,9 @@ type SdewanRules struct {
 
 func (o *SdewanRule) GetName() string {
 	return o.Name
+}
+func (o *SdewanRule) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
 }
 
 // get interface status

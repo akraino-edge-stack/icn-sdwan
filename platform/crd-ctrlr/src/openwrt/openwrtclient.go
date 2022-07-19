@@ -18,6 +18,7 @@ import (
 
 type IOpenWrtObject interface {
 	GetName() string
+	SetFullName(string)
 }
 
 type OpenwrtError struct {

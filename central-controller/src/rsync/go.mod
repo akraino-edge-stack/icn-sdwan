@@ -1,6 +1,6 @@
 module gitlab.com/project-emco/core/emco-base/src/rsync
 
-go 1.17
+go 1.18
 
 require (
 	github.com/fluxcd/go-git-providers v0.5.4
@@ -9,6 +9,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.2
+	github.com/google/go-github/v41 v41.0.0
 	github.com/jonboulle/clockwork v0.2.2
 	github.com/pkg/errors v0.9.1
 	gitlab.com/project-emco/core/emco-base/src/monitor v0.0.0-00010101000000-000000000000
@@ -53,7 +54,6 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/google/go-github/v41 v41.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect

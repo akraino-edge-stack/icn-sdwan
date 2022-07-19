@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: Apache-2.0
+#Copyright (c) 2022 Intel Corporation
+# set gitOps config with below line
+#username=
+#token=
+#repo_name=
+#cluster=
+#http_proxy=
+#https_proxy=
+

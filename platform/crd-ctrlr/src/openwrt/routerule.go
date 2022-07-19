@@ -33,6 +33,9 @@ type SdewanRouteRules struct {
 func (o *SdewanRouteRule) GetName() string {
 	return o.Name
 }
+func (o *SdewanRouteRule) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
 
 // RouteRule APIs
 // get rules

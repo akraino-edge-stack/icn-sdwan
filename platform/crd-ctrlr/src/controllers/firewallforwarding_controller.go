@@ -29,7 +29,7 @@ func (m *FirewallForwardingHandler) GetType() string {
 	return "FirewallForwarding"
 }
 
-func (m *FirewallForwardingHandler) GetName(instance runtime.Object) string {
+func (m *FirewallForwardingHandler) GetName(instance client.Object) string {
 	forwarding := instance.(*batchv1alpha1.FirewallForwarding)
 	return forwarding.Name
 }
@@ -38,13 +38,13 @@ func (m *FirewallForwardingHandler) GetFinalizer() string {
 	return "forwarding.finalizers.sdewan.akraino.org"
 }
 
-func (m *FirewallForwardingHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *FirewallForwardingHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.FirewallForwarding{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *FirewallForwardingHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *FirewallForwardingHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	firewallforwarding := instance.(*batchv1alpha1.FirewallForwarding)
 	firewallforwarding.Spec.Name = firewallforwarding.ObjectMeta.Name
 	firewallforwardingObject := openwrt.SdewanFirewallForwarding(firewallforwarding.Spec)
@@ -100,8 +100,8 @@ type FirewallForwardingReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewallforwardings,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewallforwardings/status,verbs=get;update;patch
 
-func (r *FirewallForwardingReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, firewallForwardingHandler)
+func (r *FirewallForwardingReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, firewallForwardingHandler)
 }
 
 func (r *FirewallForwardingReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -110,9 +110,7 @@ func (r *FirewallForwardingReconciler) SetupWithManager(mgr ctrl.Manager) error 
 		For(&batchv1alpha1.FirewallForwarding{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.FirewallForwardingList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.FirewallForwardingList{})),
 			Filter).
 		Complete(r)
 }

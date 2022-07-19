@@ -9,7 +9,6 @@ import (
 	"fmt"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	basehandler "sdewan.akraino.org/sdewan/basehandler"
 	"sdewan.akraino.org/sdewan/openwrt"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -80,7 +79,7 @@ func NewOpenWrt(namespace string, sdewanPurpose string, k8sClient client.Client)
 	return &OpenWrtProvider{namespace, sdewanPurpose, deployments.Items[0], k8sClient}, nil
 }
 
-func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, instance runtime.Object) (bool, error) {
+func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, instance client.Object) (bool, error) {
 	reqLogger := log.WithValues(handler.GetType(), handler.GetName(instance), "cnf", p.Deployment.Name)
 	ctx := context.Background()
 	ReplicaSetList := &appsv1.ReplicaSetList{}
@@ -97,6 +96,7 @@ func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, 
 		return false, err
 	}
 	new_instance, err := handler.Convert(instance, p.Deployment)
+	//new_instance.SetFullName(p.Namespace)
 	if err != nil {
 		return false, err
 	}
@@ -142,7 +142,7 @@ func (p *OpenWrtProvider) AddOrUpdateObject(handler basehandler.ISdewanHandler, 
 	return cnfChanged, nil
 }
 
-func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, instance runtime.Object) (bool, error) {
+func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, instance client.Object) (bool, error) {
 	reqLogger := log.WithValues(handler.GetType(), handler.GetName(instance), "cnf", p.Deployment.Name)
 	ctx := context.Background()
 	podList := &corev1.PodList{}
@@ -153,6 +153,7 @@ func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, insta
 	cnfChanged := false
 	for _, pod := range podList.Items {
 		clientInfo := CreateOpenwrtClient(pod, p.K8sClient)
+		//runtime_instance, err := handler.GetObject(clientInfo, p.getFullName(handler.GetName(instance)))
 		runtime_instance, err := handler.GetObject(clientInfo, handler.GetName(instance))
 		if err != nil {
 			err2, ok := err.(*openwrt.OpenwrtError)
@@ -167,6 +168,7 @@ func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, insta
 			reqLogger.Info("Runtime instance doesn't exist, so don't have to delete")
 			continue
 		} else {
+			//err = handler.DeleteObject(clientInfo, p.getFullName(handler.GetName(instance)))
 			err = handler.DeleteObject(clientInfo, handler.GetName(instance))
 			if err != nil {
 				return false, err
@@ -180,4 +182,8 @@ func (p *OpenWrtProvider) DeleteObject(handler basehandler.ISdewanHandler, insta
 	}
 	// We say the deletioni succeed only when the deletion for all pods succeed
 	return cnfChanged, nil
+}
+
+func (p *OpenWrtProvider) getFullName(name string) string {
+	return p.Namespace + name
 }

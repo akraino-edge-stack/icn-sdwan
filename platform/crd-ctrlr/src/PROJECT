@@ -1,4 +1,6 @@
 domain: sdewan.akraino.org
+layout: go.kubebuilder.io/v3
+projectName: sdewan.akraino.org/sdewan
 repo: sdewan.akraino.org/sdewan
 resources:
 - group: batch

@@ -37,6 +37,10 @@ func (o *SdewanFirewallZone) GetName() string {
 	return o.Name
 }
 
+func (o *SdewanFirewallZone) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
+
 type SdewanFirewallZones struct {
 	Zones []SdewanFirewallZone `json:"zones"`
 }
@@ -51,6 +55,9 @@ type SdewanFirewallForwarding struct {
 
 func (o *SdewanFirewallForwarding) GetName() string {
 	return o.Name
+}
+func (o *SdewanFirewallForwarding) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
 }
 
 type SdewanFirewallForwardings struct {
@@ -80,6 +87,9 @@ type SdewanFirewallRule struct {
 func (o *SdewanFirewallRule) GetName() string {
 	return o.Name
 }
+func (o *SdewanFirewallRule) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
 
 type SdewanFirewallRules struct {
 	Rules []SdewanFirewallRule `json:"rules"`
@@ -105,6 +115,9 @@ type SdewanFirewallRedirect struct {
 
 func (o *SdewanFirewallRedirect) GetName() string {
 	return o.Name
+}
+func (o *SdewanFirewallRedirect) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
 }
 
 type SdewanFirewallRedirects struct {

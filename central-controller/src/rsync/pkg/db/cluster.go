@@ -90,7 +90,8 @@ func NewCloudConfigClient() *CloudConfigClient {
 }
 
 func unmarshal(values [][]byte) (KubeConfig, error) {
-	if values != nil {
+	//changed
+	if values != nil && len(values) > 0 && len(values[0]) > 0 {
 		kc := KubeConfig{}
 		err := db.DBconn.Unmarshal(values[0], &kc)
 		if err != nil {
@@ -414,7 +415,6 @@ func (c *CloudConfigClient) CreateGitOpsConfig(provider string, cluster string, 
 
 // GetGitOpsConfig allows to create a new cloud config entry to hold a kubeconfig for access
 func (c *CloudConfigClient) GetGitOpsConfig(provider string, cluster string, level string, namespace string) (CloudGitOpsConfig, error) {
-
 	key := CloudConfigKey{
 		Provider:  provider,
 		Cluster:   cluster,
@@ -426,6 +426,8 @@ func (c *CloudConfigClient) GetGitOpsConfig(provider string, cluster string, lev
 	if err != nil {
 		log.Error("Failure inserting CloudConfig", log.Fields{})
 		return CloudGitOpsConfig{}, pkgerrors.Wrap(err, "Failure inserting CloudConfig")
+	} else if len(value) == 0 {
+		return CloudGitOpsConfig{}, pkgerrors.New("CloudGitOps config not found")
 	}
 	log.Info("Get in gs db", log.Fields{"value": value})
 
@@ -458,7 +460,7 @@ func (c *CloudConfigClient) DeleteGitOpsConfig(provider string, cluster string, 
 	// check if it doesn't exist
 	_, err := c.GetGitOpsConfig(provider, cluster, level, namespace)
 	if err != nil {
-		log.Error("Could not fetch the CloudConfig so not deleting", log.Fields{})
+		log.Error("Could not fetch the GitOpsConfig so not deleting", log.Fields{})
 		return pkgerrors.New("Could not fetch the GitOpsConfig so not deleting")
 	}
 

@@ -22,7 +22,7 @@ webhooks:
   - apiGroups:
     - batch.sdewan.akraino.org
     apiVersions:
-    - v1
+    - v1alpha1
     operations:
     - CREATE
     - UPDATE
@@ -30,6 +30,7 @@ webhooks:
     resources:
     - mwan3policies
     - mwan3rules
+    - networkfirewallrules
     - firewallzones
     - firewallforwardings
     - firewallrules
@@ -40,13 +41,12 @@ webhooks:
     - cnfrouterules
     - cnfservices
     - cnflocalservices
+    - cnfhubsites
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals
     - ipsechosts
     - ipsecsites
-    - networkfirewallrules
-    - cnfhubsites
   sideEffects: None
 - admissionReviewVersions:
   - v1
@@ -63,11 +63,14 @@ webhooks:
     - batch.sdewan.akraino.org
     apiVersions:
     - v1
+    - v1alpha1
     operations:
     - UPDATE
     resources:
+    - deployments
     - mwan3policies
     - mwan3rules
+    - networkfirewallrules
     - firewallzones
     - firewallforwardings
     - firewallrules
@@ -78,11 +81,10 @@ webhooks:
     - cnfroutes
     - cnfrouterules
     - cnflocalservices
+    - cnfhubsites
     - cnfstatuses
     - sdewanapplication
     - ipsecproposals
     - ipsechosts
     - ipsecsites
-    - cnfhubsites
-    - networkfirewallrules
   sideEffects: None

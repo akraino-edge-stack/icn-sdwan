@@ -44,7 +44,7 @@ func (m *SdewanApplicationHandler) GetType() string {
 	return "sdewanApplication"
 }
 
-func (m *SdewanApplicationHandler) GetName(instance runtime.Object) string {
+func (m *SdewanApplicationHandler) GetName(instance client.Object) string {
 	app := instance.(*batchv1alpha1.SdewanApplication)
 	return app.Name
 }
@@ -53,7 +53,7 @@ func (m *SdewanApplicationHandler) GetFinalizer() string {
 	return "rule.finalizers.sdewan.akraino.org"
 }
 
-func (m *SdewanApplicationHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *SdewanApplicationHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.SdewanApplication{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	if err == nil {
@@ -78,7 +78,7 @@ func (m *SdewanApplicationHandler) GetInstance(r client.Client, ctx context.Cont
 	return instance, err
 }
 
-func (m *SdewanApplicationHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *SdewanApplicationHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	app := instance.(*batchv1alpha1.SdewanApplication)
 	openwrtapp := openwrt.SdewanApp{
 		Name:   app.Name,
@@ -145,11 +145,11 @@ var appFilter = builder.WithPredicates(predicate.Funcs{
 	},
 })
 
-func GetAppToRequestsFunc(r client.Client) func(h handler.MapObject) []reconcile.Request {
+func GetAppToRequestsFunc(r client.Client) func(h client.Object) []reconcile.Request {
 
-	return func(h handler.MapObject) []reconcile.Request {
-		podLabels := h.Meta.GetLabels()
-		podNamespace := h.Meta.GetNamespace()
+	return func(h client.Object) []reconcile.Request {
+		podLabels := h.GetLabels()
+		podNamespace := h.GetNamespace()
 		appCRList := &batchv1alpha1.SdewanApplicationList{}
 		cr := &batchv1alpha1.SdewanApplication{}
 		ctx := context.Background()
@@ -205,8 +205,8 @@ type SdewanApplicationReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=sdewanapplications,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=sdewanapplications/status,verbs=get;update;patch
 
-func (r *SdewanApplicationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, sdewanApplicationHandler)
+func (r *SdewanApplicationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, sdewanApplicationHandler)
 }
 
 func (r *SdewanApplicationReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -214,15 +214,11 @@ func (r *SdewanApplicationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.SdewanApplication{}).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.SdewanApplicationList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.SdewanApplicationList{})),
 			Filter).
 		Watches(
 			&source.Kind{Type: &corev1.Pod{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetAppToRequestsFunc(r)),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetAppToRequestsFunc(r.Client)),
 			appFilter).
 		Complete(r)
 }

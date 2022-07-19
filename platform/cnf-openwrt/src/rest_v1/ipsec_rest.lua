@@ -60,15 +60,15 @@ remote_validator = {
     {name="force_crypto_proposal", validator=function(value) return utils.in_array(value, {"0", "1"}) end, message="invalid input for ForceCryptoProposal"},
     {name="local_public_cert",
         load_func=function(value) return load_cert(value["local_public_cert"]) end,
-        save_func=function(value) return save_cert(value["local_public_cert"], "/etc/ipsec.d/certs/" .. value["name"] .. "_public.pem") end,
+        save_func=function(value) return save_cert(value, "local_public_cert") end,
         delete_func=function(value) return delete_cert(value["local_public_cert"]) end},
     {name="local_private_cert",
         load_func=function(value) return load_cert(value["local_private_cert"]) end,
-        save_func=function(value) return save_cert(value["local_private_cert"], "/etc/ipsec.d/private/" .. value["name"] .. "_private.pem") end,
+        save_func=function(value) return save_cert(value, "local_private_cert") end,
         delete_func=function(value) return delete_cert(value["local_private_cert"]) end},
     {name="shared_ca",
         load_func=function(value) return load_cert(value["shared_ca"]) end,
-        save_func=function(value) return save_cert(value["shared_ca"], "/etc/ipsec.d/cacerts/" .. value["name"] .. "_ca.pem") end,
+        save_func=function(value) return save_cert(value, "shared_ca") end,
         delete_func=function(value) return delete_cert(value["shared_ca"]) end},
     {name="connections", item_validator=connection_validator, message="invalid connection",
         load_func=function(value) return load_connection(value) end,
@@ -143,37 +143,69 @@ function is_vti_enabled(value)
     return true, mode
 end
 
-function save_cert(content, path)
-    local file = io.open(path, "w")
-    if file == nil then
-        return false, "Can not generate cert at: " .. path
+function save_cert(content, info_type)
+    local index = 0
+    local name = content["name"]
+    local path_list
+    for ctx in string.gmatch(content[info_type], "([^___^]+)") do
+	local path = ""
+	if info_type == "local_private_cert" then
+		path = "/etc/ipsec.d/private/" .. name .. "_private_" .. index .. ".pem"
+		utils.decode_and_save_to_file(ctx, path)
+	elseif info_type == "local_public_cert" then
+		path = "/etc/ipsec.d/certs/" .. name .. "_public_" .. index .. ".pem"
+		utils.decode_and_save_to_file(ctx, path)
+	else 
+		path = "/etc/ipsec.d/cacerts/" .. name .. "_ca_" .. index .. ".pem"
+		utils.decode_and_save_to_file(ctx, path)
+	end
+	if index == 0 then
+		path_list = path
+        else
+		path_list = path_list .. ", " .. path
+	end
+	index = index + 1
+	    
     end
+    return true, path_list
 
-    mime.decode("base64")
-    local cert = mime.unb64(content)
-    file:write(cert)
-    file:close()
-
-    return true, path
 end
 
-function load_cert(path)
-    if path == nil then
-        return nil
+function load_cert(paths)
+    if paths == nil then
+	    return nil
     end
-    content = path
-    local file = io.open(path, "rb")
-    if file ~= nil then
-        content = file:read "*a"
-        file:close()
+    local certs
+    local index = 0
+    for path in string.gmatch(paths, "([^,^]+)") do
+        if path == nil then
+            return nil
+        end
+        content = path
+        local file = io.open(path, "rb")
+        if file ~= nil then
+            content = file:read "*a"
+            file:close()
+        end
+        mime.decode("base64")
+        local c = mime.unb64(content)
+	if index == 0 then
+		certs = c
+	else
+		certs = certs .. "\n" .. c
+	end
+	index = index + 1
     end
-    mime.decode("base64")
-    return mime.unb64(content)
+    return certs
 end
 
-function delete_cert(path)
-    if path ~= nil then
-        os.remove(path)
+function delete_cert(paths)
+    if paths ~= nil then
+        for path in string.gmatch(paths, "([^,^]+)") do
+            if path ~= nil then
+                os.remove(path)
+            end
+        end
     end
 end
 

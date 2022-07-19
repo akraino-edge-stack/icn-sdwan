@@ -65,7 +65,11 @@ func (d *DBUtils) CheckOwn(c ControllerObjectManager, m map[string]string) error
 	for _, mgr := range depsOwnManagers {
 		objs, err := d.GetObjects(mgr, m)
 		if err == nil && len(objs) > 0 {
-			return pkgerrors.New("Sub-resource found : " + mgr.GetStoreMeta())
+			for _, obj := range objs {
+				if obj.GetMetadata().UserData1 != InternalKey {
+					return pkgerrors.New("Sub-resource found : " + mgr.GetStoreMeta())
+				}
+			}
 		}
 	}
 	return nil
@@ -85,7 +89,6 @@ func (d *DBUtils) CreateObject(c ControllerObjectManager, m map[string]string,
 
 func (d *DBUtils) GetObject(c ControllerObjectManager,
 	m map[string]string) (module.ControllerObject, error) {
-
 	key, err := c.GetStoreKey(m, c.CreateEmptyObject(), false)
 	if err != nil {
 		return c.CreateEmptyObject(), err
@@ -163,15 +166,15 @@ func (d *DBUtils) DeleteObject(c ControllerObjectManager, m map[string]string) e
 	return nil
 }
 
-func (d *DBUtils) RegisterDevice(cluster_name string, kubeconfig string) error {
+func (d *DBUtils) RegisterDevice(overlay, cluster_name string, kubeconfig string) error {
 	ccc := rsync.NewCloudConfigClient()
 
-	config, _ := ccc.GetCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
+	config, _ := ccc.GetCloudConfig(getProviderName(overlay), cluster_name, "0", "default")
 	if config.Config != "" {
-		ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
+		ccc.DeleteCloudConfig(getProviderName(overlay), cluster_name, "0", "default")
 	}
 
-	_, err := ccc.CreateCloudConfig(PROVIDERNAME, cluster_name, "0", "default", kubeconfig)
+	_, err := ccc.CreateCloudConfig(getProviderName(overlay), cluster_name, "0", "default", kubeconfig)
 	if err != nil {
 		return pkgerrors.Wrap(err, "Error creating cloud config")
 	}
@@ -179,10 +182,10 @@ func (d *DBUtils) RegisterDevice(cluster_name string, kubeconfig string) error {
 	return nil
 }
 
-func (d *DBUtils) UnregisterDevice(cluster_name string) error {
+func (d *DBUtils) UnregisterDevice(overlay, cluster_name string) error {
 	ccc := rsync.NewCloudConfigClient()
 
-	err := ccc.DeleteCloudConfig(PROVIDERNAME, cluster_name, "0", "default")
+	err := ccc.DeleteCloudConfig(getProviderName(overlay), cluster_name, "0", "default")
 	if err != nil {
 		return pkgerrors.Wrap(err, "Error deleting cloud config")
 	}
@@ -190,29 +193,33 @@ func (d *DBUtils) UnregisterDevice(cluster_name string) error {
 	return nil
 }
 
-func (d *DBUtils) RegisterGitOpsDevice(cluster_name string, gs mtypes.GitOpsSpec) error {
+func (d *DBUtils) RegisterGitOpsDevice(overlay, cluster_name string, gs mtypes.GitOpsSpec) error {
 	ccc := rsync.NewCloudConfigClient()
 
-	_, err := ccc.GetGitOpsConfig(PROVIDERNAME, cluster_name, "0", "default")
+	_, err := ccc.GetGitOpsConfig(getProviderName(overlay), cluster_name, "0", "default")
 	if err == nil {
-		ccc.DeleteGitOpsConfig(PROVIDERNAME, cluster_name, "0", "default")
+		ccc.DeleteGitOpsConfig(getProviderName(overlay), cluster_name, "0", "default")
 	}
 
-	_, err = ccc.CreateGitOpsConfig(PROVIDERNAME, cluster_name, gs, "0", "default")
+	_, err = ccc.CreateGitOpsConfig(getProviderName(overlay), cluster_name, gs, "0", "default")
 	if err != nil {
-		return pkgerrors.Wrap(err, "Error creating cloud config")
+		return pkgerrors.Wrap(err, "Error creating gitops config")
 	}
 
 	return nil
 }
 
-func (d *DBUtils) UnregisterGitOpsDevice(cluster_name string) error {
+func (d *DBUtils) UnregisterGitOpsDevice(overlay, cluster_name string) error {
 	ccc := rsync.NewCloudConfigClient()
 
-	err := ccc.DeleteGitOpsConfig(PROVIDERNAME, cluster_name, "0", "default")
+	err := ccc.DeleteGitOpsConfig(getProviderName(overlay), cluster_name, "0", "default")
 	if err != nil {
-		return pkgerrors.Wrap(err, "Error deleting cloud config")
+		return pkgerrors.Wrap(err, "Error deleting gitops config")
 	}
 
 	return nil
+}
+
+func getProviderName(overlay string) string {
+	return PROVIDERNAME + "_" + overlay
 }

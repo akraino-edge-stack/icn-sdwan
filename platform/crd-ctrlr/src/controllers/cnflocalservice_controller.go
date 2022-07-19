@@ -38,8 +38,7 @@ type CNFLocalServiceReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnflocalservices,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnflocalservices/status,verbs=get;update;patch
 
-func (r *CNFLocalServiceReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	ctx := context.Background()
+func (r *CNFLocalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("CNFLocalService", req.NamespacedName)
 	during, _ := time.ParseDuration("5s")
 

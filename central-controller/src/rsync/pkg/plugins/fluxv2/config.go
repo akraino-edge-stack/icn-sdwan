@@ -72,7 +72,8 @@ func (p *Fluxv2Provider) ApplyConfig(ctx context.Context, config interface{}) er
 	path = "clusters/" + p.gitProvider.Cluster + "/" + kc.Name + ".yaml"
 	gp = emcogit.Add(path, string(y), gp, p.gitProvider.GitType)
 	// Commit
-	err = emcogit.CommitFiles(ctx, p.gitProvider.Client, p.gitProvider.UserName, p.gitProvider.RepoName, p.gitProvider.Branch, "Commit for "+p.gitProvider.GetPath("context"), gp, p.gitProvider.GitType)
+	appName := p.gitProvider.Cid + "-" + p.gitProvider.App + "-config"
+	err = emcogit.CommitFiles(ctx, p.gitProvider.Client, p.gitProvider.UserName, p.gitProvider.RepoName, p.gitProvider.Branch, "Commit for "+p.gitProvider.GetPath("context"), appName, gp, p.gitProvider.GitType)
 	if err != nil {
 		log.Error("ApplyConfig:: Commit files err", log.Fields{"err": err, "gp": gp})
 	}
@@ -85,7 +86,8 @@ func (p *Fluxv2Provider) DeleteConfig(ctx context.Context, config interface{}) e
 	gp := emcogit.Delete(path, []gitprovider.CommitFile{}, p.gitProvider.GitType)
 	path = "clusters/" + p.gitProvider.Cluster + "/" + "kcust" + p.gitProvider.Cid + ".yaml"
 	gp = emcogit.Delete(path, gp, p.gitProvider.GitType)
-	err := emcogit.CommitFiles(ctx, p.gitProvider.Client, p.gitProvider.UserName, p.gitProvider.RepoName, p.gitProvider.Branch, "Commit for "+p.gitProvider.GetPath("context"), gp, p.gitProvider.GitType)
+	appName := p.gitProvider.Cid + "-" + p.gitProvider.App + "-config"
+	err := emcogit.CommitFiles(ctx, p.gitProvider.Client, p.gitProvider.UserName, p.gitProvider.RepoName, p.gitProvider.Branch, "Commit for "+p.gitProvider.GetPath("context"), appName, gp, p.gitProvider.GitType)
 	if err != nil {
 		log.Error("ApplyConfig:: Commit files err", log.Fields{"err": err, "gp": gp})
 	}

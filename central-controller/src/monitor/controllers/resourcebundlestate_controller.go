@@ -5,7 +5,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	k8spluginv1alpha1 "gitlab.com/project-emco/core/emco-base/src/monitor/pkg/apis/k8splugin/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/batch/v1"
@@ -111,8 +110,6 @@ func (r *ResourceBundleStateReconciler) Reconcile(ctx context.Context, req ctrl.
 		return ctrl.Result{}, err
 	}
 
-	fmt.Println("Commit CR with status")
-	fmt.Println(rbstate)
 	err = CommitCR(r.Client, rbstate, orgStatus)
 	if err != nil {
 		return ctrl.Result{}, err
@@ -344,6 +341,7 @@ func (r *ResourceBundleStateReconciler) updateDynResources(rbstate *k8spluginv1a
 			log.Printf("Failed to list resources: %v", err)
 			return err
 		}
+
 		for _, res := range resourceList.Items {
 			err = UpdateResourceStatus(r.Client, &res, res.GetName(), res.GetNamespace())
 			if err != nil {

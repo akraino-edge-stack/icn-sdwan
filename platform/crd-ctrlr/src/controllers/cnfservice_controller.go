@@ -38,8 +38,7 @@ var inSQueryStatus = false
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfservices,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfservices/status,verbs=get;update;patch
 
-func (r *CNFServiceReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	ctx := context.Background()
+func (r *CNFServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("cnfservices", req.NamespacedName)
 	during, _ := time.ParseDuration("5s")
 	instance, err := r.GetInstance(req)
@@ -149,6 +148,7 @@ func (r *CNFServiceReconciler) processInstance(instance *batchv1alpha1.CNFServic
 
 	return nil
 }
+
 func (r *CNFServiceReconciler) getIP4s(dns string) ([]string, error) {
 	ips, err := net.LookupIP(dns)
 	var ip4s []string

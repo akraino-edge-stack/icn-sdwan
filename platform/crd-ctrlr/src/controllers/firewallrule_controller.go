@@ -29,7 +29,7 @@ func (m *FirewallRuleHandler) GetType() string {
 	return "FirewallRule"
 }
 
-func (m *FirewallRuleHandler) GetName(instance runtime.Object) string {
+func (m *FirewallRuleHandler) GetName(instance client.Object) string {
 	rule := instance.(*batchv1alpha1.FirewallRule)
 	return rule.Name
 }
@@ -38,13 +38,13 @@ func (m *FirewallRuleHandler) GetFinalizer() string {
 	return "rule.finalizers.sdewan.akraino.org"
 }
 
-func (m *FirewallRuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *FirewallRuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.FirewallRule{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *FirewallRuleHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *FirewallRuleHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	firewallrule := instance.(*batchv1alpha1.FirewallRule)
 	firewallrule.Spec.Name = firewallrule.ObjectMeta.Name
 	firewallruleObject := openwrt.SdewanFirewallRule(firewallrule.Spec)
@@ -100,8 +100,8 @@ type FirewallRuleReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewallrules,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewallrules/status,verbs=get;update;patch
 
-func (r *FirewallRuleReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, firewallRuleHandler)
+func (r *FirewallRuleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, firewallRuleHandler)
 }
 
 func (r *FirewallRuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -110,9 +110,7 @@ func (r *FirewallRuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.FirewallRule{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.FirewallRuleList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.FirewallRuleList{})),
 			Filter).
 		Complete(r)
 }

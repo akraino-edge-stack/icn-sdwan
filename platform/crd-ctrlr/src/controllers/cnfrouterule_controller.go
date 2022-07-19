@@ -27,7 +27,7 @@ func (m *CNFRouteRuleHandler) GetType() string {
 	return "cnfRouteRule"
 }
 
-func (m *CNFRouteRuleHandler) GetName(instance runtime.Object) string {
+func (m *CNFRouteRuleHandler) GetName(instance client.Object) string {
 	routerule := instance.(*batchv1alpha1.CNFRouteRule)
 	return routerule.Name
 }
@@ -36,13 +36,13 @@ func (m *CNFRouteRuleHandler) GetFinalizer() string {
 	return "rule.finalizers.sdewan.akraino.org"
 }
 
-func (m *CNFRouteRuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *CNFRouteRuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.CNFRouteRule{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *CNFRouteRuleHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *CNFRouteRuleHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	routerule := instance.(*batchv1alpha1.CNFRouteRule)
 	openwrtrouterule := openwrt.SdewanRouteRule{
 		Name:   routerule.Name,
@@ -103,8 +103,8 @@ type CNFRouteRuleReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfrouterules,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfrouterules/status,verbs=get;update;patch
 
-func (r *CNFRouteRuleReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, cnfRouteRuleHandler)
+func (r *CNFRouteRuleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, cnfRouteRuleHandler)
 }
 
 func (r *CNFRouteRuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -112,9 +112,7 @@ func (r *CNFRouteRuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.CNFRouteRule{}).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.CNFRouteRuleList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.CNFRouteRuleList{})),
 			Filter).
 		Complete(r)
 }

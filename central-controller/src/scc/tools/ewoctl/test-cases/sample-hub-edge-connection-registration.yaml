@@ -1,0 +1,14 @@
+---
+# creating edge-1
+version: ewo/v1
+resourceContext:
+  anchor: overlays/overlay1/hubs/huba/devices
+metadata:
+  name: hubaedge1conn
+  description:
+  userData1:
+  userData2:
+spec:
+  device: "edge-1"
+  isDelegateHub: true
+

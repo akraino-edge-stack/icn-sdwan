@@ -29,6 +29,10 @@ func (o *SdewanApp) GetName() string {
 	return o.Name
 }
 
+func (o *SdewanApp) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
+
 // App APIs
 // get apps
 func (m *AppClient) GetApps() (*SdewanApps, error) {

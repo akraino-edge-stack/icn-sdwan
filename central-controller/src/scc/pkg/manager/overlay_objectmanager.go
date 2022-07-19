@@ -17,7 +17,6 @@
 package manager
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
@@ -124,12 +123,20 @@ func (c *OverlayObjectManager) CreateObject(m map[string]string, t module.Contro
 	// Create a issuer each overlay
 	to := t.(*module.OverlayObject)
 	overlay_name := to.Metadata.Name
+
+	// DB Operation
+	t, err := GetDBUtils().CreateObject(c, m, t)
+	if err != nil {
+		log.Println(err)
+	}
+
 	cu, err := GetCertUtil()
 	if err != nil {
 		log.Println(err)
 	} else {
 		// create overlay ca
-		_, err := cu.CreateCertificate(c.CertName(overlay_name), NameSpaceName, RootCAIssuerName, true)
+		cert_manager := GetManagerset().Cert
+		_, _, _, err := cert_manager.GetOrCreateCertificateByType(overlay_name, "", OverlayKey, true)
 		if err == nil {
 			// create overlay issuer
 			_, err := cu.CreateCAIssuer(c.IssuerName(overlay_name), NameSpaceName, c.CertName(overlay_name))
@@ -140,9 +147,6 @@ func (c *OverlayObjectManager) CreateObject(m map[string]string, t module.Contro
 			log.Println("Failed to create overlay[" + overlay_name + "] certificate: " + err.Error())
 		}
 	}
-
-	// DB Operation
-	t, err = GetDBUtils().CreateObject(c, m, t)
 
 	return t, err
 }
@@ -171,22 +175,24 @@ func (c *OverlayObjectManager) UpdateObject(m map[string]string, t module.Contro
 func (c *OverlayObjectManager) DeleteObject(m map[string]string) error {
 	overlay_name := m[OverlayResource]
 
-	// DB Operation
-	err := GetDBUtils().DeleteObject(c, m)
-	if err == nil {
-		cu, err := GetCertUtil()
+	cu, err := GetCertUtil()
+	if err != nil {
+		log.Println(err)
+	} else {
+		err = cu.DeleteIssuer(c.IssuerName(overlay_name), NameSpaceName)
 		if err != nil {
-			log.Println(err)
-		} else {
-			err = cu.DeleteIssuer(c.IssuerName(overlay_name), NameSpaceName)
-			if err != nil {
-				log.Println("Failed to delete overlay[" + overlay_name + "] issuer: " + err.Error())
-			}
-			err = cu.DeleteCertificate(c.CertName(overlay_name), NameSpaceName)
-			if err != nil {
-				log.Println("Failed to delete overlay[" + overlay_name + "] certificate: " + err.Error())
-			}
+			log.Println("Failed to delete overlay[" + overlay_name + "] issuer: " + err.Error())
 		}
+		cert_manager := GetManagerset().Cert
+		err = cert_manager.DeleteCertificateByType(overlay_name, "", OverlayKey)
+		if err != nil {
+			log.Println("Failed to delete overlay[" + overlay_name + "] certificate: " + err.Error())
+		}
+	}
+	// DB Operation
+	err = GetDBUtils().DeleteObject(c, m)
+	if err != nil {
+		log.Println(err)
 	}
 
 	return err
@@ -200,54 +206,6 @@ func (c *OverlayObjectManager) CertName(name string) string {
 	return name + "-cert"
 }
 
-func (c *OverlayObjectManager) CreateCertificate(oname string, cname string) (string, string, error) {
-	cu, err := GetCertUtil()
-	if err != nil {
-		log.Println(err)
-	} else {
-		_, err := cu.CreateCertificate(cname, NameSpaceName, c.IssuerName(oname), false)
-		if err != nil {
-			log.Println("Failed to create overlay[" + oname + "] certificate: " + err.Error())
-		} else {
-			crts, key, err := cu.GetKeypair(cname, NameSpaceName)
-			if err != nil {
-				log.Println(err)
-				return "", "", err
-			} else {
-				crt := strings.SplitAfter(crts, "-----END CERTIFICATE-----")[0]
-				return crt, key, nil
-			}
-		}
-	}
-
-	return "", "", nil
-}
-
-func (c *OverlayObjectManager) DeleteCertificate(cname string) (string, string, error) {
-	cu, err := GetCertUtil()
-	if err != nil {
-		log.Println(err)
-	} else {
-		err = cu.DeleteCertificate(cname, NameSpaceName)
-		if err != nil {
-			log.Println("Failed to delete " + cname + " certificate: " + err.Error())
-		}
-	}
-
-	return "", "", nil
-}
-
-func (c *OverlayObjectManager) GetCertificate(oname string) (string, string, error) {
-	cu, err := GetCertUtil()
-	if err != nil {
-		log.Println(err)
-	} else {
-		cname := c.CertName(oname)
-		return cu.GetKeypair(cname, NameSpaceName)
-	}
-	return "", "", nil
-}
-
 //Set up Connection between objects
 //Passing the original map resource, the two objects, connection type("hub-to-hub", "hub-to-device", "device-to-device") and namespace name.
 func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.ControllerObject, m2 module.ControllerObject, conntype string, namespace string, is_delegated bool) error {
@@ -256,6 +214,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 	hubConn := GetManagerset().HubConn
 	hub_manager := GetManagerset().Hub
 	dev_manager := GetManagerset().Device
+	cert_manager := GetManagerset().Cert
 	overlay_name := m[OverlayResource]
 
 	proposal := GetManagerset().Proposal
@@ -277,12 +236,6 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		resutil.AddResource(m2, "create", pr)
 	}
 
-	device_mgr := GetManagerset().Device
-
-	//Get the overlay cert
-	var root_ca string
-	root_ca = GetRootCA(m[OverlayResource])
-
 	var obj1_ipsec_resource resource.IpsecResource
 	var obj2_ipsec_resource resource.IpsecResource
 	var obj1_ip string
@@ -297,11 +250,11 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		obj2_ip = obj2.Status.Ip
 
 		//Keypair
-		obj1_crt, obj1_key, err := GetHubCertificate(obj1.GetCertName(), namespace)
+		obj1_ca, obj1_crt, obj1_key, err := cert_manager.GetOrCreateCertificateByType(overlay_name, obj1.Metadata.Name, HubKey, false)
 		if err != nil {
 			return err
 		}
-		obj2_crt, obj2_key, err := GetHubCertificate(obj2.GetCertName(), namespace)
+		obj2_ca, obj2_crt, obj2_key, err := cert_manager.GetOrCreateCertificateByType(overlay_name, obj2.Metadata.Name, HubKey, false)
 		if err != nil {
 			return err
 		}
@@ -332,9 +285,9 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Type:                 VTI_MODE,
 			Remote:               obj2_ip,
 			AuthenticationMethod: PUBKEY_AUTH,
-			PublicCert:           base64.StdEncoding.EncodeToString([]byte(obj1_crt)),
-			PrivateCert:          base64.StdEncoding.EncodeToString([]byte(obj1_key)),
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			PublicCert:           obj1_crt,
+			PrivateCert:          obj1_key,
+			SharedCA:             obj1_ca,
 			LocalIdentifier:      "CN=" + obj1.GetCertName(),
 			RemoteIdentifier:     "CN=" + obj2.GetCertName(),
 			CryptoProposal:       all_proposals,
@@ -346,9 +299,9 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Type:                 VTI_MODE,
 			Remote:               obj1_ip,
 			AuthenticationMethod: PUBKEY_AUTH,
-			PublicCert:           base64.StdEncoding.EncodeToString([]byte(obj2_crt)),
-			PrivateCert:          base64.StdEncoding.EncodeToString([]byte(obj2_key)),
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			PublicCert:           obj2_crt,
+			PrivateCert:          obj2_key,
+			SharedCA:             obj2_ca,
 			LocalIdentifier:      "CN=" + obj2.GetCertName(),
 			RemoteIdentifier:     "CN=" + obj1.GetCertName(),
 			CryptoProposal:       all_proposals,
@@ -377,10 +330,10 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		obj2 := m2.(*module.DeviceObject)
 
 		obj1_ip = obj1.Status.Ip
-		obj2_ip, _ = device_mgr.AllocateIP(m, m2, module.CreateEndName(obj1.GetType(), obj1.Metadata.Name))
+		obj2_ip, _ = dev_manager.AllocateIP(m, m2, module.CreateEndName(obj1.GetType(), obj1.Metadata.Name))
 
 		//Keypair
-		obj1_crt, obj1_key, err := GetHubCertificate(obj1.GetCertName(), namespace)
+		obj1_ca, obj1_crt, obj1_key, err := cert_manager.GetOrCreateCertificateByType(overlay_name, obj1.Metadata.Name, HubKey, false)
 		if err != nil {
 			return err
 		}
@@ -401,9 +354,9 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Type:                 VTI_MODE,
 			Remote:               ANY,
 			AuthenticationMethod: PUBKEY_AUTH,
-			PublicCert:           base64.StdEncoding.EncodeToString([]byte(obj1_crt)),
-			PrivateCert:          base64.StdEncoding.EncodeToString([]byte(obj1_key)),
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			PublicCert:           obj1_crt,
+			PrivateCert:          obj1_key,
+			SharedCA:             obj1_ca,
 			LocalIdentifier:      "CN=" + obj1.GetCertName(),
 			RemoteIdentifier:     "CN=" + obj2.GetCertName(),
 			CryptoProposal:       all_proposals,
@@ -411,7 +364,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Connections:          obj1_conn,
 		}
 
-		obj2_crt, obj2_key, err := GetDeviceCertificate(m[OverlayResource], obj2.Metadata.Name)
+		obj2_ca, obj2_crt, obj2_key, err := cert_manager.GetOrCreateCertificateByType(overlay_name, obj2.Metadata.Name, DeviceKey, false)
 		if err != nil {
 			return err
 		}
@@ -433,7 +386,7 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			AuthenticationMethod: PUBKEY_AUTH,
 			PublicCert:           obj2_crt,
 			PrivateCert:          obj2_key,
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			SharedCA:             obj2_ca,
 			LocalIdentifier:      "CN=" + obj2.GetCertName(),
 			RemoteIdentifier:     "CN=" + obj1.GetCertName(),
 			CryptoProposal:       all_proposals,
@@ -535,11 +488,11 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 		obj2_ip = obj2.Status.Ip
 
 		//Keypair
-		obj1_crt, obj1_key, err := GetDeviceCertificate(m[OverlayResource], obj1.Metadata.Name)
+		obj1_ca, obj1_crt, obj1_key, err := cert_manager.GetOrCreateCertificateByType(overlay_name, obj1.Metadata.Name, DeviceKey, false)
 		if err != nil {
 			return err
 		}
-		obj2_crt, obj2_key, err := GetDeviceCertificate(m[OverlayResource], obj2.Metadata.Name)
+		obj2_ca, obj2_crt, obj2_key, err := cert_manager.GetOrCreateCertificateByType(overlay_name, obj2.Metadata.Name, DeviceKey, false)
 		if err != nil {
 			return err
 		}
@@ -557,9 +510,9 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Type:                 POLICY_MODE,
 			Remote:               obj2_ip,
 			AuthenticationMethod: PUBKEY_AUTH,
-			PublicCert:           base64.StdEncoding.EncodeToString([]byte(obj1_crt)),
-			PrivateCert:          base64.StdEncoding.EncodeToString([]byte(obj1_key)),
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			PublicCert:           obj1_crt,
+			PrivateCert:          obj1_key,
+			SharedCA:             obj1_ca,
 			LocalIdentifier:      "CN=" + obj1.GetCertName(),
 			RemoteIdentifier:     "CN=" + obj2.GetCertName(),
 			CryptoProposal:       all_proposals,
@@ -571,9 +524,9 @@ func (c *OverlayObjectManager) SetupConnection(m map[string]string, m1 module.Co
 			Type:                 POLICY_MODE,
 			Remote:               obj1_ip,
 			AuthenticationMethod: PUBKEY_AUTH,
-			PublicCert:           base64.StdEncoding.EncodeToString([]byte(obj2_crt)),
-			PrivateCert:          base64.StdEncoding.EncodeToString([]byte(obj2_key)),
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			PublicCert:           obj2_crt,
+			PrivateCert:          obj2_key,
+			SharedCA:             obj2_ca,
 			LocalIdentifier:      "CN=" + obj2.GetCertName(),
 			RemoteIdentifier:     "CN=" + obj1.GetCertName(),
 			CryptoProposal:       all_proposals,
@@ -612,14 +565,14 @@ func (c *OverlayObjectManager) DeleteConnection(m map[string]string, conn module
 	//Error: the re-constructed obj doesn't obtain the status
 	if co1.GetType() == "Device" {
 		log.Println("Enter Delete Connection with device on co1...")
-		device_mgr := GetManagerset().Device
-		device_mgr.FreeIP(m, co1, module.CreateEndName(co2.GetType(), co2.GetMetadata().Name))
+		dev_manager := GetManagerset().Device
+		dev_manager.FreeIP(m, co1, module.CreateEndName(co2.GetType(), co2.GetMetadata().Name))
 	}
 
 	if co2.GetType() == "Device" {
 		log.Println("Enter Delete Connection with device on co2...")
-		device_mgr := GetManagerset().Device
-		device_mgr.FreeIP(m, co2, module.CreateEndName(co1.GetType(), co1.GetMetadata().Name))
+		dev_manager := GetManagerset().Device
+		dev_manager.FreeIP(m, co2, module.CreateEndName(co1.GetType(), co1.GetMetadata().Name))
 	}
 
 	conn_manager := GetConnectionManager()

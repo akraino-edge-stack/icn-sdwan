@@ -46,7 +46,7 @@ nfn:
     separate: ""
 
 containers:
-  image: integratedcloudnative/sdewan-cnf:0.5.2
+  image: integratedcloudnative/sdewan-cnf:0.5.3
   imagePullPolicy: IfNotPresent
   name: sdewan
 

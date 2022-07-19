@@ -85,4 +85,4 @@ replace (
 	k8s.io/kubernetes => k8s.io/kubernetes v1.14.1
 )
 
-go 1.17
+go 1.18

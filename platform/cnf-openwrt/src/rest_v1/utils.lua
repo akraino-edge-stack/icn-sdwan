@@ -5,6 +5,7 @@ module("luci.controller.rest_v1.utils", package.seeall)
 
 local json = require "luci.jsonc"
 local uci = require "luci.model.uci"
+local mime = require "mime"
 REQUEST_METHOD = "REQUEST_METHOD"
 
 function index()
@@ -853,4 +854,17 @@ end
 function response_message(message)
     luci.http.prepare_content("text/plain")
     luci.http.write(message)
+end
+
+-- decode content and save to file
+function decode_and_save_to_file(content, path)
+    local file = io.open(path, "w")
+    if file == nil then
+        return false, "Cannot generate cert at: " .. path
+    end
+
+    mime.decode("base64")
+    local cert = mime.unb64(content)
+    file:write(cert)
+    file:close()
 end
