@@ -238,11 +238,11 @@ func (d *ResUtil) getDeviceAppName(device module.ControllerObject) string {
 	return device.GetMetadata().Name + "-app"
 }
 
-func (d *ResUtil) getDeviceClusterName(device module.ControllerObject) string {
-	return provider_name + "+" + device.GetMetadata().Name
+func (d *ResUtil) getDeviceClusterName(overlay string, device module.ControllerObject) string {
+	return provider_name + "_" + overlay + "+" + device.GetMetadata().Name
 }
 
-func (d *ResUtil) DeployOneResource(app_name string, format string, device module.ControllerObject, resource DeployResource) (string, error) {
+func (d *ResUtil) DeployOneResource(overlay, app_name string, format string, device module.ControllerObject, resource DeployResource) (string, error) {
 	resource_app_name := app_name + resource.Resource.GetName()
 	cca, err := makeAppContextForCompositeApp(project_name, resource_app_name, "1.0", "1.0", "di", "default", "0")
 	context := cca.context                    // appcontext.AppContext
@@ -253,20 +253,21 @@ func (d *ResUtil) DeployOneResource(app_name string, format string, device modul
 		Apporder []string `json:"apporder"`
 	}
 	var appDepInstr struct {
-		Appdep map[string]string `json:"appdependency"`
+		Appdep map[string][]string `json:"appdependency"`
 	}
-	appdep := make(map[string]string)
+	appdep := make(map[string][]string)
 	device_app_name := d.getDeviceAppName(device)
 	appOrderInstr.Apporder = append(appOrderInstr.Apporder, device_app_name)
-	appdep[device_app_name] = ""
+	appdep[device_app_name] = []string{}
+	appDepInstr.Appdep = appdep
 
 	apphandle, _ := context.AddApp(compositeHandle, device_app_name)
 
-	clusterhandle, _ := context.AddCluster(apphandle, d.getDeviceClusterName(device))
+	clusterhandle, _ := context.AddCluster(apphandle, d.getDeviceClusterName(overlay, device))
 	err = addResourcesToCluster(context, clusterhandle, d.TargetName(device), []DeployResource{resource}, true)
 
 	jappOrderInstr, _ := json.Marshal(appOrderInstr)
-	appDepInstr.Appdep = appdep
+
 	jappDepInstr, _ := json.Marshal(appDepInstr)
 	context.AddInstruction(compositeHandle, "app", "order", string(jappOrderInstr))
 	context.AddInstruction(compositeHandle, "app", "dependency", string(jappDepInstr))
@@ -287,14 +288,14 @@ func (d *ResUtil) DeployOneResource(app_name string, format string, device modul
 	return appContextID, nil
 }
 
-func (d *ResUtil) UpdateOneResource(cid string, device module.ControllerObject, resourceName string, resourceValue string) error {
+func (d *ResUtil) UpdateOneResource(overlay, cid string, device module.ControllerObject, resourceName string, resourceValue string) error {
 	context := appcontext.AppContext{}
 	_, err := context.LoadAppContext(cid)
 	if err != nil {
 		return err
 	}
 
-	rh, err := context.GetResourceHandle(d.getDeviceAppName(device), d.getDeviceClusterName(device), resourceName)
+	rh, err := context.GetResourceHandle(d.getDeviceAppName(device), d.getDeviceClusterName(overlay, device), resourceName)
 	if err != nil {
 		return err
 	}
@@ -354,8 +355,7 @@ func (d *ResUtil) DeployUpdate(overlay string, app_name string, format string, u
 					// resource is not deployed or failed to deploy
 					if resobj.Specification.Ref == 0 {
 						// resource needs to be deployed
-						cid, err := d.DeployOneResource(app_name, format, device, resource)
-
+						cid, err := d.DeployOneResource(overlay, app_name, format, device, resource)
 						if err != nil {
 							isErr = true
 							resource.Status = 2
@@ -381,7 +381,7 @@ func (d *ResUtil) DeployUpdate(overlay string, app_name string, format string, u
 			case 2:
 				// Update resource
 				if resource.Status != 1 {
-					err := d.UpdateOneResource(resobj.Specification.ContextId, device, getResourceName(resource), resource_data)
+					err := d.UpdateOneResource(overlay, resobj.Specification.ContextId, device, getResourceName(resource), resource_data)
 					if err != nil {
 						isErr = true
 						resource.Status = 2
@@ -451,19 +451,46 @@ func (d *ResUtil) Undeploy(overlay string) error {
 						resource.Status = 1
 						resobj.Specification.Ref = 0
 
-						/*
-							// delete app from context db
-							context := appcontext.AppContext{}
-							_, err := context.LoadAppContext(resobj.Specification.ContextId)
-							if err != nil {
-								err = context.DeleteCompositeApp()
-							}
+						// delete app from context db
+						context := appcontext.AppContext{}
+						ah, err := context.LoadAppContext(resobj.Specification.ContextId)
+						if err == nil {
+							err = wait.PollImmediate(time.Second*2, time.Second*20, func() (bool, error) {
+								sh, err := context.GetLevelHandle(ah, "status")
+								if err != nil {
+									log.Println("Waiting for Resource status to be ready.")
+									return false, nil
+								}
 
-							if err != nil {
+								s, err := context.GetValue(sh)
+								if err != nil {
+									log.Println("Waiting for Resource status to be ready.")
+									return false, nil
+								}
+
+								acStatus := appcontext.AppContextStatus{}
+								js, _ := json.Marshal(s)
+								json.Unmarshal(js, &acStatus)
+
+								if acStatus.Status == appcontext.AppContextStatusEnum.Terminated ||
+									acStatus.Status == appcontext.AppContextStatusEnum.TerminateFailed {
+									err = context.DeleteCompositeApp()
+									if err != nil {
+										log.Println(err)
+										return false, err
+									}
+									return true, nil
+								}
+								return false, nil
+							},
+							)
+							if err == nil {
+								res_manager.DeleteObject(m)
+							} else {
 								log.Println(err)
 							}
-						*/
-						res_manager.DeleteObject(m)
+
+						}
 					}
 				} else {
 					resobj.Specification.Ref -= 1
@@ -498,15 +525,15 @@ func addQueryResourcesToCluster(ct appcontext.AppContext, ch interface{}, resour
 	}
 
 	var resDepInstr struct {
-		Resdep map[string]string `json:"resdependency"`
+		Resdep map[string][]string `json:"resdependency"`
 	}
-	resdep := make(map[string]string)
+	resdep := make(map[string][]string)
 
 	for _, resource := range *resources {
 		resource_name := resource.Resource.Namespace + "+" + resource.Resource.Name
 		v, _ := json.Marshal(resource.Resource)
 		resOrderInstr.Resorder = append(resOrderInstr.Resorder, resource_name)
-		resdep[resource_name] = "go"
+		resdep[resource_name] = []string{}
 
 		rh, err := ct.AddResource(ch, resource_name, string(v))
 

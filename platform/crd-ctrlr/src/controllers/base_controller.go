@@ -10,7 +10,6 @@ import (
 	"github.com/go-logr/logr"
 	errs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"log"
 	"reflect"
@@ -18,7 +17,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/event"
-	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"time"
@@ -34,13 +32,13 @@ import (
 // A global filter to catch the CNF deployments.
 var Filter = builder.WithPredicates(predicate.Funcs{
 	CreateFunc: func(e event.CreateEvent) bool {
-		if _, ok := e.Meta.GetLabels()["sdewanPurpose"]; !ok {
+		if _, ok := e.Object.GetLabels()["sdewanPurpose"]; !ok {
 			return false
 		}
 		return true
 	},
 	UpdateFunc: func(e event.UpdateEvent) bool {
-		if _, ok := e.MetaOld.GetLabels()["sdewanPurpose"]; !ok {
+		if _, ok := e.ObjectOld.GetLabels()["sdewanPurpose"]; !ok {
 			return false
 		}
 		pre_status := reflect.ValueOf(e.ObjectOld).Interface().(*appsv1.Deployment).Status
@@ -57,11 +55,11 @@ var Filter = builder.WithPredicates(predicate.Funcs{
 })
 
 // List the needed CR to specific events and return the reconcile Requests
-func GetToRequestsFunc(r client.Client, crliststruct runtime.Object) func(h handler.MapObject) []reconcile.Request {
+func GetToRequestsFunc(r client.Client, crliststruct client.ObjectList) func(h client.Object) []reconcile.Request {
 
-	return func(h handler.MapObject) []reconcile.Request {
+	return func(h client.Object) []reconcile.Request {
 		var enqueueRequest []reconcile.Request
-		cnfName := h.Meta.GetLabels()["sdewanPurpose"]
+		cnfName := h.GetLabels()["sdewanPurpose"]
 		ctx := context.Background()
 		err := r.List(ctx, crliststruct, client.MatchingLabels{"sdewanPurpose": cnfName})
 		if err != nil {
@@ -86,7 +84,7 @@ func GetToRequestsFunc(r client.Client, crliststruct runtime.Object) func(h hand
 // A global filter to catch the change of cluster IP.
 var IPFilter = builder.WithPredicates(predicate.Funcs{
 	UpdateFunc: func(e event.UpdateEvent) bool {
-		serviceName := e.MetaOld.GetName()
+		serviceName := e.ObjectOld.GetName()
 		if serviceName != "kubernetes" && serviceName != "istio-ingressgateway" {
 			return false
 		}
@@ -97,9 +95,9 @@ var IPFilter = builder.WithPredicates(predicate.Funcs{
 })
 
 // List the needed CR to specific events and return the reconcile Requests
-func GetServiceToRequestsFunc(r client.Client) func(h handler.MapObject) []reconcile.Request {
+func GetServiceToRequestsFunc(r client.Client) func(h client.Object) []reconcile.Request {
 
-	return func(h handler.MapObject) []reconcile.Request {
+	return func(h client.Object) []reconcile.Request {
 		var cnfName string
 		deploymentList := &appsv1.DeploymentList{}
 		podList := &corev1.PodList{}
@@ -154,26 +152,26 @@ func removeString(slice []string, s string) (result []string) {
 	return
 }
 
-func getPurpose(instance runtime.Object) string {
+func getPurpose(instance client.Object) string {
 	value := reflect.ValueOf(instance)
 	field := reflect.Indirect(value).FieldByName("Labels")
 	labels := field.Interface().(map[string]string)
 	return labels["sdewanPurpose"]
 }
 
-func getDeletionTempstamp(instance runtime.Object) *metav1.Time {
+func getDeletionTempstamp(instance client.Object) *metav1.Time {
 	value := reflect.ValueOf(instance)
 	field := reflect.Indirect(value).FieldByName("DeletionTimestamp")
 	return field.Interface().(*metav1.Time)
 }
 
-func getFinalizers(instance runtime.Object) []string {
+func getFinalizers(instance client.Object) []string {
 	value := reflect.ValueOf(instance)
 	field := reflect.Indirect(value).FieldByName("Finalizers")
 	return field.Interface().([]string)
 }
 
-func setStatus(instance runtime.Object, status batchv1alpha1.SdewanStatus) {
+func setStatus(instance client.Object, status batchv1alpha1.SdewanStatus) {
 	value := reflect.ValueOf(instance)
 	field_status := reflect.Indirect(value).FieldByName("Status")
 	if status.State == batchv1alpha1.InSync {
@@ -188,7 +186,7 @@ func setStatus(instance runtime.Object, status batchv1alpha1.SdewanStatus) {
 	field_status.Set(reflect.ValueOf(status))
 }
 
-func appendFinalizer(instance runtime.Object, item string) {
+func appendFinalizer(instance client.Object, item string) {
 	value := reflect.ValueOf(instance)
 	field := reflect.Indirect(value).FieldByName("ObjectMeta")
 	base_obj := field.Interface().(metav1.ObjectMeta)
@@ -196,7 +194,7 @@ func appendFinalizer(instance runtime.Object, item string) {
 	field.Set(reflect.ValueOf(base_obj))
 }
 
-func removeFinalizer(instance runtime.Object, item string) {
+func removeFinalizer(instance client.Object, item string) {
 	value := reflect.ValueOf(instance)
 	field := reflect.Indirect(value).FieldByName("ObjectMeta")
 	base_obj := field.Interface().(metav1.ObjectMeta)
@@ -229,14 +227,13 @@ func net2iface(net string, deployment appsv1.Deployment) (string, error) {
 }
 
 // +kubebuilder:rbac:groups="",resources=services,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups="",resources=pods,verbs=get;watch;list
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch
 // +kubebuilder:rbac:groups=apps,resources=deployments/status,verbs=get;list;watch
+// +kubebuilder:rbac:groups=coordination.k8s.io,resources=leases,verbs=get;list;create;update
 
 // Common Reconcile Processing
-func ProcessReconcile(r client.Client, logger logr.Logger, req ctrl.Request, handler basehandler.ISdewanHandler) (ctrl.Result, error) {
-	ctx := context.Background()
+func ProcessReconcile(r client.Client, logger logr.Logger, ctx context.Context, req ctrl.Request, handler basehandler.ISdewanHandler) (ctrl.Result, error) {
 	log := logger.WithValues(handler.GetType(), req.NamespacedName)
 	during, _ := time.ParseDuration("5s")
 

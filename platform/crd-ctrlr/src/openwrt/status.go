@@ -25,6 +25,10 @@ func (o *SdewanModuleStatus) GetName() string {
 	return o.Name
 }
 
+func (o *SdewanModuleStatus) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
+
 // Status APIs
 // get status
 func (m *StatusClient) GetStatus() (*[]SdewanModuleStatus, error) {

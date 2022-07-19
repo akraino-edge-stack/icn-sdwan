@@ -23,7 +23,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"github.com/matryer/runner"
-	"strings"
 	"time"
 
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
@@ -31,10 +30,12 @@ import (
 	//"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/client"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/resource"
 	pkgerrors "github.com/pkg/errors"
+	mtypes "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/types"
 )
 
 const SCC_RESOURCE = "scc_ipsec_resource"
 const RegStatus = "RegStatus"
+const globalOverlay = "global"
 
 var task *runner.Task
 
@@ -117,6 +118,34 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 	to := t.(*module.DeviceObject)
 
 	ipr_manager := GetManagerset().ProviderIPRange
+
+	if to.Specification.KubeConfig == "" {
+		to.Status.Mode = 3
+		to.Status.Data[RegStatus] = "pending"
+
+		gitOpsReference := to.Specification.GitOpsParam.GitOpsReferenceObject
+		gitOpsResource := to.Specification.GitOpsParam.GitOpsResourceObject
+
+		m[ClusterSyncResource] = gitOpsReference
+		clustersync_manager := GetManagerset().ClusterSync
+		clustersync_obj, err := clustersync_manager.GetObject(m)
+		if clustersync_obj.GetMetadata().Name != gitOpsReference || err != nil {
+			log.Println(err)
+			return err
+		}
+
+		if gitOpsResource != "" {
+			m[ClusterSyncResource] = gitOpsResource
+			clustersync_obj, err := clustersync_manager.GetObject(m)
+			if clustersync_obj.GetMetadata().Name != gitOpsResource || err != nil {
+				log.Println(err)
+				return err
+			}
+		}
+
+		return nil
+	}
+
 	kubeutil := GetKubeConfigUtil()
 
 	local_public_ips := to.Specification.PublicIps
@@ -148,7 +177,6 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 		to.Status.Mode = 2
 
 		// allocate OIP for device
-		overlay_name := m[OverlayResource]
 		oip, err := ipr_manager.Allocate("", to.Metadata.Name)
 		if err != nil {
 			return pkgerrors.Wrap(err, "Fail to allocate overlay ip for "+to.Metadata.Name)
@@ -183,10 +211,9 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 		if err != nil {
 			log.Println("Getting certutil error")
 		}
-		crts, key, err := cu.GetKeypair(SCCCertName, NameSpaceName)
-		crt := strings.SplitAfter(crts, "-----END CERTIFICATE-----")[0]
 
-		root_ca := GetRootCA(overlay_name)
+		crt, key, err := cu.GetKeypair(SCCCertName, NameSpaceName)
+		root_ca, _ := GetRootCA()
 
 		// Build up ipsec resource
 		scc_conn := resource.Connection{
@@ -204,9 +231,9 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 			Type:                 VTI_MODE,
 			Remote:               ANY,
 			AuthenticationMethod: PUBKEY_AUTH,
-			PublicCert:           base64.StdEncoding.EncodeToString([]byte(crt)),
-			PrivateCert:          base64.StdEncoding.EncodeToString([]byte(key)),
-			SharedCA:             base64.StdEncoding.EncodeToString([]byte(root_ca)),
+			PublicCert:           crt,
+			PrivateCert:          key,
+			SharedCA:             root_ca,
 			LocalIdentifier:      "CN=" + SCCCertName,
 			RemoteIdentifier:     "CN=" + to.GetCertName(),
 			CryptoProposal:       all_proposal,
@@ -216,7 +243,7 @@ func (c *DeviceObjectManager) PreProcessing(m map[string]string, t module.Contro
 
 		// Add and deploy resource
 		resutil.AddResource(&scc, "create", &scc_ipsec_resource)
-		resutil.Deploy(overlay_name, "localto"+to.Metadata.Name, "YAML")
+		resutil.Deploy(globalOverlay, m[OverlayResource]+"localto"+to.Metadata.Name, "YAML")
 
 		//Reserve ipsec resource to device object
 		res_str, err := resource.GetResourceBuilder().ToString(&scc_ipsec_resource)
@@ -291,6 +318,7 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 
 	overlay_manager := GetManagerset().Overlay
 	ipr_manager := GetManagerset().ProviderIPRange
+	cert_manager := GetManagerset().Cert
 
 	overlay_name := m[OverlayResource]
 
@@ -325,7 +353,7 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 			resutils.AddResource(&scc, "create", pr)
 		}
 
-		resutils.Undeploy(overlay_name)
+		resutils.Undeploy(globalOverlay)
 	}
 
 	log.Println("Delete device...")
@@ -334,9 +362,23 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 		log.Println(err)
 	}
 
+	if to.Status.Mode == 3 {
+		err = GetDBUtils().UnregisterGitOpsDevice(overlay_name, to.Metadata.Name)
+	} else {
+		err = GetDBUtils().UnregisterDevice(overlay_name, m[DeviceResource])
+	}
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("Delete Certificate: " + to.GetCertName())
+	err = cert_manager.DeleteCertificateByType(overlay_name, to.Metadata.Name, DeviceKey)
+	if err != nil {
+		log.Println("Error in deleting device certificate")
+	}
+
 	// DB Operation
 	err = GetDBUtils().DeleteObject(c, m)
-	err = GetDBUtils().UnregisterDevice(m[DeviceResource])
 	if err != nil {
 		log.Println(err)
 	}
@@ -344,26 +386,34 @@ func (c *DeviceObjectManager) DeleteObject(m map[string]string) error {
 	return err
 }
 
-func GetDeviceCertificate(overlay_name string, device_name string) (string, string, error) {
-	cert := GetManagerset().Cert
-	_, crts, key, err := cert.GetOrCreateDC(overlay_name, device_name)
-	if err != nil {
-		log.Println("Error in getting cert for device ...")
-		return "", "", err
-	}
-
-	crt := strings.SplitAfter(crts, "-----END CERTIFICATE-----")[0]
-	return crt, key, nil
-}
-
 func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.ControllerObject) error {
-
+	overlay_name := m[OverlayResource]
 	overlay_manager := GetManagerset().Overlay
+	cert_manager := GetManagerset().Cert
 
 	to := t.(*module.DeviceObject)
 	log.Println("Registering device " + to.Metadata.Name + " ... ")
 
-	if to.Status.Mode == 2 {
+	if to.Status.Mode == 3 {
+		to.Status.Data[RegStatus] = "success"
+		var gitOpsParams mtypes.GitOpsProps
+		gitOpsParams.GitOpsType = to.Specification.GitOpsParam.GitOpsType
+		gitOpsParams.GitOpsReferenceObject = to.Specification.GitOpsParam.GitOpsReferenceObject
+		gitOpsParams.GitOpsResourceObject = to.Specification.GitOpsParam.GitOpsResourceObject
+
+		err := GetDBUtils().RegisterGitOpsDevice(overlay_name, to.Metadata.Name, mtypes.GitOpsSpec{Props: gitOpsParams})
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		log.Println("Create Certificate: " + to.GetCertName())
+		_, _, _, err = cert_manager.GetOrCreateDC(overlay_name, to.Metadata.Name, false)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+	} else if to.Status.Mode == 2 {
 		kube_config, err := base64.StdEncoding.DecodeString(to.Specification.KubeConfig)
 		if err != nil || len(kube_config) == 0 {
 			to.Status.Data[RegStatus] = "failed"
@@ -378,7 +428,7 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 
 		to.Status.Data[RegStatus] = "success"
 		to.Specification.KubeConfig = base64.StdEncoding.EncodeToString(kube_config)
-		err = GetDBUtils().RegisterDevice(to.Metadata.Name, to.Specification.KubeConfig)
+		err = GetDBUtils().RegisterDevice(overlay_name, to.Metadata.Name, to.Specification.KubeConfig)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -387,17 +437,14 @@ func (c *DeviceObjectManager) PostRegister(m map[string]string, t module.Control
 
 	} else {
 		to.Status.Data[RegStatus] = "success"
-		err := GetDBUtils().RegisterDevice(to.Metadata.Name, to.Specification.KubeConfig)
+		err := GetDBUtils().RegisterDevice(overlay_name, to.Metadata.Name, to.Specification.KubeConfig)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 
-		overlay := GetManagerset().Overlay
-		overlay_name := m[OverlayResource]
-
 		log.Println("Create Certificate: " + to.GetCertName())
-		_, _, err = overlay.CreateCertificate(overlay_name, to.GetCertName())
+		_, _, _, err = cert_manager.GetOrCreateDC(overlay_name, to.Metadata.Name, false)
 		if err != nil {
 			log.Println(err)
 			return err

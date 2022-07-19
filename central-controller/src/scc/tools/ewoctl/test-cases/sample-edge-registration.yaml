@@ -1,0 +1,21 @@
+---
+# creating edge-1
+version: ewo/v1
+resourceContext:
+  anchor: overlays/overlay1/devices
+metadata:
+  name: edge-1
+  description:
+  userData1:
+  userData2:
+spec:
+  forceHubConnectivity: true
+  proxyHubPort: 65536
+  useHub4Internet: true
+  dedicatedSFC: false
+  certificateId: "device-edge-1-cert"
+  gitOpsParam:
+    gitOpsType: "fluxcd"
+    gitOpsResourceObject: "cso2"
+    gitOpsReferenceObject: "cso2"
+

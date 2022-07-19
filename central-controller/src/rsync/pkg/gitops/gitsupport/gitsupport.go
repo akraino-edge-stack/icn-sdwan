@@ -6,9 +6,10 @@ package gitsupport
 import (
 	"context"
 	"fmt"
-	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
 	"strings"
 	"time"
+
+	log "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/logutils"
 
 	"github.com/fluxcd/go-git-providers/gitprovider"
 	pkgerrors "github.com/pkg/errors"
@@ -31,7 +32,7 @@ type GitProvider struct {
 	Branch    string
 	RepoName  string
 	Url       string
-	Client    gitprovider.Client
+	Client    interface{}
 }
 
 /*
@@ -106,12 +107,12 @@ func NewGitProvider(cid, app, cluster, level, namespace string) (*GitProvider, e
 		RepoName:  repoName,
 		Url:       "https://" + gitType + ".com/" + userName + "/" + repoName,
 	}
-	client, err := emcogit.CreateClient(gitToken, gitType)
+	client, err := emcogit.CreateClient(userName, gitToken, gitType)
 	if err != nil {
 		log.Error("Error getting git client", log.Fields{"err": err})
 		return nil, err
 	}
-	p.Client = client.(gitprovider.Client)
+	p.Client = client
 	return &p, nil
 }
 
@@ -193,7 +194,8 @@ func (p *GitProvider) Commit(ctx context.Context, ref interface{}) error {
 		log.Error("Commit: No ref found", log.Fields{})
 		return nil
 	}
-	err := emcogit.CommitFiles(ctx, p.Client, p.UserName, p.RepoName, p.Branch, "Commit for "+p.GetPath("context"), ref.([]gitprovider.CommitFile), p.GitType)
+	appName := p.Cid + "-" + p.App
+	err := emcogit.CommitFiles(ctx, p.Client, p.UserName, p.RepoName, p.Branch, "Commit for "+p.GetPath("context"), appName, ref.([]gitprovider.CommitFile), p.GitType)
 
 	return err
 }
@@ -214,15 +216,31 @@ var waitTime int = 60
 // go routine starts and reads after waitTime
 // Thread exists when the AppContext is deleted
 func (p *GitProvider) StartClusterWatcher() error {
+	// obtain the sha key for main
+	//obtain shaake
+	ctx := context.Background()
+
+	latestSHA, err := emcogit.GetLatestCommitSHA(ctx, p.Client, p.UserName, p.RepoName, p.Branch, "", p.GitType)
+	if err != nil {
+		return err
+	}
+	// create branch for status
+	branch := p.Cluster + "-" + p.Cid + "-" + p.App
+	err = emcogit.CreateBranch(ctx, p.Client, latestSHA, p.UserName, p.RepoName, branch, p.GitType)
+	if err != nil {
+		return err
+	}
 	// Start thread to sync monitor CR
 	go func() error {
 		ctx := context.Background()
+		var lastCommitSHA string
 		for {
 			select {
 			case <-time.After(time.Duration(waitTime) * time.Second):
 				if ctx.Err() != nil {
 					return ctx.Err()
 				}
+
 				// Check if AppContext doesn't exist then exit the thread
 				if _, err := utils.NewAppContextReference(p.Cid); err != nil {
 					// Delete the Status CR updated by Monitor running on the cluster
@@ -231,23 +249,37 @@ func (p *GitProvider) StartClusterWatcher() error {
 					return nil
 				}
 				path := p.GetPath("status")
-				// Read file
-				c, err := emcogit.GetFiles(ctx, p.Client, p.UserName, p.RepoName, p.Branch, path, p.GitType)
+				// branch to track
+				branch := p.Cluster + "-" + p.Cid + "-" + p.App
+
+				latestCommitSHA, err := emcogit.GetLatestCommitSHA(ctx, p.Client, p.UserName, p.RepoName, branch, path, p.GitType)
 				if err != nil {
-					log.Error("Status file not available", log.Fields{"error": err, "cluster": p.Cluster, "resource": path})
-					continue
+					log.Error("Error in obtaining latest commit SHA", log.Fields{"err": err})
 				}
-				cp := c.([]*gitprovider.CommitFile)
-				if len(cp) > 0 {
-					// Only one file expected in the location
-					content := &v1alpha1.ResourceBundleState{}
-					_, err := utils.DecodeYAMLData(*cp[0].Content, content)
+
+				if lastCommitSHA != latestCommitSHA {
+					// new commit get files
+					// Read file
+					log.Debug("New Status File, pulling files", log.Fields{"LatestSHA": latestCommitSHA, "LastSHA": lastCommitSHA})
+					c, err := emcogit.GetFiles(ctx, p.Client, p.UserName, p.RepoName, branch, path, p.GitType)
 					if err != nil {
-						log.Error("", log.Fields{"error": err, "cluster": p.Cluster, "resource": path})
-						return err
+						log.Debug("Status file not available", log.Fields{"error": err, "cluster": p.Cluster, "resource": path})
+						continue
 					}
-					status.HandleResourcesStatus(p.Cid, p.App, p.Cluster, content)
+					cp := c.([]*gitprovider.CommitFile)
+					if len(cp) > 0 {
+						// Only one file expected in the location
+						content := &v1alpha1.ResourceBundleState{}
+						_, err := utils.DecodeYAMLData(*cp[0].Content, content)
+						if err != nil {
+							log.Error("", log.Fields{"error": err, "cluster": p.Cluster, "resource": path})
+							return err
+						}
+						status.HandleResourcesStatus(p.Cid, p.App, p.Cluster, content)
+					}
+					lastCommitSHA = latestCommitSHA
 				}
+
 			// Check if the context is canceled
 			case <-ctx.Done():
 				return ctx.Err()
@@ -260,10 +292,16 @@ func (p *GitProvider) StartClusterWatcher() error {
 // DeleteClusterStatusCR deletes the status CR provided by the monitor on the cluster
 func (p *GitProvider) DeleteClusterStatusCR() error {
 	// Delete the status CR
-	path := p.GetPath("status") + p.Cid + "-" + p.App
-	rf := []gitprovider.CommitFile{}
-	ref := emcogit.Delete(path, rf, p.GitType)
-	err := emcogit.CommitFiles(context.Background(), p.Client, p.UserName, p.RepoName, p.Branch,
-		"Commit for Delete Status CR "+p.GetPath("status"), ref, p.GitType)
-	return err
+	// branch to track
+	branch := p.Cluster + "-" + p.Cid + "-" + p.App
+
+	ctx := context.Background()
+
+	// Delete the branch
+	err := emcogit.DeleteBranch(ctx, p.Client, p.UserName, p.RepoName, branch, p.GitType)
+	if err != nil {
+		log.Error("Error in deleting branch", log.Fields{"err": err})
+		return err
+	}
+	return nil
 }

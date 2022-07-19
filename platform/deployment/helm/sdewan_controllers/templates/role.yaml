@@ -101,26 +101,6 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
-  - networkfirewallrules
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - batch.sdewan.akraino.org
-  resources:
-  - networkfirewallrules/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - batch.sdewan.akraino.org
-  resources:
   - cnflocalservices
   verbs:
   - create
@@ -441,6 +421,26 @@ rules:
 - apiGroups:
   - batch.sdewan.akraino.org
   resources:
+  - networkfirewallrules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
+  - networkfirewallrules/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - batch.sdewan.akraino.org
+  resources:
   - sdewanapplications
   verbs:
   - create
@@ -457,6 +457,15 @@ rules:
   verbs:
   - get
   - patch
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - list
   - update
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -527,3 +536,4 @@ subjects:
 - kind: ServiceAccount
   name: default
   namespace: {{ .Values.namespace }}
+---

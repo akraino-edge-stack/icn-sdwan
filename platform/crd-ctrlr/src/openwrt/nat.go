@@ -35,6 +35,10 @@ func (o *SdewanNat) GetName() string {
 	return o.Name
 }
 
+func (o *SdewanNat) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
+
 type SdewanNats struct {
 	Nats []SdewanNat `json:"nats"`
 }

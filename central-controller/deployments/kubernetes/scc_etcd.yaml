@@ -93,4 +93,4 @@ spec:
       - configMap:
           defaultMode: 511
           name: etcd-init
-        name: etcd-init 
+        name: etcd-init        

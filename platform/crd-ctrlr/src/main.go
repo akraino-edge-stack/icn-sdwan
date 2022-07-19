@@ -16,6 +16,7 @@ import (
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	batchv1alpha1 "sdewan.akraino.org/sdewan/api/v1alpha1"
@@ -63,7 +64,7 @@ func main() {
 	}
 
 	// Add indexer for rolebinding so that we can filter rolebindings by .subject
-	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.RoleBinding{}, ".subjects", func(rawObj runtime.Object) []string {
+	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.RoleBinding{}, ".subjects", func(rawObj client.Object) []string {
 		var fieldValues []string
 		rolebinding := rawObj.(*rbacv1.RoleBinding)
 		for _, subject := range rolebinding.Subjects {
@@ -79,7 +80,7 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
-	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.ClusterRoleBinding{}, ".subjects", func(rawObj runtime.Object) []string {
+	err = mgr.GetFieldIndexer().IndexField(context.Background(), &rbacv1.ClusterRoleBinding{}, ".subjects", func(rawObj client.Object) []string {
 		var fieldValues []string
 		clusterrolebinding := rawObj.(*rbacv1.ClusterRoleBinding)
 		for _, subject := range clusterrolebinding.Subjects {
@@ -95,7 +96,7 @@ func main() {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
-	err = mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Pod{}, "OwnBy", func(rawObj runtime.Object) []string {
+	err = mgr.GetFieldIndexer().IndexField(context.Background(), &corev1.Pod{}, "OwnBy", func(rawObj client.Object) []string {
 		// grab the job object, extract the owner...
 		var fieldValues []string
 		pod := rawObj.(*corev1.Pod)

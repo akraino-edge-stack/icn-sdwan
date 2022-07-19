@@ -29,7 +29,7 @@ func (m *Mwan3RuleHandler) GetType() string {
 	return "Mwan3Rule"
 }
 
-func (m *Mwan3RuleHandler) GetName(instance runtime.Object) string {
+func (m *Mwan3RuleHandler) GetName(instance client.Object) string {
 	Rule := instance.(*batchv1alpha1.Mwan3Rule)
 	return Rule.Name
 }
@@ -38,13 +38,13 @@ func (m *Mwan3RuleHandler) GetFinalizer() string {
 	return "rule.finalizers.sdewan.akraino.org"
 }
 
-func (m *Mwan3RuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *Mwan3RuleHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.Mwan3Rule{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *Mwan3RuleHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *Mwan3RuleHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	rule := instance.(*batchv1alpha1.Mwan3Rule)
 	openwrtrule := openwrt.SdewanRule{
 		Name:     rule.Name,
@@ -110,8 +110,8 @@ type Mwan3RuleReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=mwan3rules,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=mwan3rules/status,verbs=get;update;patch
 
-func (r *Mwan3RuleReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, mwan3RuleHandler)
+func (r *Mwan3RuleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, mwan3RuleHandler)
 }
 
 func (r *Mwan3RuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -120,9 +120,7 @@ func (r *Mwan3RuleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.Mwan3Rule{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.Mwan3RuleList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.Mwan3RuleList{})),
 			Filter).
 		Complete(r)
 }

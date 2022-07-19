@@ -5,12 +5,12 @@ package controllers
 import (
 	"context"
 	"errors"
+	"log"
 	"net"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"log"
 
 	"github.com/go-logr/logr"
 	errs "k8s.io/apimachinery/pkg/api/errors"
@@ -39,8 +39,7 @@ type CNFHubSiteReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfhubsites,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfhubsites/status,verbs=get;update;patch
 
-func (r *CNFHubSiteReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	ctx := context.Background()
+func (r *CNFHubSiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("CNFHubSite", req.NamespacedName)
 	during, _ := time.ParseDuration("5s")
 
@@ -271,11 +270,11 @@ func (r *CNFHubSiteReconciler) addCRs(instance *batchv1alpha1.CNFHubSite, status
 					Labels:    instance.Labels,
 				},
 				Spec: batchv1alpha1.CNFNATSpec{
-					DestIp:   ip,
-					Dest:     "#source",
-					SrcDIp:   status.DevicePIP,
-					Index:    "1",
-					Target:   "SNAT",
+					DestIp: ip,
+					Dest:   "#source",
+					SrcDIp: status.DevicePIP,
+					Index:  "1",
+					Target: "SNAT",
 				},
 			}
 
@@ -285,7 +284,7 @@ func (r *CNFHubSiteReconciler) addCRs(instance *batchv1alpha1.CNFHubSite, status
 			}
 		}
 	}
-	
+
 	return nil
 }
 

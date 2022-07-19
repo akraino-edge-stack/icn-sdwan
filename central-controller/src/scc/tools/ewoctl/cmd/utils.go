@@ -5,12 +5,15 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	neturl "net/url"
 	"os"
+	"reflect"
 	"strings"
 
 	"text/template"
@@ -84,6 +87,104 @@ func NewRestClientToken(token string) RestyClient {
 	return Client
 }
 
+// process a field with pre-defined functions
+func processField(s string) string{
+	i := strings.Index(s, ":")
+	if i != -1 {
+		f := strings.ToLower(strings.TrimSpace(s[:i]))
+		v := s[i+1:]
+		switch f {
+		case "file":
+			filename := processField(v)
+			filecontent, err := ioutil.ReadFile(filename)
+			if err != nil {
+				log.Println(err)
+			} else {
+				return string(filecontent)
+			}
+		case "b64en":
+			return base64.StdEncoding.EncodeToString([]byte(processField(v)))
+		case "b64de":
+			dec, err := base64.StdEncoding.DecodeString(v)
+			if err != nil {
+				log.Println(err)
+			} else {
+				return string(dec)
+			}
+		default:
+		}
+	}
+
+	return s
+}
+
+// process object field with pre-defined functions
+func processObject(o interface{}) (interface{}, error){
+    t := reflect.TypeOf(o)
+    switch t.Kind() {
+    case reflect.String:
+        return processField(o.(string)), nil
+    case reflect.Ptr:
+        v := reflect.ValueOf(o)
+        newv, err := processObject(v.Elem().Interface())
+        if err != nil {
+            return nil, err
+        }
+        v.Elem().Set(reflect.ValueOf(newv))
+        return o, nil
+    case reflect.Struct:
+        v := reflect.ValueOf(&o).Elem()
+        newv := reflect.New(v.Elem().Type()).Elem()
+        newv.Set(v.Elem())
+        for k := 0; k < t.NumField(); k++ {
+            if t.Field(k).IsExported() {
+                newf, err := processObject(newv.Field(k).Interface())
+                if err != nil {
+                    return nil, err
+                }
+                newv.Field(k).Set(reflect.ValueOf(newf))
+            }
+        }
+        return newv.Interface(), nil
+    case reflect.Array:
+        v := reflect.ValueOf(o)
+        newv := reflect.New(t).Elem()
+        for k:=0; k<v.Len(); k++ {
+            newf, err := processObject(v.Index(k).Interface())
+            if err != nil {
+                return nil, err
+            }
+            newv.Index(k).Set(reflect.ValueOf(newf))
+        }
+        return newv.Interface(), nil
+    case reflect.Slice:
+        v := reflect.ValueOf(o)
+        newv := reflect.MakeSlice(t, v.Len(), v.Len())
+        for  k:=0; k<v.Len(); k++ {
+            newf, err := processObject(v.Index(k).Interface())
+            if err != nil {
+                return nil, err
+            }
+            newv.Index(k).Set(reflect.ValueOf(newf))
+        }
+        return newv.Interface(), nil
+    case reflect.Map:
+        v := reflect.ValueOf(o)
+        newv := reflect.MakeMap(t)
+        for _, k := range v.MapKeys() {
+            newf, err := processObject(v.MapIndex(k).Interface())
+            if err != nil {
+                return nil, err
+            }
+            newv.SetMapIndex(k, reflect.ValueOf(newf))
+        }
+        return newv.Interface(), nil
+    default:
+    }
+
+    return o, nil
+}
+
 // readResources reads all the resources in the file provided
 func readResources() []Resources {
 	// TODO: Remove Assumption only one file
@@ -139,6 +240,8 @@ func readResources() []Resources {
 			break
 		}
 		body := &ewoBody{Meta: doc.Meta, Spec: doc.Spec}
+		pbody, _ := processObject(body)
+		body = pbody.(*ewoBody)
 		jsonBody, err := json.Marshal(body)
 		if err != nil {
 			fmt.Println("Invalid input Yaml! Exiting..", err)

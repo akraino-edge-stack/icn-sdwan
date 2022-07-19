@@ -14,7 +14,7 @@ Usage of ./certctl:
   -certName string
         Certificate name to query
   -ip string
-        SDEWAN Central Controller IP Address (default "10.233.117.240")
+        SDEWAN Central Controller IP Address (default "127.0.0.1")
   -overlay string
         Overlay the cert belongs to
   -port string

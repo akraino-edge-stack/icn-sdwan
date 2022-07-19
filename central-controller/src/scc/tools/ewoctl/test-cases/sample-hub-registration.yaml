@@ -1,0 +1,19 @@
+---
+# creating huba
+version: ewo/v1
+resourceContext:
+  anchor: overlays/overlay1/hubs
+metadata:
+  name: huba
+  description:
+  userData1:
+  userData2:
+spec:
+  publicIps:
+  - 10.10.70.39
+  certificateId: "hub-huba-cert"
+  gitOpsParam:
+    gitOpsType: "fluxcd"
+    gitOpsResourceObject: "cso2"
+    gitOpsReferenceObject: "cso2"
+

@@ -30,9 +30,10 @@ type HubObject struct {
 
 //HubObjectSpec contains the parameters
 type HubObjectSpec struct {
-	PublicIps     []string `json:"publicIps"`
-	CertificateId string   `json:"certificateId"`
-	KubeConfig    string   `json:"kubeConfig" encrypted:""`
+	PublicIps     []string     `json:"publicIps"`
+	CertificateId string       `json:"certificateId"`
+	KubeConfig    string       `json:"kubeConfig"`
+	GitOpsParam   GitOpsParams `json:"gitOpsParam"`
 }
 
 //HubObjectStatus

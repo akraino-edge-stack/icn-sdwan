@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/dynamic"
 	"log"
 	"os"
@@ -19,6 +20,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	slog "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"strings"
 )
 
 type GvkElement struct {
@@ -193,6 +195,29 @@ func readGVKList(file string) ([]configResource, error) {
 	return result, nil
 }
 
+func ListCrds(group string, version string) ([]configResource, error) {
+	result := []configResource{}
+
+	config := ctrl.GetConfigOrDie()
+	d := discovery.NewDiscoveryClientForConfigOrDie(config)
+	resources, err := d.ServerResourcesForGroupVersion(group + "/" + version)
+	if err != nil {
+		return result, err
+	}
+
+	for _, res := range resources.APIResources {
+		if !strings.Contains(res.Name, "/") {
+			result = append(result, configResource{
+				Group:    group,
+				Version:  version,
+				Kind:     res.Kind,
+				Resource: res.Name,
+			})
+		}
+	}
+	return result, nil
+}
+
 func SetupControllers(mgr ctrl.Manager) error {
 
 	// Copy map
@@ -207,18 +232,37 @@ func SetupControllers(mgr ctrl.Manager) error {
 	}
 
 	for _, gv := range l {
-		_, err = GetResourcesDynamically(gv.Group, gv.Version, gv.Resource, "default")
-		if err != nil {
-			log.Println("Invalid resource for the cluster", gv)
-			continue
-		}
-		gvk := schema.GroupVersionKind{
-			Group:   gv.Group,
-			Kind:    gv.Kind,
-			Version: gv.Version,
-		}
-		if _, ok := GvkMap[gvk]; !ok {
-			GvkMap[gvk] = GvkElement{defaultRes: false, resource: gv.Resource}
+		if gv.Resource == "" {
+			crds, err := ListCrds(gv.Group, gv.Version)
+			if err != nil {
+				log.Println("Invalid API group and version for the cluster")
+				continue
+			}
+
+			for _, crd := range crds {
+				gvk := schema.GroupVersionKind{
+					Group:   crd.Group,
+					Kind:    crd.Kind,
+					Version: crd.Version,
+				}
+				if _, ok := GvkMap[gvk]; !ok {
+					GvkMap[gvk] = GvkElement{defaultRes: false, resource: crd.Resource}
+				}
+			}
+		} else {
+			_, err = GetResourcesDynamically(gv.Group, gv.Version, gv.Resource, "default")
+			if err != nil {
+				log.Println("Invalid resource for the cluster", gv)
+				continue
+			}
+			gvk := schema.GroupVersionKind{
+				Group:   gv.Group,
+				Kind:    gv.Kind,
+				Version: gv.Version,
+			}
+			if _, ok := GvkMap[gvk]; !ok {
+				GvkMap[gvk] = GvkElement{defaultRes: false, resource: gv.Resource}
+			}
 		}
 	}
 	log.Println("Adding controllers for::", GvkMap)

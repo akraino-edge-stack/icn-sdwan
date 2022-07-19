@@ -32,6 +32,7 @@ type ControllerObjectManager interface {
 	AddOwnResManager(mgr ControllerObjectManager)
 
 	GetResourceName() string
+	GetResourceStoredName(obj module.ControllerObject) string
 	IsOperationSupported(oper string) bool
 	GetStoreKey(m map[string]string, t module.ControllerObject, isCollection bool) (db.Key, error)
 	CreateEmptyObject() module.ControllerObject
@@ -56,6 +57,10 @@ func (c *BaseObjectManager) GetStoreName() string {
 
 func (c *BaseObjectManager) GetStoreMeta() string {
 	return c.tagMeta
+}
+
+func (c *BaseObjectManager) GetResourceStoredName(obj module.ControllerObject) string {
+	return obj.GetMetadata().Name
 }
 
 func (c *BaseObjectManager) GetDepResManagers() []ControllerObjectManager {

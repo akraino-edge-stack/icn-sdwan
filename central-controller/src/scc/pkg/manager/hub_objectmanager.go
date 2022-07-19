@@ -21,11 +21,11 @@ import (
 	"encoding/json"
 	"io"
 	"log"
-	"strings"
 
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	pkgerrors "github.com/pkg/errors"
 	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
+	mtypes "gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/module/types"
 )
 
 const DEFAULTPORT = "6443"
@@ -106,38 +106,69 @@ func (c *HubObjectManager) ParseObject(r io.Reader) (module.ControllerObject, er
 
 func (c *HubObjectManager) CreateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
 	overlay := GetManagerset().Overlay
+	certManager := GetManagerset().Cert
 	overlay_name := m[OverlayResource]
 	to := t.(*module.HubObject)
 	hub_name := to.Metadata.Name
 
 	//Todo: Check if public ip can be used.
 	var local_public_ip string
-	var config []byte
-	config, err := base64.StdEncoding.DecodeString(to.Specification.KubeConfig)
-	if err != nil {
-		log.Println(err)
-		return t, err
-	}
 
-	local_public_ips := to.Specification.PublicIps
+	if to.Specification.KubeConfig == "" {
+		var gitOpsParams mtypes.GitOpsProps
+		gitOpsParams.GitOpsType = to.Specification.GitOpsParam.GitOpsType
+		gitOpsParams.GitOpsReferenceObject = to.Specification.GitOpsParam.GitOpsReferenceObject
+		gitOpsParams.GitOpsResourceObject = to.Specification.GitOpsParam.GitOpsResourceObject
 
-	kubeutil := GetKubeConfigUtil()
-	config, local_public_ip, err = kubeutil.checkKubeConfigAvail(config, local_public_ips, DEFAULTPORT)
-	if err == nil {
-		log.Println("Public IP address verified: " + local_public_ip)
-		to.Status.Ip = local_public_ip
-		to.Specification.KubeConfig = base64.StdEncoding.EncodeToString(config)
-		err := GetDBUtils().RegisterDevice(hub_name, to.Specification.KubeConfig)
+		m[ClusterSyncResource] = gitOpsParams.GitOpsReferenceObject
+		clustersync_manager := GetManagerset().ClusterSync
+		clustersync_obj, err := clustersync_manager.GetObject(m)
+		if clustersync_obj.GetMetadata().Name != gitOpsParams.GitOpsReferenceObject || err != nil {
+			log.Println("error finding clustersync object", err)
+			return &module.HubObject{}, err
+		}
+
+		if gitOpsParams.GitOpsResourceObject != "" {
+			m[ClusterSyncResource] = gitOpsParams.GitOpsResourceObject
+			clustersync_obj, err := clustersync_manager.GetObject(m)
+			if clustersync_obj.GetMetadata().Name != gitOpsParams.GitOpsResourceObject || err != nil {
+				log.Println("error finding clustersync object", err)
+				return &module.HubObject{}, err
+			}
+		}
+
+		to.Status.Ip = to.Specification.PublicIps[0]
+		err = GetDBUtils().RegisterGitOpsDevice(overlay_name, to.Metadata.Name, mtypes.GitOpsSpec{Props: gitOpsParams})
 		if err != nil {
 			log.Println(err)
 		}
 	} else {
-		return t, err
+		config, err := base64.StdEncoding.DecodeString(to.Specification.KubeConfig)
+		if err != nil {
+			log.Println(err)
+			return t, err
+		}
+
+		local_public_ips := to.Specification.PublicIps
+
+		kubeutil := GetKubeConfigUtil()
+		config, local_public_ip, err = kubeutil.checkKubeConfigAvail(config, local_public_ips, DEFAULTPORT)
+		if err == nil {
+			log.Println("Public IP address verified: " + local_public_ip)
+			to.Status.Ip = local_public_ip
+			to.Specification.KubeConfig = base64.StdEncoding.EncodeToString(config)
+			err := GetDBUtils().RegisterDevice(overlay_name, hub_name, to.Specification.KubeConfig)
+			if err != nil {
+				log.Println(err)
+			}
+		} else {
+			return t, err
+		}
 	}
 
 	//Create cert for ipsec connection
 	log.Println("Create Certificate: " + to.GetCertName())
-	_, _, err = overlay.CreateCertificate(overlay_name, to.GetCertName())
+	_, _, _, err := certManager.GetOrCreateCertificateByType(overlay_name, to.Metadata.Name, HubKey, false)
 	if err != nil {
 		return t, err
 	}
@@ -196,6 +227,7 @@ func (c *HubObjectManager) DeleteObject(m map[string]string) error {
 	}
 
 	overlay_manager := GetManagerset().Overlay
+	certManager := GetManagerset().Cert
 
 	// Reset all IpSec connection setup by this device
 	err = overlay_manager.DeleteConnections(m, t)
@@ -205,35 +237,26 @@ func (c *HubObjectManager) DeleteObject(m map[string]string) error {
 
 	to := t.(*module.HubObject)
 	log.Println("Delete Certificate: " + to.GetCertName())
-	overlay_manager.DeleteCertificate(to.GetCertName())
+	err = certManager.DeleteCertificateByType(m[OverlayResource], to.Metadata.Name, HubKey)
+	if err != nil {
+		log.Println("Error in deleting hub certificate")
+	}
+	//overlay_manager.DeleteCertificate(to.GetCertName())
+
+	if to.Specification.KubeConfig == "" {
+		err = GetDBUtils().UnregisterGitOpsDevice(m[OverlayResource], to.Metadata.Name)
+	} else {
+		err = GetDBUtils().UnregisterDevice(m[OverlayResource], m[HubResource])
+	}
+	if err != nil {
+		log.Println(err)
+	}
 
 	// DB Operation
 	err = GetDBUtils().DeleteObject(c, m)
-	err = GetDBUtils().UnregisterDevice(m[HubResource])
 	if err != nil {
 		log.Println(err)
 	}
 
 	return err
-}
-
-func GetHubCertificate(cert_name string, namespace string) (string, string, error) {
-	cu, err := GetCertUtil()
-	if err != nil {
-		log.Println(err)
-		return "", "", err
-	} else {
-		ready := cu.IsCertReady(cert_name, namespace)
-		if ready != true {
-			return "", "", pkgerrors.New("Cert for hub is not ready")
-		} else {
-			crts, key, err := cu.GetKeypair(cert_name, namespace)
-			crt := strings.SplitAfter(crts, "-----END CERTIFICATE-----")[0]
-			if err != nil {
-				log.Println(err)
-				return "", "", err
-			}
-			return crt, key, nil
-		}
-	}
 }

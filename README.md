@@ -1,5 +1,9 @@
 # Introduction to Akraino ICN SD-EWAN solution
 
+SDEWAN is a solution to enable SDWAN functionalities include multiple WAN link support, WAN traffic management, NAT, firewall, IPSec and Traffic shaping etc. with focus to address the challenges when applying on edge computing environment like resource limitation, edge overlays, traffic sanitization, automation and cost sensitive etc. 
+
+<img src="./images/sdewan_overview.jpg" height="400" />
+
 SD-EWAN main functionalities include
 
 * IPsec tunnels across K8s clusters - Supporting multiple types of K8s clusters
@@ -19,23 +23,28 @@ SD-EWAN is based on set of Linux packages
 
 ## SD-EWAN in Akraino/ICN
 
-SD-EWAN functionalities are realized via CNF (Containerized Network Function)
-and deployed by K8s. SD-EWAN CNF leverages Linux kernel functionality for packet
+SD-EWAN functionalities are realized via three components: Central Controller, CNF (Containerized Network Function)
+and CRD controller that deployed through K8s. SD-EWAN CNF leverages Linux kernel functionality for packet
 processing of above functions. Actual CNF is set of user space processes
 consisting of fw3, mwan3, strongswan and others.
 
 SD-EWAN is considered as platform feature by ICN.
 
-Refer - https://www.linkedin.com/pulse/software-defined-edge-wan-edges-srinivasa-addepalli/
-
 ### platform
 SDEWAN platform features include cnf, cr definition and controller.
 
-### traffic-hub
-traffic-hub's high level design can be found at: https://www.linkedin.com/pulse/software-defined-edge-wan-central-control-traffic-hub-addepalli/
+CNF is implemented based on OpenWRT, it enhances OpenWRT Luci web interface with SDEWAN controllers to provide Restful API for network functions' configuration and control. 
+
+<img src="./platform/images/cnf_overview.jpg" height="300" />
+
+CRD controller is implemented as k8s CRD Controller, it manages CRDs (e.g. Firewall related CRDs, Mwan3 related CRDs and IpSec related CRDs etc.) and internally calls SDEWAN Restful API to do CNF configuration. And a remote client (e.g. SDEWAN Central Controller) can manage SDEWAN CNF configuration through creating/updating/deleting SDEWAN CRs.
+
+<img src="./platform/images/crd_controller_overview.jpg" height="250" />
 
 ### central-controller
-central-controller's high level design can be found at: https://www.linkedin.com/pulse/software-defined-edge-wan-central-control-traffic-hub-addepalli/
+central-controller provides central control of SDEWAN overlay networks by automatically configuring the SDEWAN CNFs through SDEWAN CRD controller located in edge location clusters and hub clusters.
+
+<img src="./central-controller/images/central_controller_overview.jpg" height="300" />
 
 ## Comprehensive Documentation
 - [How to use](platform/crd-ctrlr#deployment-guide)

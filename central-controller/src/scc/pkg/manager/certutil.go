@@ -18,6 +18,7 @@ package manager
 
 import (
 	"context"
+	"encoding/base64"
 	kclient "github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/client"
 	certv1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
@@ -28,6 +29,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/wait"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -124,7 +126,11 @@ func (c *CertUtil) GetCertificate(name string, namespace string) (*certv1.Certif
 }
 
 func (c *CertUtil) DeleteCertificate(name string, namespace string) error {
-	return c.client.Certificates(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
+	if err := c.client.Certificates(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{}); err != nil {
+		return err
+	}
+	c.k8sclient.Secrets(namespace).Delete(context.TODO(), c.GetCertSecretName(name), metav1.DeleteOptions{})
+	return nil
 }
 
 func (c *CertUtil) CreateCertificate(name string, namespace string, issuer string, isCA bool) (*certv1.Certificate, error) {
@@ -203,7 +209,9 @@ func (c *CertUtil) GetKeypair(certname string, namespace string) (string, string
 		return "", "", err
 	}
 
-	return string(secret.Data["tls.crt"]), string(secret.Data["tls.key"]), nil
+	key := base64.StdEncoding.EncodeToString(secret.Data["tls.key"])
+	cert := base64.StdEncoding.EncodeToString([]byte(strings.SplitAfter(string(secret.Data["tls.crt"]), "-----END CERTIFICATE-----")[0]))
+	return cert, key, nil
 }
 
 func (c *CertUtil) GetSelfSignedCA() string {

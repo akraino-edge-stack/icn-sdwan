@@ -29,7 +29,7 @@ func (m *CNFNatHandler) GetType() string {
 	return "CNFNAT"
 }
 
-func (m *CNFNatHandler) GetName(instance runtime.Object) string {
+func (m *CNFNatHandler) GetName(instance client.Object) string {
 	nat := instance.(*batchv1alpha1.CNFNAT)
 	return nat.Name
 }
@@ -38,14 +38,14 @@ func (m *CNFNatHandler) GetFinalizer() string {
 	return "cnfnat.finalizers.sdewan.akraino.org"
 }
 
-func (m *CNFNatHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *CNFNatHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.CNFNAT{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
 //pupulate "nat" to target field as default value
-func (m *CNFNatHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *CNFNatHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	cnfnat := instance.(*batchv1alpha1.CNFNAT)
 	cnfnat.Spec.Name = cnfnat.ObjectMeta.Name
 	cnfnatObject := openwrt.SdewanNat(cnfnat.Spec)
@@ -99,8 +99,8 @@ type CNFNATReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfnats,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=cnfnats/status,verbs=get;update;patch
 
-func (r *CNFNATReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, cnfnatHandler)
+func (r *CNFNATReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, cnfnatHandler)
 }
 
 func (r *CNFNATReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -109,9 +109,7 @@ func (r *CNFNATReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.CNFNAT{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.CNFNATList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.CNFNATList{})),
 			Filter).
 		Complete(r)
 }

@@ -17,13 +17,20 @@
 package manager
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"github.com/akraino-edge-stack/icn-sdwan/central-controller/src/scc/pkg/module"
 	pkgerrors "github.com/pkg/errors"
 	"gitlab.com/project-emco/core/emco-base/src/orchestrator/pkg/infra/db"
 	"io"
 	"log"
+)
+
+const (
+	OverlayKey   = "Overlay"
+	DeviceKey    = "Device"
+	HubKey       = "Hub"
+	namespaceKey = "Namespace"
+	InternalKey  = "internal"
 )
 
 type CertificateObjectKey struct {
@@ -51,6 +58,12 @@ func (c *CertificateObjectManager) GetResourceName() string {
 	return CertResource
 }
 
+func (c *CertificateObjectManager) GetResourceStoredName(obj module.ControllerObject) string {
+	v := obj.(*module.CertificateObject)
+	cert_manager := GetManagerset().Cert
+	return cert_manager.GetCertName(obj.GetMetadata().Name, v.Specification.ClusterType)
+}
+
 func (c *CertificateObjectManager) IsOperationSupported(oper string) bool {
 	if oper == "PUT" {
 		// Not allowed for gets
@@ -65,17 +78,21 @@ func (c *CertificateObjectManager) CreateEmptyObject() module.ControllerObject {
 
 func (c *CertificateObjectManager) GetStoreKey(m map[string]string, t module.ControllerObject, isCollection bool) (db.Key, error) {
 	overlay_name := m[OverlayResource]
+
 	key := CertificateObjectKey{
 		OverlayName:     overlay_name,
 		CertificateName: "",
 	}
-
 	if isCollection == true {
 		return key, nil
 	}
 
 	to := t.(*module.CertificateObject)
 	meta_name := to.Metadata.Name
+	if meta_name != "" {
+		cert_type := to.Specification.ClusterType
+		meta_name = c.GetCertName(meta_name, cert_type)
+	}
 	res_name := m[CertResource]
 
 	if res_name != "" {
@@ -100,47 +117,118 @@ func (c *CertificateObjectManager) ParseObject(r io.Reader) (module.ControllerOb
 	err := json.NewDecoder(r).Decode(&v)
 
 	v.Data = module.CertificateObjectData{
-		RootCA: "",
-		Ca:     "",
-		Key:    "",
+		CA:   "",
+		Cert: "",
+		Key:  "",
 	}
 
 	return &v, err
 }
 
-func (c *CertificateObjectManager) GetDeviceCertName(name string) string {
-	device := module.DeviceObject{
-		Metadata: module.ObjectMetaData{name, "", "", ""}}
-	return device.GetCertName()
+func (c *CertificateObjectManager) GetCertName(name string, obj_type string) string {
+	switch obj_type {
+	case OverlayKey:
+		overlay_manager := GetManagerset().Overlay
+		return overlay_manager.CertName(name)
+	case HubKey:
+		hub := module.HubObject{
+			Metadata: module.ObjectMetaData{name, "", "", ""}}
+		return hub.GetCertName()
+	case DeviceKey:
+		device := module.DeviceObject{
+			Metadata: module.ObjectMetaData{name, "", "", ""}}
+		return device.GetCertName()
+	}
+
+	log.Println("unsupported obj_type specified in GetCertName")
+	return ""
 }
 
-func GetRootCA(overlay_name string) string {
-	overlay := GetManagerset().Overlay
-	cu, _ := GetCertUtil()
+func GetRootCA() (string, error) {
+	cu, err := GetCertUtil()
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
 
-	root_ca := cu.GetSelfSignedCA()
-	interim_ca, _, _ := overlay.GetCertificate(overlay_name)
-
-	root_ca += interim_ca
-
-	return root_ca
+	return cu.GetSelfSignedCA(), nil
 }
 
-func GetRootBaseCA() string {
+func GetCertChain(m map[string]string) (string, error) {
+	certChain, err := GetRootCA()
+	if err != nil {
+		return "", err
+	}
+
 	cu, _ := GetCertUtil()
+	if _, ok := m[namespaceKey]; !ok {
+		log.Println("No namespace info while searching certs. Skip returning root ca.")
+		return certChain, nil
+	}
 
-	root_ca := cu.GetSelfSignedCA()
+	for _, key := range []string{OverlayKey, DeviceKey, HubKey} {
+		if val, ok := m[key]; ok {
+			cert, _, err := cu.GetKeypair(val, m[namespaceKey])
+			if err != nil {
+				log.Println(err)
+				return "", err
+			}
+			certChain = certChain + "___" + cert
+		}
+	}
 
-	return root_ca
+	return certChain, nil
 }
 
 func (c *CertificateObjectManager) CreateObject(m map[string]string, t module.ControllerObject) (module.ControllerObject, error) {
 	// Create Certificate
+	var cert_name, issuer_name string
+
 	overlay := GetManagerset().Overlay
 	overlay_name := m[OverlayResource]
-	cert_name := c.GetDeviceCertName(t.GetMetadata().Name)
 
-	ca, key, err := overlay.CreateCertificate(overlay_name, cert_name)
+	to := t.(*module.CertificateObject)
+	isCAFlag := to.Specification.IsCA
+	cert_type := to.Specification.ClusterType
+	cert_name = c.GetCertName(to.Metadata.Name, cert_type)
+	// Construct certificate name based on cluster type
+	switch cert_type {
+	case HubKey, DeviceKey:
+		issuer_name = overlay.IssuerName(overlay_name)
+	case OverlayKey:
+		issuer_name = RootCAIssuerName
+	}
+
+	cu, err := GetCertUtil()
+	if err != nil {
+		log.Println(err)
+		return c.CreateEmptyObject(), err
+	}
+
+	_, err = cu.CreateCertificate(cert_name, NameSpaceName, issuer_name, isCAFlag)
+	if err != nil {
+		log.Println("Failed to create overlay[" + overlay_name + "] certificate: " + err.Error())
+		return c.CreateEmptyObject(), err
+	}
+
+	cert, key, err := cu.GetKeypair(cert_name, NameSpaceName)
+	if err != nil {
+		log.Println(err)
+		return c.CreateEmptyObject(), err
+	}
+
+	certMap := make(map[string]string)
+	certMap[namespaceKey] = NameSpaceName
+
+	switch cert_type {
+	case HubKey, DeviceKey:
+		certMap[OverlayKey] = c.GetCertName(overlay_name, OverlayKey)
+		if to.Specification.IsCA {
+			certMap[cert_type] = cert_name
+		}
+	}
+
+	ca, err := GetCertChain(certMap)
 	if err != nil {
 		log.Println(err)
 		return c.CreateEmptyObject(), err
@@ -152,9 +240,9 @@ func (c *CertificateObjectManager) CreateObject(m map[string]string, t module.Co
 	// Fill Certificate data
 	if err == nil {
 		to := t.(*module.CertificateObject)
-		to.Data.RootCA = base64.StdEncoding.EncodeToString([]byte(GetRootCA(overlay_name)))
-		to.Data.Ca = base64.StdEncoding.EncodeToString([]byte(ca))
-		to.Data.Key = base64.StdEncoding.EncodeToString([]byte(key))
+		to.Data.Cert = cert
+		to.Data.Key = key
+		to.Data.CA = ca
 
 		return t, nil
 	} else {
@@ -168,20 +256,43 @@ func (c *CertificateObjectManager) GetObject(m map[string]string) (module.Contro
 	t, err := GetDBUtils().GetObject(c, m)
 
 	if err == nil {
-		overlay := GetManagerset().Overlay
 		overlay_name := m[OverlayResource]
-		cert_name := c.GetDeviceCertName(t.GetMetadata().Name)
 
-		ca, key, err := overlay.CreateCertificate(overlay_name, cert_name)
+		to := t.(*module.CertificateObject)
+		cert_type := to.Specification.ClusterType
+		cert_name := c.GetCertName(to.Metadata.Name, cert_type)
+
+		cu, err := GetCertUtil()
 		if err != nil {
 			log.Println(err)
 			return c.CreateEmptyObject(), err
 		}
 
-		to := t.(*module.CertificateObject)
-		to.Data.RootCA = base64.StdEncoding.EncodeToString([]byte(GetRootCA(overlay_name)))
-		to.Data.Ca = base64.StdEncoding.EncodeToString([]byte(ca))
-		to.Data.Key = base64.StdEncoding.EncodeToString([]byte(key))
+		cert, key, err := cu.GetKeypair(cert_name, NameSpaceName)
+		if err != nil {
+			log.Println(err)
+			return c.CreateEmptyObject(), err
+		}
+
+		certMap := make(map[string]string)
+		certMap[namespaceKey] = NameSpaceName
+		switch cert_type {
+		case HubKey, DeviceKey:
+			certMap[OverlayKey] = c.GetCertName(overlay_name, OverlayKey)
+			if to.Specification.IsCA {
+				certMap[cert_type] = cert_name
+			}
+		}
+
+		ca, err := GetCertChain(certMap)
+		if err != nil {
+			log.Println(err)
+			return c.CreateEmptyObject(), err
+		}
+
+		to.Data.Cert = cert
+		to.Data.Key = key
+		to.Data.CA = ca
 
 		return t, nil
 	} else {
@@ -207,12 +318,21 @@ func (c *CertificateObjectManager) DeleteObject(m map[string]string) error {
 		return pkgerrors.Wrap(err, "Certificate is not available")
 	}
 
-	// Delete certificate
-	overlay := GetManagerset().Overlay
-	cert_name := c.GetDeviceCertName(t.GetMetadata().Name)
+	to := t.(*module.CertificateObject)
+	cert_type := to.Specification.ClusterType
+	cert_name := c.GetCertName(to.Metadata.Name, cert_type)
 
-	log.Println("Delete Certificate: " + cert_name)
-	overlay.DeleteCertificate(cert_name)
+	// Delete certificate
+	cu, err := GetCertUtil()
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("Delete Certificate: " + m[CertResource])
+	err = cu.DeleteCertificate(m[CertResource], NameSpaceName)
+	if err != nil {
+		log.Println("Failed to delete " + cert_name + " certificate: " + err.Error())
+	}
 
 	// DB Operation
 	err = GetDBUtils().DeleteObject(c, m)
@@ -220,25 +340,50 @@ func (c *CertificateObjectManager) DeleteObject(m map[string]string) error {
 	return err
 }
 
-// Create or Get certificate for a device
-func (c *CertificateObjectManager) GetOrCreateDC(overlay_name string, dev_name string) (string, string, string, error) {
-	m := make(map[string]string)
-	m[OverlayResource] = overlay_name
-	t := &module.CertificateObject{Metadata: module.ObjectMetaData{dev_name, "", "", ""}}
-
-	_, err := c.CreateObject(m, t)
-	if err != nil {
-		return "", "", "", err
-	}
-
-	return t.Data.RootCA, t.Data.Ca, t.Data.Key, nil
+func (c *CertificateObjectManager) GetOrCreateDC(overlay_name string, dev_name string, isCA bool) (string, string, string, error) {
+	return c.GetOrCreateCertificateByType(overlay_name, dev_name, DeviceKey, isCA)
 }
 
-// Delete certificate for a device
-func (c *CertificateObjectManager) DeleteDC(overlay_name string, dev_name string) error {
+func (c *CertificateObjectManager) GetOrCreateCertificateByType(overlay_name string, dev_name string, dev_type string, isCA bool) (string, string, string, error) {
+	var certObj module.CertificateObject
+
 	m := make(map[string]string)
 	m[OverlayResource] = overlay_name
-	m[CertResource] = dev_name
+	switch dev_type {
+	case OverlayKey:
+		m[CertResource] = c.GetCertName(overlay_name, dev_type)
+		certObj = module.CertificateObject{Metadata: module.ObjectMetaData{overlay_name, "", InternalKey, ""}, Specification: module.CertificateObjectSpec{isCA, OverlayKey}}
+	case DeviceKey, HubKey:
+		m[CertResource] = c.GetCertName(dev_name, dev_type)
+		certObj = module.CertificateObject{Metadata: module.ObjectMetaData{dev_name, "", InternalKey, ""}, Specification: module.CertificateObjectSpec{isCA, dev_type}}
+	}
+
+	t, err := c.GetObject(m)
+	if err != nil {
+		_, err := c.CreateObject(m, &certObj)
+		if err != nil {
+			return "", "", "", err
+		}
+		return certObj.Data.CA, certObj.Data.Cert, certObj.Data.Key, nil
+	}
+
+	to := t.(*module.CertificateObject)
+
+	return to.Data.CA, to.Data.Cert, to.Data.Key, nil
+}
+
+func (c *CertificateObjectManager) DeleteCertificateByType(overlay_name string, dev_name string, dev_type string) error {
+	var cert_name string
+	m := make(map[string]string)
+
+	m[OverlayResource] = overlay_name
+	switch dev_type {
+	case HubKey, DeviceKey:
+		cert_name = c.GetCertName(dev_name, dev_type)
+	case OverlayKey:
+		cert_name = c.GetCertName(overlay_name, dev_type)
+	}
+	m[CertResource] = cert_name
 
 	return c.DeleteObject(m)
 }

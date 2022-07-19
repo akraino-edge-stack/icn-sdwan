@@ -12,7 +12,6 @@ import (
 
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -66,7 +65,7 @@ func wildMatchArray(p []rune, pindex int, v []rune, vindex int) bool {
 	return true
 }
 
-// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;networkfirewallrules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfroutes;cnfrouterules;cnfservices;cnflocalservices;cnfhubsites;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1,name=validate-sdewan-bucket.akraino.org,admissionReviewVersions=v1,sideEffects=none
+// +kubebuilder:webhook:path=/validate-sdewan-bucket-permission,mutating=false,failurePolicy=fail,groups="batch.sdewan.akraino.org",resources=mwan3policies;mwan3rules;networkfirewallrules;firewallzones;firewallforwardings;firewallrules;firewallsnats;firewalldnats;cnfnats;cnfroutes;cnfrouterules;cnfservices;cnflocalservices;cnfhubsites;cnfstatuses;sdewanapplication;ipsecproposals;ipsechosts;ipsecsites,verbs=create;update;delete,versions=v1alpha1,name=validate-sdewan-bucket.akraino.org,admissionReviewVersions=v1,sideEffects=none
 
 // bucketPermissionValidator validates Pods
 type bucketPermissionValidator struct {
@@ -102,7 +101,7 @@ func (v *bucketPermissionValidator) Handle(ctx context.Context, req admission.Re
 	}
 	var meta metav1.ObjectMeta
 	var err error
-	var obj runtime.Object
+	var obj client.Object
 	switch req.Kind.Kind {
 	case "Mwan3Policy":
 		obj = &Mwan3Policy{}

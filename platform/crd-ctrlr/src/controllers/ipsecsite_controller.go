@@ -29,7 +29,7 @@ func (m *IpsecSiteHandler) GetType() string {
 	return "IpsecSite"
 }
 
-func (m *IpsecSiteHandler) GetName(instance runtime.Object) string {
+func (m *IpsecSiteHandler) GetName(instance client.Object) string {
 	site := instance.(*batchv1alpha1.IpsecSite)
 	return site.Name
 }
@@ -38,13 +38,13 @@ func (m *IpsecSiteHandler) GetFinalizer() string {
 	return "ipsec.site.finalizers.sdewan.akraino.org"
 }
 
-func (m *IpsecSiteHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *IpsecSiteHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.IpsecSite{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *IpsecSiteHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *IpsecSiteHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	site := instance.(*batchv1alpha1.IpsecSite)
 	numOfConn := len(site.Spec.Connections)
 	conn := site.Spec.Connections
@@ -133,8 +133,8 @@ type IpsecSiteReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=ipsecsites,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=ipsecsites/status,verbs=get;update;patch
 
-func (r *IpsecSiteReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, ipsecSiteHandler)
+func (r *IpsecSiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, ipsecSiteHandler)
 }
 
 func (r *IpsecSiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -143,9 +143,7 @@ func (r *IpsecSiteReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.IpsecSite{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.IpsecSiteList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.IpsecSiteList{})),
 			Filter).
 		Complete(r)
 }

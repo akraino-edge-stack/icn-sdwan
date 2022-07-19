@@ -13,6 +13,8 @@ import (
 type SdewanApplicationSpec struct {
 	PodSelector  *metav1.LabelSelector `json:"podSelector,omitempty"`
 	AppNamespace string                `json:"appNamespace,omitempty"`
+	ServicePort  string                `json:"servicePort,omitempty"`
+	CNFPort      string                `json:"cnfPort,omitempty"`
 }
 
 type ApplicationInfo struct {

@@ -30,6 +30,9 @@ type SdewanSvcs struct {
 func (o *SdewanSvc) GetName() string {
 	return o.Name
 }
+func (o *SdewanSvc) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
 
 // Svc APIs
 // get svcs

@@ -8,4 +8,4 @@ replace (
         gitlab.com/project-emco/core/emco-base/src/rsync => ../../../../../../rsync
 )
 
-go 1.17
+go 1.18

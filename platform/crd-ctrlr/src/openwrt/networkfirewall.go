@@ -39,6 +39,10 @@ func (o *SdewanNetworkFirewallRule) GetName() string {
 	return o.Name
 }
 
+func (o *SdewanNetworkFirewallRule) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
+
 type SdewanNetworkFirewallRules struct {
 	Rules []SdewanNetworkFirewallRule `json:"rules"`
 }

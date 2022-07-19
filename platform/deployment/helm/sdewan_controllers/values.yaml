@@ -12,7 +12,7 @@ spec:
     image: "gcr.io/kubebuilder/kube-rbac-proxy:v0.4.1"
     name: "kube-rbac-proxy"
   sdewan:
-    image: "integratedcloudnative/sdewan-controller:0.5.2"
+    image: "integratedcloudnative/sdewan-controller:0.5.3"
     name: "manager"
 
 

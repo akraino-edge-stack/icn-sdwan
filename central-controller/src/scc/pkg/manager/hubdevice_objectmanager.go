@@ -139,7 +139,7 @@ func (c *HubDeviceObjectManager) CreateObject(m map[string]string, t module.Cont
 		dev_manager.UpdateObject(m, device)
 	}
 
-	return c.CreateEmptyObject(), nil
+	return t, nil
 }
 
 func (c *HubDeviceObjectManager) GetObject(m map[string]string) (module.ControllerObject, error) {

@@ -29,7 +29,7 @@ func (m *FirewallZoneHandler) GetType() string {
 	return "FirewallZone"
 }
 
-func (m *FirewallZoneHandler) GetName(instance runtime.Object) string {
+func (m *FirewallZoneHandler) GetName(instance client.Object) string {
 	zone := instance.(*batchv1alpha1.FirewallZone)
 	return zone.Name
 }
@@ -38,13 +38,13 @@ func (m *FirewallZoneHandler) GetFinalizer() string {
 	return "rule.finalizers.sdewan.akraino.org"
 }
 
-func (m *FirewallZoneHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (runtime.Object, error) {
+func (m *FirewallZoneHandler) GetInstance(r client.Client, ctx context.Context, req ctrl.Request) (client.Object, error) {
 	instance := &batchv1alpha1.FirewallZone{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	return instance, err
 }
 
-func (m *FirewallZoneHandler) Convert(instance runtime.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
+func (m *FirewallZoneHandler) Convert(instance client.Object, deployment appsv1.Deployment) (openwrt.IOpenWrtObject, error) {
 	firewallzone := instance.(*batchv1alpha1.FirewallZone)
 	instance_to_convert := batchv1alpha1.FirewallZoneSpec(firewallzone.Spec)
 	networks := make([]string, len(instance_to_convert.Network))
@@ -110,8 +110,8 @@ type FirewallZoneReconciler struct {
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewallzones,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch.sdewan.akraino.org,resources=firewallzones/status,verbs=get;update;patch
 
-func (r *FirewallZoneReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	return ProcessReconcile(r, r.Log, req, firewallZoneHandler)
+func (r *FirewallZoneReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	return ProcessReconcile(r.Client, r.Log, ctx, req, firewallZoneHandler)
 }
 
 func (r *FirewallZoneReconciler) SetupWithManager(mgr ctrl.Manager) error {
@@ -120,9 +120,7 @@ func (r *FirewallZoneReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&batchv1alpha1.FirewallZone{}, ps).
 		Watches(
 			&source.Kind{Type: &appsv1.Deployment{}},
-			&handler.EnqueueRequestsFromMapFunc{
-				ToRequests: handler.ToRequestsFunc(GetToRequestsFunc(r, &batchv1alpha1.FirewallZoneList{})),
-			},
+			handler.EnqueueRequestsFromMapFunc(GetToRequestsFunc(r.Client, &batchv1alpha1.FirewallZoneList{})),
 			Filter).
 		Complete(r)
 }

@@ -1,0 +1,18 @@
+---
+# creating cluster-sync-obj
+version: ewo/v1
+resourceContext:
+  anchor: overlays/overlay1/cluster-sync-objects
+metadata:
+  name: cso2
+  description:
+  userData1:
+  userData2:
+spec:
+  kv:
+    - gitType: github
+    - userName: xxxx
+    - gitToken: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    - repoName: test-flux
+    - branch: main
+

@@ -31,6 +31,9 @@ type SdewanRoutes struct {
 func (o *SdewanRoute) GetName() string {
 	return o.Name
 }
+func (o *SdewanRoute) SetFullName(namespace string) {
+	o.Name = namespace + o.Name
+}
 
 // Route APIs
 // get routes
