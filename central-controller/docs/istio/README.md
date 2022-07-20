@@ -264,12 +264,12 @@ metadata:
   namespace: istio-system
 spec:
   jwtRules:
-    - issuer: "http://<keycloak-url>/auth/realms/enterprise1"
-      jwksUri: "http://<keycloak-url>/auth/realms/enterprise1/protocol/openid-connect/certs"
+  - issuer: "http://<keycloak-url>/auth/realms/enterprise1"
+    jwksUri: "http://<keycloak-url>/auth/realms/enterprise1/protocol/openid-connect/certs"
 # And you can create another keycloak service if you need
 # jwtRules:
-#   - issuer: "http://<ano-keycloak-url>/auth/realms/ano-enterprise"
-#     jwksUri: "http://<ano-keycloak-url>/auth/realms/ano-enterprise/protocol/openid-connect/certs"
+# - issuer: "http://<ano-keycloak-url>/auth/realms/ano-enterprise"
+#   jwksUri: "http://<ano-keycloak-url>/auth/realms/ano-enterprise/protocol/openid-connect/certs"
 ```
 
 #### Authorization Policies with Istio

@@ -5,5 +5,5 @@ metadata:
   namespace: istio-system
 spec:
   jwtRules:
-    - issuer: "http://<keycloak-url>/auth/realms/enterprise1"
-      jwksUri: "http://<keycloak-url>/auth/realms/enterprise1/protocol/openid-connect/certs"
+  - issuer: "http://<keycloak-url>/auth/realms/enterprise1"
+    jwksUri: "http://<keycloak-url>/auth/realms/enterprise1/protocol/openid-connect/certs"
